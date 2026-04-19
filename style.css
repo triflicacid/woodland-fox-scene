@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0d1a0f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Lora', Georgia, serif;
+    overflow: hidden;
+}
+
+h1 {
+    color: #e8c97a;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: .08em;
+    margin-bottom: 7px;
+    text-shadow: 0 0 24px #e8c97a55;
+    opacity: .88;
+}
+
+#canvas-wrap {
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 0 0 2px #2a4a1e, 0 0 60px #0a1a0855, 0 24px 80px #000a;
+}
+
+canvas {
+    display: block;
+}
+
+.ctrl-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 9px;
+    width: 740px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    padding: 6px 14px;
+    font-family: 'Lora', Georgia, serif;
+    font-size: .75rem;
+    font-style: italic;
+    letter-spacing: .04em;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+    user-select: none;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.04);
+}
+
+button:active:not(:disabled) {
+    transform: scale(.97);
+}
+
+button:disabled {
+    opacity: .32;
+    cursor: default;
+}
+
+.btn-main {
+    padding: 8px 20px;
+    font-size: .83rem;
+}
+
+#btn {
+    color: #0d1a0f;
+    background: linear-gradient(135deg, #e8c97a, #c8943a);
+}
+
+#btn-bunny {
+    color: #f5f0ea;
+    background: linear-gradient(135deg, #8a7a9a, #4a3a5a);
+}
+
+#btn-wander {
+    color: #1a1a0a;
+    background: linear-gradient(135deg, #c8b870, #807030);
+}
+
+#btn-spring {
+    color: #1a3a10;
+    background: linear-gradient(135deg, #a8e87a, #5aaa30);
+}
+
+#btn-summer {
+    color: #1a2a0a;
+    background: linear-gradient(135deg, #78c838, #2a7a10);
+}
+
+#btn-autumn {
+    color: #2a0a00;
+    background: linear-gradient(135deg, #f09030, #c04010);
+}
+
+#btn-winter {
+    color: #1a2a3a;
+    background: linear-gradient(135deg, #c8e8f8, #88b8d8);
+}
+
+#btn-day {
+    color: #1a2a0a;
+    background: linear-gradient(135deg, #ffe878, #f0a820);
+}
+
+#btn-night {
+    color: #e8e8ff;
+    background: linear-gradient(135deg, #3a3a7a, #0a0a2a);
+}
+
+#btn-clear {
+    color: #2a1a0a;
+    background: linear-gradient(135deg, #e8c870, #a08030);
+}
+
+#btn-rain {
+    color: #1a2a3a;
+    background: linear-gradient(135deg, #88aac8, #3a5a78);
+}
+
+#btn-fog {
+    color: #2a2a2a;
+    background: linear-gradient(135deg, #b8b8b8, #787878);
+}
+
+#btn-snow {
+    color: #1a2a3a;
+    background: linear-gradient(135deg, #d8eeff, #88b8e8);
+}
+
+#btn-storm {
+    color: #ffe8a0;
+    background: linear-gradient(135deg, #2a2a3a, #0a0a18);
+}
+
+#btn-wind {
+    color: #1a2a1a;
+    background: linear-gradient(135deg, #a8c8a0, #507050);
+}
+
+#btn-aurora {
+    color: #f0e0ff;
+    background: linear-gradient(135deg, #6030a0, #c0a030);
+}
+
+#btn-deer {
+    color: #2a1a08;
+    background: linear-gradient(135deg, #c8783a, #8a4820);
+}
+
+#btn-hog {
+    color: #2a1a08;
+    background: linear-gradient(135deg, #a07840, #5a3810);
+}
+
+#btn-owl {
+    color: #f8f0d8;
+    background: linear-gradient(135deg, #504030, #282010);
+}
+
+#btn-yawn {
+    color: #2a0800;
+    background: linear-gradient(135deg, #f09060, #a04020);
+}
+
+#btn-ear {
+    color: #2a0800;
+    background: linear-gradient(135deg, #e8a060, #904018);
+}
+
+#btn-grumble {
+    color: #2a0800;
+    background: linear-gradient(135deg, #ff8840, #c04010);
+}
+
+.btn-active {
+    outline: 3px solid #fff9;
+    outline-offset: 2px;
+}
+
+.row-sep {
+    width: 1px;
+    height: 18px;
+    background: #fff2;
+    margin: 0 2px;
+}
+
+#status {
+    color: #7ab87a;
+    font-size: .76rem;
+    font-style: italic;
+    letter-spacing: .04em;
+    min-height: 1.1em;
+    opacity: .8;
+    text-align: center;
+    margin-top: 2px;
+}

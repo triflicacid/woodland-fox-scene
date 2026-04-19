@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleepy Forest Fox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>A fox rests in the quiet woods…</h1>
+<div id="canvas-wrap">
+    <canvas id="c" width="700" height="420"></canvas>
+</div>
+<div class="ctrl-panel">
+    <div class="btn-row">
+        <button id="btn" class="btn-main">🦊 Wake the Fox</button>
+        <button id="btn-wander" class="btn-main">🐾 Wander</button>
+        <button id="btn-bunny" class="btn-main">🐇 Visitor</button>
+    </div>
+    <div class="btn-row">
+        <button id="btn-spring">🌸 Spring</button>
+        <button id="btn-summer">🌿 Summer</button>
+        <button id="btn-autumn">🍂 Autumn</button>
+        <button id="btn-winter">❄️ Winter</button>
+        <div class="row-sep"></div>
+        <button id="btn-day">☀️ Day</button>
+        <button id="btn-night">🌙 Night</button>
+    </div>
+    <div class="btn-row">
+        <button id="btn-clear">✨ Clear</button>
+        <button id="btn-rain">🌧 Rain</button>
+        <button id="btn-fog">🌫 Fog</button>
+        <button id="btn-snow">🌨 Snow</button>
+        <button id="btn-storm">⛈ Storm</button>
+        <button id="btn-wind">🍃 Wind</button>
+        <button id="btn-aurora">✦ Aurora</button>
+    </div>
+    <div class="btn-row">
+        <button id="btn-deer">🦌 Deer</button>
+        <button id="btn-hog">🦔 Hedgehog</button>
+        <button id="btn-owl">🦉 Owl / Bats</button>
+        <div class="row-sep"></div>
+        <button id="btn-yawn">😪 Yawn</button>
+        <button id="btn-ear">👂 Ear Twitch</button>
+        <button id="btn-grumble">😤 Grumble</button>
+    </div>
+</div>
+<div id="status">Curled up, fast asleep… <span style="opacity:.45">(click the fox or a tree!)</span></div>
+
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/trees.js"></script>
+<script src="js/fox.js"></script>
+<script src="js/animals.js"></script>
+<script src="js/tick.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
