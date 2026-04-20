@@ -1,26 +1,24 @@
 import {rnd, rndf, prob} from '../utils.js';
 import {PROBABILITY} from '../config.js';
+import {Component} from '../core/component.js';
 
 /**
  * DrawWeather handles the five weather conditions that overlay the scene.
  * it both ticks (advances particle positions) and draws each frame.
  */
-export class DrawWeather {
+export class DrawWeather extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
   }
 
-  /**
-   * draw all active weather effects for this frame.
-   * @param {SceneState} state
-   */
   draw(state) {
     const {weather} = state;
     if (weather === 'rain' || weather === 'storm') this._drawRain(state);
@@ -30,12 +28,6 @@ export class DrawWeather {
     if (weather === 'storm') this._drawLightning(state);
   }
 
-  /**
-   * tick all active weather effects for this frame.
-   * @param {SceneState} state
-   * @param _1 (ignore)
-   * @param _2 (ignore)
-   */
   tick(state, _1, _2) {
     const {weather} = state;
     if (weather === 'storm') this._tickLightning(state);

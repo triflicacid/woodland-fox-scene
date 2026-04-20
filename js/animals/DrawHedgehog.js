@@ -1,17 +1,19 @@
 import {lerp, clamp, eo, prob} from '../utils.js';
 import {PROBABILITY} from '../config.js';
+import {Component} from '../core/component.js';
 
 /**
  * DrawHedgehog manages hedgehog state (waddling in, sniffing, leaving) and rendering.
  * only appears in autumn, triggered by low probability each frame.
  */
-export class DrawHedgehog {
+export class DrawHedgehog extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
@@ -21,6 +23,7 @@ export class DrawHedgehog {
    * tick hedgehog phase state and draw if visible.
    * @param {SceneState} state
    */
+  // TODO split
   draw(state) {
     const hog = state.hog;
     const {fox, bunny, season} = state;

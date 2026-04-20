@@ -1,11 +1,12 @@
 import {rnd, prob} from '../utils.js';
 import {PROBABILITY} from '../config.js';
 import {getTreeTopPos} from '../drawing/DrawTrees.js';
+import {Component} from '../core/Component.js';
 
 /**
  * DrawAvians manages all bird, bat, and owl rendering and state.
  */
-export class DrawAvians {
+export class DrawAvians extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
@@ -13,16 +14,13 @@ export class DrawAvians {
    * @param {Array<Object>} trees - tree definitions array
    */
   constructor(ctx, W, H, trees) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
     this.trees = trees;
   }
 
-  /**
-   * tick state and draw all birds, bats, and the owl for this frame.
-   * @param {SceneState} state
-   */
   draw(state) {
     const {season, weather, todBlend, owlForced} = state;
 

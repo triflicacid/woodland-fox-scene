@@ -1,31 +1,27 @@
-import {lerp, clamp, eio, eo, rnd, prob, blob, rg, lg} from '../utils.js';
+import {lerp, clamp, eio, eo, prob, blob, rg, lg} from '../utils.js';
 import {FOX_PHASES, PROBABILITY} from '../config.js';
+import {Component} from '../core/component.js';
 
 /**
  * DrawFox manages fox animation state ticking and all fox drawing.
  * it also handles the bunny interaction sequence.
  */
-export class DrawFox {
+export class DrawFox extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
   }
 
-  /**
-   * advance fox state by one frame (yawn, ear twitch, phase transitions).
-   * @param {SceneState} state
-   * @param {function(string): void} setStatus - callback to update the status text
-   * @param {function(): void} enableButtons - callback to re-enable UI buttons
-   */
   tick(state, setStatus, enableButtons) {
     const fox = state.fox;
-    const {weather, lightning} = state;
+    const {weather} = state;
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {

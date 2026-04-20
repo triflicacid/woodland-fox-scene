@@ -1,4 +1,5 @@
 import {TREE_DEFS} from '../config.js';
+import {Component} from '../core/component.js';
 
 /**
  * compute the current wind-driven sway offset for a tree.
@@ -232,12 +233,13 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, sway) {
  * DrawTrees renders trees either in the background, foreground, or both.
  * Used to split the rendering into layers.
  */
-export class DrawTrees {
+export class DrawTrees extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {boolean | undefined} background
    */
   constructor(ctx, background) {
+    super();
     this.ctx = ctx;
     this.background = background;
     /** @type {Array<Object>} - tree data from config */

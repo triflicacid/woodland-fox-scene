@@ -1,25 +1,23 @@
 import {clamp, lerp, rndf, prob} from '../utils.js';
+import {Component} from '../core/Component.js';
 
 /**
  * DrawWorld handles all background rendering: sky gradients,
  * celestial stuff, clouds, ground, undergrowth, grass, and seasonal details.
  */
-export class DrawWorld {
+export class DrawWorld extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
   }
 
-  /**
-   * draw the full background for this frame.
-   * @param {SceneState} state
-   */
   draw(state) {
     const {ctx, W, H} = this;
     const p = state.pal();

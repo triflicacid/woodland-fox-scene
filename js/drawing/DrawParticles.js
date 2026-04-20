@@ -1,4 +1,5 @@
 import {clamp, rnd} from '../utils.js';
+import {Component} from '../core/component.js';
 
 /**
  * DrawParticles handles ambient particle effects.
@@ -7,23 +8,19 @@ import {clamp, rnd} from '../utils.js';
  * canopy leaves are exposed as a separate drawCanopyLeaves() call because they
  * need to render between the fox layer and the foreground trees.
  */
-export class DrawParticles {
+export class DrawParticles extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
   }
 
-  /**
-   * draw all ambient effects for this frame.
-   * called once per frame as a registered pre-fox component.
-   * @param {SceneState} state
-   */
   draw(state) {
     this._drawSmoke(state);
     this._drawFireflies(state);
@@ -164,7 +161,9 @@ export class DrawParticles {
    * called separately from draw() because it must render between the fox
    * layer and the foreground trees - see Scene._loop().
    * @param {SceneState} state
+   * @deprecated will be moved into draw/tick
    */
+  // TODO refactor into draw/tick
   drawCanopyLeaves(state) {
     const {ctx, H} = this;
     const {season, weather, canopyLeaves} = state;

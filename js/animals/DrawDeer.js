@@ -1,26 +1,24 @@
 import {PROBABILITY} from "../config.js";
 import {clamp, eo, lerp, prob} from "../utils.js";
+import {Component} from '../core/component.js';
 
 /**
  * DrawDeer manages deer state (entering, grazing, leaving) and rendering.
  * the deer appears spontaneously at dawn/dusk transitions.
  */
-export class DrawDeer {
+export class DrawDeer extends Component {
   /**
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    */
   constructor(ctx, W, H) {
+    super();
     this.ctx = ctx;
     this.W = W;
     this.H = H;
   }
 
-  /**
-   * tick deer phase state and draw if visible.
-   * @param {SceneState} state
-   */
   draw(state) {
     const deer = state.deer;
     deer.cooldown--;

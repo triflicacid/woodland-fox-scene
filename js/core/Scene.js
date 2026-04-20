@@ -36,12 +36,8 @@ export class Scene {
     // give state a reference to tree defs so canopy leaves can use it
     this.state.trees = TREE_DEFS;
 
-    // drawing components, executed in order each frame
-    /** @type {Array<{draw: function(SceneState): void}>} */
+    /** @type {Array<Component>} */
     this._components = [];
-    // components which can 'tick', executing in order each frame
-    /** @type {Array<{tick: function(SceneState, function(msg: string): void, function(): void): void}>} */
-    this._events = [];
 
     // store the handle for the drawing loop
     /** @type {number | undefined} */
@@ -61,24 +57,11 @@ export class Scene {
   }
 
   /**
-   * register a drawing and/or event component to draw before the fox.
-   * the component must expose a draw(state) method, or tick(...) method.
-   * if both, will be added to both.
-   * @param {Object} component
+   * register a component.
+   * @param {Component} component
    */
   register(component) {
-    let added = false;
-    if (typeof component['draw'] === 'function') {
-      this._components.push(component);
-      added = true;
-    }
-    if (typeof component['tick'] === 'function') {
-      this._events.push(component);
-      added = true;
-    }
-    if (!added) {
-      throw new Error('Component not a drawing component nor an event');
-    }
+    this._components.push(component);
   }
 
   /**
@@ -143,9 +126,9 @@ export class Scene {
       this._setButtonsDisabled(false);
     };
 
-    this._events.forEach(e => e.tick(state, setStatus, enableButtons));
+    this._components.forEach(c => c.tick(state, setStatus, enableButtons));
     this._components.forEach(c => c.draw(state));
-    this._particles.drawCanopyLeaves(state); // TODO move?
+    this._particles.drawCanopyLeaves(state);
 
     requestAnimationFrame(this._loop);
   }
