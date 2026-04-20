@@ -183,7 +183,19 @@ const bats = Array.from({length: 6}, () => ({
     vx: (0.8 + rnd(0.6)) * (p(0.5) ? 1 : -1),
     flapT: rnd(Math.PI * 2), flapSpeed: 0.14 + rnd(0.06)
 }));
-const owl = {headAngle: 0, headTarget: 0, headTimer: 0, blinkT: -1, treeIdx: 6};
+const owl = {
+    headAngle: 0,
+    headTarget: 0,
+    headTimer: 0,
+    blinkT: -1,
+    treeIdx: 6,
+    show() {
+        return owlForced
+            || todBlend < 0.35
+            && (season === 'autumn' || season === 'winter')
+            && weather === 'clear';
+    }
+};
 
 // woodsmoke
 const smoke = Array.from({length: 12}, (_, i) => resetSmoke({}, i));

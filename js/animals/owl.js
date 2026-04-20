@@ -4,8 +4,7 @@ function summonOwlBats() {
 
 function drawOwl() {
     // show owl at night (or forced), non-winter
-    const showOwl = owlForced || (todBlend < 0.35 && season !== 'winter');
-    if (!showOwl) return;
+    if (!owl.show()) return;
     const tr = trees[owl.treeIdx];
     let { x, y } = getTreeTopPos(tr);
     y -= 15;
