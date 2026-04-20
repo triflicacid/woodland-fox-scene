@@ -43,7 +43,7 @@ export class DrawFox {
         if (fox.earTwitchT >= 20) fox.earTwitchT = -1;
       }
       // lightning makes the fox flinch
-      if (weather === 'storm' && lightning.active && lightning.t === 1) {
+      if (weather === 'storm' && state.bolts.some(b => b.t === 1)) {
         fox.earTwitchT = 0;
         fox.earTwitchSide = 1;
       }

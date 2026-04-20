@@ -99,8 +99,9 @@ export class SceneState {
       treeIdx: 6,
     };
 
-    // weather / environment particles
-    this.lightning = {active: false, t: 0, path: []};
+    // active lightning bolts
+    this.bolts = [];
+
     this.puddleLevel = 0;
 
     // aurora bands

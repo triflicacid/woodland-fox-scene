@@ -301,6 +301,7 @@ export class DrawWorld {
     if (season === 'spring') this._drawSpringFlowers(frame);
     this._drawPuddles(state);
     this._drawGrass(p, season, weather, frame);
+    this._drawWorms(state);
   }
 
   /**
@@ -526,5 +527,57 @@ export class DrawWorld {
         ctx.stroke();
       }
     }
+  }
+
+  /**
+   * draw slowly-wriggling worms near puddles during rain in spring and summer.
+   * worms emerge when puddles are large enough and the season is warm.
+   * @param {SceneState} state
+   */
+  _drawWorms(state) {
+    const {ctx} = this;
+    const {weather, season, frame, puddles, puddleLevel} = state;
+
+    if (weather !== 'rain' && weather !== 'storm') return;
+    if (season !== 'spring' && season !== 'summer') return;
+    if (puddleLevel < 0.3) return; // only appear once puddles are established
+
+    // one worm per puddle, position and phase seeded from puddle index
+    puddles.forEach((pd, i) => {
+      const alpha = Math.min(1, (puddleLevel - 0.3) / 0.4); // fade in
+      const wormX = pd.x + Math.sin(frame * 0.008 + i * 2.1) * (pd.maxRx * 0.6);
+      const wormY = pd.y + 6;
+      const wiggle = frame * 0.04 + i * 1.3;
+
+      // reduce worm count when stormy
+      if (weather === 'storm' && i % 2) return;
+
+      ctx.save();
+      ctx.globalAlpha = 0.82 * alpha;
+      ctx.strokeStyle = i % 2 === 0 ? '#c06080' : '#9060a0'; // pink or purple
+      ctx.lineWidth = 3.5;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // draw worm as a short wiggly path of segments
+      ctx.beginPath();
+      const len = 18; // half-length in pixels
+      ctx.moveTo(wormX - len, wormY + Math.sin(wiggle) * 3);
+      for (let sx = -len + 4; sx <= len; sx += 4) {
+        const sy = wormY + Math.sin(wiggle + sx * 0.22) * 3.5;
+        ctx.lineTo(wormX + sx, sy);
+      }
+      ctx.stroke();
+
+      // rounded head
+      const headX = wormX + len + Math.cos(wiggle) * 1.5;
+      const headY = wormY + Math.sin(wiggle + len * 0.22) * 3.5;
+      ctx.fillStyle = i % 2 === 0 ? '#d07090' : '#a070b0';
+      ctx.beginPath();
+      ctx.arc(headX, headY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+    });
   }
 }

@@ -38,7 +38,8 @@ export const FOX_PHASES = {
  * @type {Object<string, number>}
  */
 export const PROBABILITY = {
-  LIGHTNING: 0.003,
+  LIGHTNING: 0.03,
+  SUPER_BOLT: 0.15, // super-bolt once lightning has spawned
   FOX_YAWN: 0.0008,
   EAR_TWITCH: 0.002,
   HEDGEHOG: 0.0004,
