@@ -289,8 +289,9 @@ export class Scene {
     // animal / reaction summon buttons
     document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon(state));
     document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon(state));
-    document.getElementById('btn-owl')?.addEventListener('click', () => {
+    document.getElementById('btn-owl')?.addEventListener('click', function() {
       state.owlForced = !state.owlForced;
+      this.classList.toggle('btn-active');
     });
     document.getElementById('btn-yawn')?.addEventListener('click', () => this._triggerYawn());
     document.getElementById('btn-ear')?.addEventListener('click', () => this._triggerEarTwitch());
