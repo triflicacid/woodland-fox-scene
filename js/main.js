@@ -144,7 +144,7 @@ document.getElementById('btn-yawn').addEventListener('click', triggerYawn);
 document.getElementById('btn-ear').addEventListener('click', triggerEarTwitch);
 document.getElementById('btn-grumble').addEventListener('click', triggerGrumble);
 
-// ── Main loop ────────────────────────────────────────────────────
+// Main draw loop
 function draw() {
     ctx.clearRect(0, 0, W, H);
     frame++;
@@ -154,20 +154,20 @@ function draw() {
 
     drawBackground();
 
-    // Background trees
-    [trees[1], trees[3], trees[4], trees[5], trees[8], trees[9], trees[10], trees[11]].forEach(drawTree);
+    // BACKGROUND
+    trees.filter(t => !t.background).forEach(drawTree);
 
     drawSmoke();
     drawFireflies();
     drawButterflies();
-    drawBirds();
 
-    // Foreground trees
-    [trees[0], trees[2], trees[6], trees[7]].forEach(drawTree);
+    // FOREGROUND
+    trees.filter(t => t.background).forEach(drawTree);
 
+    tickCanopyLeaves();
     tickDeer();
     tickHedgehog();
-    tickCanopyLeaves();
+    drawBirds();
     drawSeasonTransition();
 
     drawFox();

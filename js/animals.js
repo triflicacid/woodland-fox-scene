@@ -561,16 +561,11 @@ function drawBirds() {
     if (weather === 'wind' && !windWasOn) {
         perchBirds.forEach(pb => {
             const tr = trees[pb.treeIdx];
-            const topY = H * 0.62 - tr.h * 0.25 - (tr.layers - 1) * (tr.h * 0.22);
+            const top = getTreeTopPos(tr);
             windStartledBirds.push({
-                x: tr.x,
-                y: topY,
-                vx: (3 + rnd(4)) * (Math.random() < 0.5 ? 1 : -1),
-                vy: -(2 + rnd(2)),
-                flapT: 0,
-                flapSpeed: 0.15,
-                scale: 0.8 + rnd(0.3),
-                life: 0
+                x: top.x + pb.offset * tr.r * 0.5, y: top.y,
+                vx: (3 + rnd(4)) * (Math.random() < 0.5 ? 1 : -1), vy: -(2 + rnd(2)),
+                flapT: 0, flapSpeed: 0.15, scale: 0.8 + rnd(0.3), life: 0
             });
         });
         windWasOn = true;
@@ -622,11 +617,19 @@ function drawBirds() {
     perchBirds.forEach(pb => {
         const tr = trees[pb.treeIdx];
         if (season === 'winter' && tr.type !== 'pine') return;
-        const sw = Math.sin(frame * tr.sway + tr.ph) * 5;
-        const topY = H * 0.62 - tr.h * (tr.type === 'pine' ? 0.2 : 0.25) - (tr.layers - 1) * (tr.h * (tr.type === 'pine' ? 0.18 : 0.22));
-        const px = tr.x + sw + pb.offset * tr.r * 0.6;
-        const bob = Math.sin(frame * 0.03 + pb.treeIdx) * 0.8;
-        drawPerchBird(px, topY + bob - 8, pb.side);
+        // Birds sit on the swaying trees
+        const top = getTreeTopPos(tr);
+        const px = top.x + pb.offset * tr.r * 0.5;
+        const py = top.y + Math.sin(frame * 0.03 + pb.treeIdx) * 0.8;
+        // Bird also leans with the tree sway
+        const windE = (weather === 'wind' || weather === 'storm') ? Math.sin(frame * 0.06 + tr.ph) * 10 : 0;
+        const treeLean = (Math.sin(frame * tr.sway + tr.ph) * 5 + windE) * 0.008;
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(treeLean);
+        ctx.translate(-px, -py);
+        drawPerchBird(px, py, pb.side);
+        ctx.restore();
     });
 
     drawOwl();
