@@ -62,9 +62,9 @@ export const prob = n => Math.random() < n;
  * @returns {CanvasGradient}
  */
 export function rg(ctx, x, y, r1, r2, ...stops) {
-    const g = ctx.createRadialGradient(x, y, r1, x, y, r2);
-    stops.forEach(([t, c]) => g.addColorStop(t, c));
-    return g;
+  const g = ctx.createRadialGradient(x, y, r1, x, y, r2);
+  stops.forEach(([t, c]) => g.addColorStop(t, c));
+  return g;
 }
 
 /**
@@ -78,9 +78,9 @@ export function rg(ctx, x, y, r1, r2, ...stops) {
  * @returns {CanvasGradient}
  */
 export function lg(ctx, x1, y1, x2, y2, ...stops) {
-    const g = ctx.createLinearGradient(x1, y1, x2, y2);
-    stops.forEach(([t, c]) => g.addColorStop(t, c));
-    return g;
+  const g = ctx.createLinearGradient(x1, y1, x2, y2);
+  stops.forEach(([t, c]) => g.addColorStop(t, c));
+  return g;
 }
 
 /**
@@ -90,8 +90,8 @@ export function lg(ctx, x1, y1, x2, y2, ...stops) {
  * @param {string|CanvasGradient} fill
  */
 export function blob(ctx, path, fill) {
-    ctx.fillStyle = fill;
-    ctx.beginPath();
-    path();
-    ctx.fill();
+  ctx.fillStyle = fill;
+  ctx.beginPath();
+  path();
+  ctx.fill();
 }
