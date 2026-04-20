@@ -1,9 +1,10 @@
-function drawHedgehog(x, y) {
+function drawHedgehog(x, y, facingRight=false) {
     ctx.save();
     ctx.translate(x, y);
 
     // Scale up for better visibility
     ctx.scale(1.4, 1.4);
+    if (facingRight) ctx.scale(-1, 1);
 
     const waddle = Math.sin(frame * 0.14) * 2.5;
 
@@ -137,7 +138,10 @@ function tickHedgehog() {
         hog.x = lerp(fox.x - 90, W + 80, eo(clamp(hog.phaseT / 280, 0, 1)));
         if (hog.phaseT >= 280) hog.phase = 'off';
     }
-    if (hog.phase !== 'off') drawHedgehog(hog.x, H * 0.62 - 4);
+    if (hog.phase !== 'off') {
+        const hogFacingRight = hog.phase === 'in' || hog.phase === 'out';
+        drawHedgehog(hog.x, H * 0.62 - 4, hogFacingRight);
+    }
 }
 
 // summon the hedgehog immediately

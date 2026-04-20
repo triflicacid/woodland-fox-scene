@@ -79,6 +79,8 @@ const fox = {
     grumbleT: -1, // track time in grumble animation (-1 = not entered)
     earTwitchT: -1, // track time in ear twitch animation (-1 = not entered)
     earTwitchSide: 0, // side ear twitch happens on (TODO not working)
+    snowLevel: 0, // 0-1, snow accumulated on sleeping fox
+    shiverT: 0, // trac time in shiver offset
 };
 
 // track fox phase frames

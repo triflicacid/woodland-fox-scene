@@ -1,7 +1,8 @@
-function drawDeer(x, y, grazing) {
+function drawDeer(x, y, grazing, facingRight=false) {
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(1.15, 1.15); // slightly larger
+    if (facingRight) ctx.scale(-1, 1);
 
     const graze = grazing ? Math.sin(frame * 0.04) * 0.18 : 0;
     const lb = Math.sin(frame * 0.09) * 2.5;
@@ -183,7 +184,7 @@ function tickDeer() {
             deer.x = W + 80;
         }
     }
-    if (deer.phase !== 'off') drawDeer(deer.x, H * 0.62 - 28, deer.phase === 'grazing');
+    if (deer.phase !== 'off') drawDeer(deer.x, H * 0.62 - 28, deer.phase === 'grazing', deer.phase === 'leaving');
 }
 
 // summon deer immediately
