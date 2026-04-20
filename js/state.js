@@ -64,7 +64,7 @@ function changeSeason(s) {
 // -- Fox state ---------------------------------------------------
 const fox = {
     x: 350,
-    y: H * 0.62,
+    y: H * 0.64,
     
     phase: 'idle',
     phaseT: 0, // track time in current phase

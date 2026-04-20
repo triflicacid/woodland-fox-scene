@@ -10,6 +10,28 @@ const eo = t => 1 - Math.pow(1 - t, 3);
 const rnd = n => Math.random() * n;
 const rndPM = n => (Math.random() - 0.5) * n * 2;
 
+// build a radial gradient
+function rg(x, y, r1, r2, ...stops) {
+    const g = ctx.createRadialGradient(x, y, r1, x, y, r2);
+    stops.forEach(([t, c]) => g.addColorStop(t, c));
+    return g;
+}
+
+// build a linear gradient
+function lg(x1, y1, x2, y2, ...stops) {
+    const g = ctx.createLinearGradient(x1, y1, x2, y2);
+    stops.forEach(([t, c]) => g.addColorStop(t, c));
+    return g;
+}
+
+// draw a path provided by the given function, with the fill
+function blob(path, fill) {
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    path();
+    ctx.fill();
+}
+
 // colour palettes
 const PALETTES = {
     spring: {
