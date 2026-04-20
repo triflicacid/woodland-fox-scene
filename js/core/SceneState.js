@@ -1,5 +1,5 @@
-import {PALETTES, FOX} from '../config.js';
-import {rnd, rndf, prob, lerp, clamp, eo} from '../utils.js';
+import {FOX, PALETTES} from '../config.js';
+import {clamp, eo, lerp, prob, rnd, rndf} from '../utils.js';
 
 /**
  * SceneState manages the mutable state of the scene:

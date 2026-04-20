@@ -1,4 +1,4 @@
-import {rnd, prob} from '../utils.js';
+import {prob, rnd} from '../utils.js';
 import {PROBABILITY} from '../config.js';
 import {getTreeTopPos} from '../drawing/DrawTrees.js';
 import {Component} from '../core/Component.js';

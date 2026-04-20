@@ -1,4 +1,4 @@
-import {rnd, rndf, prob} from '../utils.js';
+import {prob, rnd, rndf} from '../utils.js';
 import {PROBABILITY} from '../config.js';
 import {Component} from '../core/component.js';
 

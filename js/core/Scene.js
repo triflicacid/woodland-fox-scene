@@ -3,10 +3,7 @@ import {SceneState} from './SceneState.js';
 import {EventBus} from '../event/EventBus.js';
 import {DrawWorld} from '../drawing/DrawWorld.js';
 import {DrawParticles} from '../drawing/DrawParticles.js';
-import {
-  DrawBackgroundTrees,
-  DrawForegroundTrees
-} from '../drawing/DrawTrees.js';
+import {DrawBackgroundTrees, DrawForegroundTrees} from '../drawing/DrawTrees.js';
 import {DrawWeather} from '../drawing/DrawWeather.js';
 import {DrawLightning} from "../drawing/DrawLightning.js";
 import {DrawFox} from '../animals/DrawFox.js';

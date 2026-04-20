@@ -1,4 +1,4 @@
-import {lerp, clamp, eo, prob} from '../utils.js';
+import {clamp, eo, lerp, prob} from '../utils.js';
 import {PROBABILITY} from '../config.js';
 import {Component} from '../core/component.js';
 

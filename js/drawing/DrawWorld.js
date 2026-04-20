@@ -1,4 +1,4 @@
-import {clamp, lerp, rndf, prob, rnd, rndchoice} from '../utils.js';
+import {clamp, lerp, prob, rnd, rndchoice, rndf} from '../utils.js';
 import {Component} from '../core/Component.js';
 import {Events} from "../event/Events.js";
 
