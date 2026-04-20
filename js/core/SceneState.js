@@ -28,7 +28,6 @@ export class SceneState {
     // global animation frame counter
     this.frame = 0;
 
-    this.prevSeason = this.season;
     this.seasonLeafActive = false;
     this.seasonLeaves = Array.from({length: 40}, () => ({
       x: rnd(W), y: -rnd(200),

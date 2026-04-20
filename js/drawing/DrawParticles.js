@@ -175,7 +175,7 @@ export class DrawParticles extends Component {
         if (shouldFall) {
           l.timer--;
           if (l.timer <= 0) {
-            if (state.makeCanopyLeaf) Object.assign(l, state.makeCanopyLeaf(state.trees));
+            Object.assign(l, state._makeCanopyLeaf());
             l.active = true;
           }
         }
