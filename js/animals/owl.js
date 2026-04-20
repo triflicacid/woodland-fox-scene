@@ -7,8 +7,9 @@ function drawOwl() {
     const showOwl = owlForced || (todBlend < 0.35 && season !== 'winter');
     if (!showOwl) return;
     const tr = trees[owl.treeIdx];
-    const topY = H * 0.62 - tr.h * 0.25 - (tr.layers - 1) * (tr.h * 0.22);
-    const ox = tr.x, oy = topY - 15;
+    let { x, y } = getTreeTopPos(tr);
+    y -= 15;
+    x -= 5;
 
     owl.headTimer++;
     if (owl.headTimer > 120) {
@@ -23,7 +24,7 @@ function drawOwl() {
     }
 
     ctx.save();
-    ctx.translate(ox, oy);
+    ctx.translate(x, y);
     ctx.fillStyle = '#3a2a18';
     ctx.beginPath();
     ctx.ellipse(0, 0, 10, 14, 0, 0, Math.PI * 2);
