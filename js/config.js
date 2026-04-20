@@ -42,8 +42,8 @@ export const PROBABILITY = {
   SUPER_BOLT: 0.15, // super-bolt once lightning has spawned
   FOX_YAWN: 0.0008,
   EAR_TWITCH: 0.002,
-  HEDGEHOG: 0.0004,
-  DEER: 0.0008,
+  HEDGEHOG: 0.04,
+  DEER: 0.08,
   OWL_BLINK: 0.15,
 };
 

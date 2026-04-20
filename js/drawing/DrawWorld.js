@@ -1,5 +1,6 @@
-import {clamp, lerp, rndf, prob} from '../utils.js';
+import {clamp, lerp, rndf, prob, rnd, rndchoice} from '../utils.js';
 import {Component} from '../core/Component.js';
+import {Events} from "../event/Events.js";
 
 /**
  * DrawWorld handles all background rendering: sky gradients,
@@ -17,6 +18,47 @@ export class DrawWorld extends Component {
     this.ctx = ctx;
     this.W = W;
     this.H = H;
+
+    // array of worms to draw
+    /** @type {Array<object>} */
+    this._worms = [];
+  }
+
+  initialise() {
+    this.eventBus.subscribe(Events.seasonChangeSubscription("DrawWorld", this._onSeasonOrWeatherChange.bind(this)));
+    this.eventBus.subscribe(Events.weatherChangeSubscription("DrawWorld", this._onSeasonOrWeatherChange.bind(this)));
+  }
+
+  /**
+   * @param {ValueChange<string>} update
+   */
+  _onSeasonOrWeatherChange(update) {
+    console.log(update, this);
+    const {state} = update;
+    const {weather, season} = state;
+
+    this._worms.length = 0;
+
+    if (weather !== 'rain' && weather !== 'storm') return;
+    if (season !== 'spring' && season !== 'summer') return;
+
+    const k = weather === 'storm' ? 3 : 1;
+
+    this._worms = Array.from({length: k + rnd(4)}, (_, i) => {
+      // get a random puddle
+      const pd = rndchoice(state.puddles);
+
+      const p = prob(0.5);
+
+      return {
+        alpha: st => Math.min(1, (st.puddleLevel - 0.3) / 0.4), // fade-in,
+        x: st => pd.x + Math.sin(st.frame * 0.008 + i * 2.1) * (pd.maxRx * 0.6),
+        y: _ => pd.y + 6,
+        wiggle: st => st.frame * 0.04 + i * 1.3,
+        stroke: p ? '#c06080' : '#9060a0',
+        fill: p ? '#d07090' : '#a070b0',
+      };
+    });
   }
 
   draw(state) {
@@ -535,25 +577,19 @@ export class DrawWorld extends Component {
    */
   _drawWorms(state) {
     const {ctx} = this;
-    const {weather, season, frame, puddles, puddleLevel} = state;
 
-    if (weather !== 'rain' && weather !== 'storm') return;
-    if (season !== 'spring' && season !== 'summer') return;
-    if (puddleLevel < 0.3) return; // only appear once puddles are established
+    if (this._worms.length === 0) return;
+    if (state.puddleLevel < 0.3) return; // only appear once puddles are established
 
-    // one worm per puddle, position and phase seeded from puddle index
-    puddles.forEach((pd, i) => {
-      const alpha = Math.min(1, (puddleLevel - 0.3) / 0.4); // fade in
-      const wormX = pd.x + Math.sin(frame * 0.008 + i * 2.1) * (pd.maxRx * 0.6);
-      const wormY = pd.y + 6;
-      const wiggle = frame * 0.04 + i * 1.3;
-
-      // reduce worm count when stormy
-      if (weather === 'storm' && i % 2) return;
+    this._worms.forEach(w => {
+      const alpha = w.alpha(state);
+      const wormX = w.x(state);
+      const wormY = w.y(state);
+      const wiggle = w.wiggle(state);
 
       ctx.save();
       ctx.globalAlpha = 0.82 * alpha;
-      ctx.strokeStyle = i % 2 === 0 ? '#c06080' : '#9060a0'; // pink or purple
+      ctx.strokeStyle = w.stroke;
       ctx.lineWidth = 3.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -571,7 +607,7 @@ export class DrawWorld extends Component {
       // rounded head
       const headX = wormX + len + Math.cos(wiggle) * 1.5;
       const headY = wormY + Math.sin(wiggle + len * 0.22) * 3.5;
-      ctx.fillStyle = i % 2 === 0 ? '#d07090' : '#a070b0';
+      ctx.fillStyle = w.fill;
       ctx.beginPath();
       ctx.arc(headX, headY, 2.5, 0, Math.PI * 2);
       ctx.fill();

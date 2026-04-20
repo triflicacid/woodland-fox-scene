@@ -52,6 +52,23 @@ export const rndf = n => (Math.random() - 0.5) * n * 2;
 export const prob = n => Math.random() < n;
 
 /**
+ * return a random item from the given array
+ * @template T
+ * @param {T[]} array
+ * @returns T random element
+ */
+export function rndchoice(array) {
+  if (array.length === 0) {
+    return undefined;
+  }
+  if (array.length === 1) {
+    return array[0];
+  }
+  const idx = Math.floor(rnd(array.length));
+  return array[idx];
+}
+
+/**
  * build a radial gradient on a given canvas context.
  * @param {CanvasRenderingContext2D} ctx
  * @param {number} x

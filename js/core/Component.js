@@ -4,12 +4,20 @@ import {requireNonNull} from "../utils.js";
  * represents a component which may be registered to a scene.
  */
 export class Component {
+  /** @type {EventBus} */
+  eventBus;
+
   /**
    * @param {EventBus} eventBus event bus used to issue/receive events
    */
   constructor(eventBus) {
     this.eventBus = requireNonNull(eventBus);
   }
+
+  /**
+   * called once after scene has been initialised
+   */
+  initialise() {}
 
   /**
    * draw this component.

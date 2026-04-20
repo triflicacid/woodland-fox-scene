@@ -13,6 +13,7 @@ import {DrawBunny} from '../animals/DrawBunny.js';
 import {DrawAvians} from '../animals/DrawAvians.js';
 import {DrawHedgehog} from '../animals/DrawHedgehog.js';
 import {DrawDeer} from '../animals/DrawDeer.js';
+import {Events} from "../event/Events.js";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -72,9 +73,11 @@ export class Scene {
    * initialise the scene.
    */
   initialise() {
+    Events.registerAll(this.eventBus);
     this._registerDefaultComponents();
     this._setupCanvasEvents();
     this._refreshUI();
+    this._components.forEach(c => c.initialise());
 
     this._loop = this._loop.bind(this);
   }
@@ -249,8 +252,10 @@ export class Scene {
     // season buttons
     ['spring', 'summer', 'autumn', 'winter'].forEach(s =>
         document.getElementById('btn-' + s)?.addEventListener('click', () => {
+          const oldSeason = state.season;
           state.changeSeason(s);
           this._refreshUI();
+          this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
         }));
 
     // time of day buttons
@@ -267,9 +272,11 @@ export class Scene {
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(w =>
         document.getElementById('btn-' + w)?.addEventListener('click', () => {
           if (w === 'snow' && state.season !== 'winter') return;
+          const oldWeather = state.weather;
           state.weather = w;
           state.savePref();
           this._refreshUI();
+          this.eventBus.receive(Events.seasonChange("Scene", oldWeather, state));
         }));
 
     // aurora toggle
