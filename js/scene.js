@@ -344,7 +344,7 @@ function drawPuddles() {
         ctx.ellipse(pd.x, pd.y, pd.rx, pd.ry, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.globalAlpha = 1;
-        if (growing && Math.random() < 0.06) {
+        if (growing && p(0.06)) {
             ctx.strokeStyle = 'rgba(140,180,220,0.4)';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -453,7 +453,7 @@ function drawWeather() {
         });
     }
     if (weather === 'storm') {
-        if (Math.random() < 0.003) {
+        if (p(PROBABILITY.LIGHTNING)) {
             lightning.path = [];
             let lx = 200 + rnd(300), ly = 0;
             while (ly < H * 0.65) {

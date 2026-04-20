@@ -9,6 +9,7 @@ const eio = t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 const eo = t => 1 - Math.pow(1 - t, 3);
 const rnd = n => Math.random() * n;
 const rndPM = n => (Math.random() - 0.5) * n * 2;
+const p = n => Math.random() < n;
 
 // build a radial gradient
 function rg(x, y, r1, r2, ...stops) {
@@ -31,6 +32,16 @@ function blob(path, fill) {
     path();
     ctx.fill();
 }
+
+// probability tables
+const PROBABILITY = {
+    LIGHTNING: 0.003,
+    FOX_YAWN: 0.0008,
+    EAR_TWITCH: 0.002,
+    HEDGEHOG: 0.0004,
+    DEER: 0.0008,
+    OWL_BLINK: 0.15,
+};
 
 // colour palettes
 const PALETTES = {
@@ -169,7 +180,7 @@ const flockBirds = Array.from({length: 12}, () => ({
 }));
 const bats = Array.from({length: 6}, () => ({
     x: rnd(W), y: 40 + rnd(H * 0.3),
-    vx: (0.8 + rnd(0.6)) * (Math.random() < 0.5 ? 1 : -1),
+    vx: (0.8 + rnd(0.6)) * (p(0.5) ? 1 : -1),
     flapT: rnd(Math.PI * 2), flapSpeed: 0.14 + rnd(0.06)
 }));
 const owl = {headAngle: 0, headTarget: 0, headTimer: 0, blinkT: -1, treeIdx: 6};

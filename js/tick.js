@@ -2,15 +2,15 @@ function tickFox() {
     // passive behaviours while idle
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
         // yawn
-        if (fox.yawnT < 0 && Math.random() < 0.0008) fox.yawnT = 0;
+        if (fox.yawnT < 0 && p(PROBABILITY.FOX_YAWN)) fox.yawnT = 0;
         if (fox.yawnT >= 0) {
             fox.yawnT++;
             if (fox.yawnT >= 80) fox.yawnT = -1;
         }
         // ear twitch
-        if (fox.earTwitchT < 0 && Math.random() < 0.002) {
+        if (fox.earTwitchT < 0 && p(PROBABILITY.EAR_TWITCH)) {
             fox.earTwitchT = 0;
-            fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
+            fox.earTwitchSide = p(0.5) ? 1 : -1;
         }
         if (fox.earTwitchT >= 0) {
             fox.earTwitchT++;
@@ -32,10 +32,10 @@ function tickFox() {
     if (fox.phase === 'idle') return;
     fox.phaseT++;
     const cfg = FP[fox.phase];
-    const p = clamp(fox.phaseT / cfg.f, 0, 1);
+    const t = clamp(fox.phaseT / cfg.f, 0, 1);
 
     if (fox.phase === 'standup') {
-        fox.poseBlend = eio(p);
+        fox.poseBlend = eio(t);
         fox.stretchBlend = 0;
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'stretch';
@@ -44,7 +44,7 @@ function tickFox() {
 
     } else if (fox.phase === 'stretch') {
         fox.poseBlend = 1;
-        fox.stretchBlend = Math.sin(p * Math.PI);
+        fox.stretchBlend = Math.sin(t * Math.PI);
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'shake';
             fox.phaseT = 0;
@@ -62,7 +62,7 @@ function tickFox() {
 
     } else if (fox.phase === 'spin') {
         fox.poseBlend = 1;
-        fox.spinAngle = eio(p) * Math.PI * 2;
+        fox.spinAngle = eio(t) * Math.PI * 2;
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'curling';
             fox.phaseT = 0;
@@ -70,7 +70,7 @@ function tickFox() {
         }
 
     } else if (fox.phase === 'curling') {
-        fox.poseBlend = 1 - eio(p);
+        fox.poseBlend = 1 - eio(t);
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'idle';
             fox.poseBlend = 0;
@@ -79,12 +79,12 @@ function tickFox() {
         }
 
     } else if (fox.phase === 'bunny_standup') {
-        fox.poseBlend = eio(p);
+        fox.poseBlend = eio(t);
         fox.stretchBlend = 0;
         if (fox.phaseT >= cfg.f) fox.phase = 'idle';
 
     } else if (fox.phase === 'bunny_curling') {
-        fox.poseBlend = 1 - eio(p);
+        fox.poseBlend = 1 - eio(t);
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'idle';
             fox.poseBlend = 0;
@@ -92,7 +92,7 @@ function tickFox() {
 
     } else if (fox.phase === 'wander_out') {
         fox.poseBlend = 1;
-        fox.wanderX = lerp(fox.x, fox.x + 180, eo(p));
+        fox.wanderX = lerp(fox.x, fox.x + 180, eo(t));
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'wander_sniff';
             fox.phaseT = 0;
@@ -106,7 +106,7 @@ function tickFox() {
         }
 
     } else if (fox.phase === 'wander_in') {
-        fox.wanderX = lerp(fox.x + 180, fox.x, eo(p));
+        fox.wanderX = lerp(fox.x + 180, fox.x, eo(t));
         if (fox.phaseT >= cfg.f) {
             fox.phase = 'curling';
             fox.phaseT = 0;

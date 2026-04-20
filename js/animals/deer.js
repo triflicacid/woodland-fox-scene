@@ -155,7 +155,7 @@ function tickDeer() {
     deer.cooldown--;
     if (deer.phase === 'off') {
         const atTransition = Math.abs(todBlend - 0.5) < 0.15;
-        if (atTransition && deer.cooldown <= 0 && Math.random() < 0.0008 && bunny.phase === 'off') {
+        if (atTransition && deer.cooldown <= 0 && p(PROBABILITY.DEER) && bunny.phase === 'off') {
             deer.phase = 'entering';
             deer.phaseT = 0;
             deer.x = W + 80;

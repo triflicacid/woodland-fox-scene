@@ -14,7 +14,7 @@ function drawOwl() {
     if (owl.headTimer > 120) {
         owl.headTarget = rndPM(0.8);
         owl.headTimer = 0;
-        if (Math.random() < 0.15) owl.blinkT = 0;
+        if (p(PROBABILITY.OWL_BLINK)) owl.blinkT = 0;
     }
     owl.headAngle = lerp(owl.headAngle, owl.headTarget, 0.04);
     if (owl.blinkT >= 0) {

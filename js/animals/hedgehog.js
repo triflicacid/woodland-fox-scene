@@ -115,7 +115,7 @@ function drawHedgehog(x, y, facingRight=false) {
 
 // animate the hedgehog
 function tickHedgehog() {
-    if (hog.phase === 'off' && Math.random() < 0.0004 && bunny.phase === 'off' && season === 'autumn') {
+    if (hog.phase === 'off' && p(PROBABILITY.HEDGEHOG) && bunny.phase === 'off' && season === 'autumn') {
         hog.phase = 'in';
         hog.phaseT = 0;
         hog.x = -60;

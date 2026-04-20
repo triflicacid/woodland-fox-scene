@@ -50,7 +50,7 @@ canvas.addEventListener('click', e => {
             if (birdsActive()) {
                 windStartledBirds.push({
                     x: tr.x, y: H * 0.62 - tr.h * 0.5,
-                    vx: (2 + rnd(3)) * (Math.random() < 0.5 ? 1 : -1), vy: -(3 + rnd(2)),
+                    vx: (2 + rnd(3)) * (p(0.5) ? 1 : -1), vy: -(3 + rnd(2)),
                     flapT: 0, flapSpeed: 0.18, scale: 0.8 + rnd(0.3), life: 0
                 });
             }
@@ -76,7 +76,7 @@ function triggerYawn() {
 
 function triggerEarTwitch() {
     fox.earTwitchT = 0;
-    fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
+    fox.earTwitchSide = p(0.5) ? 1 : -1;
     statusEl.textContent = 'The fox\'s ear twitches…';
 }
 

@@ -83,7 +83,7 @@ function drawBirds() {
             const top = getTreeTopPos(tr);
             windStartledBirds.push({
                 x: top.x + pb.offset * tr.r * 0.5, y: top.y,
-                vx: (3 + rnd(4)) * (Math.random() < 0.5 ? 1 : -1), vy: -(2 + rnd(2)),
+                vx: (3 + rnd(4)) * (p(0.5) ? 1 : -1), vy: -(2 + rnd(2)),
                 flapT: 0, flapSpeed: 0.15, scale: 0.8 + rnd(0.3), life: 0
             });
         });
