@@ -623,3 +623,19 @@ function tickCanopyLeaves() {
         ctx.restore();
     });
 }
+
+// draw a heart particle
+function drawHeart(x, y, size, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ff88aa';
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x, y - size, x - size * 1.5, y - size, x - size * 1.5, y - size * 0.4);
+    ctx.bezierCurveTo(x - size * 1.5, y + size * 0.3, x, y + size, x, y + size * 1.2);
+    ctx.bezierCurveTo(x, y + size, x + size * 1.5, y + size * 0.3, x + size * 1.5, y - size * 0.4);
+    ctx.bezierCurveTo(x + size * 1.5, y - size, x, y - size, x, y);
+    ctx.fill();
+    ctx.restore();
+}
+
