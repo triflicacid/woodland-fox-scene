@@ -80,7 +80,7 @@ function triggerEarTwitch() {
     statusEl.textContent = 'The fox\'s ear twitches…';
 }
 
-// ── Button wiring ────────────────────────────────────────────────
+// -- Button wiring ------------------------------------------------
 document.getElementById('btn').addEventListener('click', () => {
     if (bunny.phase !== 'off' && bunny.phase !== 'done') return;
     fox.phase = 'standup';

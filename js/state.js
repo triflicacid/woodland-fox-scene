@@ -61,7 +61,7 @@ function changeSeason(s) {
     refreshUI();
 }
 
-// ── Fox state ───────────────────────────────────────────────────
+// -- Fox state ---------------------------------------------------
 const fox = {
     x: 350,
     y: H * 0.62,
@@ -96,7 +96,7 @@ const FP = {
     wander_in: {f: 120},
 };
 
-// ── Bunny state ─────────────────────────────────────────────────
+// -- Bunny state -------------------------------------------------
 const bunny = {
     x: -80, // off-screen
     meetX: fox.x - 80, // at which we meet the fox (stand still)
@@ -130,7 +130,7 @@ function tickHop() {
     return p >= 1;
 }
 
-// ── Deer state ──────────────────────────────────────────────────
+// -- Deer state --------------------------------------------------
 const deer = {
     x: W + 80,
     phase: 'off',
@@ -138,14 +138,14 @@ const deer = {
     cooldown: 0, // tickets before entering frame next
 };
 
-// ── Hedgehog state ──────────────────────────────────────────────
+// -- Hedgehog state ----------------------------------------------
 const hog = {
     x: -60,
     phase: 'off',
     phaseT: 0
 };
 
-// ── Bird/owl forced state ───────────────────────────────────────
+// -- Bird/owl forced state ---------------------------------------
 let owlForced = false;  // force owl/bats visible even in wrong conditions
 let windWasOn = false;
 let windStartledBirds = [];
