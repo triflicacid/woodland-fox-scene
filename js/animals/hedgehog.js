@@ -1,54 +1,114 @@
 function drawHedgehog(x, y) {
     ctx.save();
     ctx.translate(x, y);
-    ctx.strokeStyle = '#4a3010';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < 14; i++) {
-        const a = -Math.PI + i * (Math.PI / 7);
+
+    // Scale up for better visibility
+    ctx.scale(1.4, 1.4);
+
+    const waddle = Math.sin(frame * 0.14) * 2.5;
+
+    // Legs first (behind body)
+    ctx.strokeStyle = '#6a4020';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-9, 3);
+    ctx.lineTo(-10, 10 + waddle);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-3, 5);
+    ctx.lineTo(-4, 12 - waddle);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(4, 5);
+    ctx.lineTo(5, 12 + waddle);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(9, 3);
+    ctx.lineTo(10, 10 - waddle);
+    ctx.stroke();
+
+    // Dark upper body ellipse
+    ctx.fillStyle = '#2a1e0a';
+    ctx.beginPath();
+    ctx.ellipse(2, -5, 17, 11, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Individual spines radiating from back
+    ctx.strokeStyle = '#3a2a0e';
+    ctx.lineWidth = 1.2;
+    const spineCount = 22;
+    for (let i = 0; i < spineCount; i++) {
+        const t = i / (spineCount - 1);
+        const a = Math.PI * 1.05 + t * Math.PI * 0.9; // arc across top
+        const bx = Math.cos(a) * 10 + 2;
+        const by = Math.sin(a) * 7.5 - 5;
         ctx.beginPath();
-        ctx.moveTo(Math.cos(a) * 8, Math.sin(a) * 6 - 4);
-        ctx.lineTo(Math.cos(a) * 16, Math.sin(a) * 10.4 - 4);
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx + Math.cos(a) * 7, by + Math.sin(a) * 7);
         ctx.stroke();
     }
-    ctx.fillStyle = '#3a2808';
+    // Spine highlight tips
+    ctx.strokeStyle = '#c8a850';
+    ctx.lineWidth = 0.6;
+    for (let i = 2; i < spineCount - 2; i++) {
+        const t = i / (spineCount - 1);
+        const a = Math.PI * 1.05 + t * Math.PI * 0.9;
+        const bx = Math.cos(a) * 10 + 2;
+        const by = Math.sin(a) * 7.5 - 5;
+        ctx.beginPath();
+        ctx.moveTo(bx + Math.cos(a) * 5, by + Math.sin(a) * 5);
+        ctx.lineTo(bx + Math.cos(a) * 7, by + Math.sin(a) * 7);
+        ctx.stroke();
+    }
+
+    // Pale belly
+    ctx.fillStyle = '#d4b87a';
     ctx.beginPath();
-    ctx.ellipse(0, -4, 16, 10, 0, 0, Math.PI, true);
+    ctx.ellipse(2, 2, 13, 5, 0, 0, Math.PI);
     ctx.fill();
-    ctx.fillStyle = '#d8c8a0';
+
+    // Face / head — elongated snout
+    const hg = ctx.createRadialGradient(-12, -5, 1, -10, -4, 10);
+    hg.addColorStop(0, '#b07840');
+    hg.addColorStop(1, '#7a5028');
+    ctx.fillStyle = hg;
     ctx.beginPath();
-    ctx.ellipse(0, 0, 14, 6, 0, 0, Math.PI);
+    ctx.ellipse(-10, -4, 10, 7, -0.15, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#9a7040';
+
+    // Snout
+    ctx.fillStyle = '#9a6030';
     ctx.beginPath();
-    ctx.ellipse(-14, -2, 8, 6, -0.2, 0, Math.PI * 2);
+    ctx.ellipse(-18, -3, 5, 3.5, 0.1, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#7a5020';
-    ctx.beginPath();
-    ctx.ellipse(-20, -1, 5, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
+
+    // Wet nose
     ctx.fillStyle = '#1a0800';
     ctx.beginPath();
-    ctx.arc(-24, -1, 2, 0, Math.PI * 2);
+    ctx.ellipse(-22, -3, 2.2, 1.8, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#100800';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.beginPath();
-    ctx.arc(-17, -4, 1.5, 0, Math.PI * 2);
+    ctx.arc(-21.5, -3.5, 0.7, 0, Math.PI * 2);
     ctx.fill();
-    const waddle = Math.sin(frame * 0.12) * 3;
-    ctx.strokeStyle = '#5a3a10';
-    ctx.lineWidth = 2;
+
+    // Eye — small, bright
+    ctx.fillStyle = '#0a0500';
     ctx.beginPath();
-    ctx.moveTo(-8, 4);
-    ctx.lineTo(-8, 10 + waddle);
-    ctx.stroke();
+    ctx.arc(-15, -8, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
     ctx.beginPath();
-    ctx.moveTo(0, 5);
-    ctx.lineTo(0, 11 - waddle);
-    ctx.stroke();
+    ctx.arc(-14.3, -8.7, 0.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ear nub
+    ctx.fillStyle = '#8a6030';
     ctx.beginPath();
-    ctx.moveTo(8, 4);
-    ctx.lineTo(8, 10 + waddle);
-    ctx.stroke();
+    ctx.ellipse(-12, -12, 3, 2, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+
     ctx.restore();
 }
 
