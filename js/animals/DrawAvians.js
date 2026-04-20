@@ -8,13 +8,14 @@ import {Component} from '../core/Component.js';
  */
 export class DrawAvians extends Component {
   /**
+   * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W
    * @param {number} H
    * @param {Array<Object>} trees - tree definitions array
    */
-  constructor(ctx, W, H, trees) {
-    super();
+  constructor(eventBus, ctx, W, H, trees) {
+    super(eventBus);
     this.ctx = ctx;
     this.W = W;
     this.H = H;

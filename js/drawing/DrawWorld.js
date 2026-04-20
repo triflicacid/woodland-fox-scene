@@ -7,12 +7,13 @@ import {Component} from '../core/Component.js';
  */
 export class DrawWorld extends Component {
   /**
+   * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    */
-  constructor(ctx, W, H) {
-    super();
+  constructor(eventBus, ctx, W, H) {
+    super(eventBus);
     this.ctx = ctx;
     this.W = W;
     this.H = H;

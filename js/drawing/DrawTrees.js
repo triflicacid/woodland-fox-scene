@@ -235,11 +235,12 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, sway) {
  */
 export class DrawTrees extends Component {
   /**
+   * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
    * @param {boolean | undefined} background
    */
-  constructor(ctx, background) {
-    super();
+  constructor(eventBus, ctx, background) {
+    super(eventBus);
     this.ctx = ctx;
     this.background = background;
     /** @type {Array<Object>} - tree data from config */
@@ -265,10 +266,11 @@ export class DrawTrees extends Component {
  */
 export class DrawBackgroundTrees extends DrawTrees {
   /**
+   * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
    */
-  constructor(ctx) {
-    super(ctx, false);
+  constructor(eventBus, ctx) {
+    super(eventBus, ctx, false);
   }
 }
 
@@ -277,9 +279,10 @@ export class DrawBackgroundTrees extends DrawTrees {
  */
 export class DrawForegroundTrees extends DrawTrees {
   /**
+   * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
    */
-  constructor(ctx) {
-    super(ctx, true);
+  constructor(eventBus, ctx) {
+    super(eventBus, ctx, true);
   }
 }

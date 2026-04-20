@@ -95,3 +95,16 @@ export function blob(ctx, path, fill) {
   path();
   ctx.fill();
 }
+
+/**
+ * throw if the given argument is undefined or null
+ * @template T
+ * @param {T} x
+ * @returns T the non-null argument
+ */
+export function requireNonNull(x) {
+  if (x === undefined || x === null) {
+    throw new TypeError('requireNonNull: must not be null.');
+  }
+  return x;
+}

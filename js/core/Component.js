@@ -1,7 +1,16 @@
+import {requireNonNull} from "../utils.js";
+
 /**
  * represents a component which may be registered to a scene.
  */
 export class Component {
+  /**
+   * @param {EventBus} eventBus event bus used to issue/receive events
+   */
+  constructor(eventBus) {
+    this.eventBus = requireNonNull(eventBus);
+  }
+
   /**
    * draw this component.
    * @param {SceneState} state
@@ -15,28 +24,4 @@ export class Component {
    * @param {function(): void} enableButtons - callback to re-enable UI buttons
    */
   tick(state, setStatus, enableButtons) {}
-
-  /**
-   * process a weather update.
-   * @param {SceneState} state
-   * @param {string} oldWeather Old weather value
-   * @param {string} newWeather New weather value
-   */
-  onWeatherChange(state, oldWeather, newWeather) {}
-
-  /**
-   * process a season update.
-   * @param {SceneState} state
-   * @param {string} oldSeason Old season value
-   * @param {string} newSeason New season value
-   */
-  onSeasonChange(state, oldSeason, newSeason) {}
-
-  /**
-   * process a time of day update.
-   * @param {SceneState} state
-   * @param {string} oldTOD Old time of day
-   * @param {string} newTOD New time of day
-   */
-  onTODChange(state, oldTOD, newTOD) {}
 }

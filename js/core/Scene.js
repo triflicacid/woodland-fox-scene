@@ -1,5 +1,6 @@
 import {CANVAS, TREE_DEFS} from '../config.js';
 import {SceneState} from './SceneState.js';
+import {EventBus} from '../event/EventBus.js';
 import {DrawWorld} from '../drawing/DrawWorld.js';
 import {DrawParticles} from '../drawing/DrawParticles.js';
 import {
@@ -43,17 +44,20 @@ export class Scene {
     /** @type {number | undefined} */
     this._handle = undefined;
 
+    // store the event bus for this scene
+    this.eventBus = new EventBus();
+
     // instantiate the core drawing components
-    this._world = new DrawWorld(this.ctx, W, H);
-    this._particles = new DrawParticles(this.ctx, W, H);
-    this._bgTrees = new DrawBackgroundTrees(this.ctx);
-    this._fgTrees = new DrawForegroundTrees(this.ctx);
-    this._weather = new DrawWeather(this.ctx, W, H);
-    this._fox = new DrawFox(this.ctx, W, H);
-    this._bunny = new DrawBunny(this.ctx, W, H);
-    this._birds = new DrawAvians(this.ctx, W, H, TREE_DEFS);
-    this._deer = new DrawDeer(this.ctx, W, H);
-    this._hedgehog = new DrawHedgehog(this.ctx, W, H);
+    this._world = new DrawWorld(this.eventBus, this.ctx, W, H);
+    this._particles = new DrawParticles(this.eventBus, this.ctx, W, H);
+    this._bgTrees = new DrawBackgroundTrees(this.eventBus, this.ctx);
+    this._fgTrees = new DrawForegroundTrees(this.eventBus, this.ctx);
+    this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
+    this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
+    this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
+    this._birds = new DrawAvians(this.eventBus, this.ctx, W, H, TREE_DEFS);
+    this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
+    this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
   }
 
   /**
