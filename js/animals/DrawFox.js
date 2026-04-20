@@ -1,4 +1,4 @@
-import {lerp, clamp, eio, eo, prob, blob, rg, lg} from '../utils.js';
+import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '../utils.js';
 import {FOX_PHASES, PROBABILITY} from '../config.js';
 import {Component} from '../core/component.js';
 
@@ -160,8 +160,8 @@ export class DrawFox extends Component {
     const shivering = fox.poseBlend < 0.05 &&
         (season === 'winter' || weather === 'storm' || weather === 'rain' || weather === 'snow');
     if (shivering) fox.shiverT++;
-    const sx = shivering ? Math.sin(fox.shiverT * 1.9) * 1.2 : 0;
-    const sy = shivering ? Math.sin(fox.shiverT * 2.7) * 0.5 : 0;
+    const sx = shivering ? Math.sin(fox.shiverT * 1.9) * 0.6 : 0;
+    const sy = shivering ? Math.sin(fox.shiverT * 2.7) * 0.3 : 0;
 
     // snow accumulation on sleeping fox
     if (weather === 'snow' && fox.poseBlend < 0.05) fox.snowLevel = Math.min(1, fox.snowLevel + 0.00025);
