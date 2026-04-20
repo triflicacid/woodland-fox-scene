@@ -24,17 +24,25 @@ export class DrawWorld extends Component {
     this._worms = [];
   }
 
-  initialise() {
+  initialise(state) {
     this.eventBus.subscribe(Events.seasonChangeSubscription("DrawWorld", this._onSeasonOrWeatherChange.bind(this)));
     this.eventBus.subscribe(Events.weatherChangeSubscription("DrawWorld", this._onSeasonOrWeatherChange.bind(this)));
+
+    this._generateWorms(state);
   }
 
   /**
    * @param {ValueChange<string>} update
    */
   _onSeasonOrWeatherChange(update) {
-    console.log(update, this);
-    const {state} = update;
+    this._generateWorms(update.state);
+  }
+
+  /**
+   * generate the _worms array
+   * @param {SceneState} state
+   */
+  _generateWorms(state) {
     const {weather, season} = state;
 
     this._worms.length = 0;

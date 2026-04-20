@@ -16,8 +16,9 @@ export class Component {
 
   /**
    * called once after scene has been initialised
+   * @param {SceneState} state
    */
-  initialise() {}
+  initialise(state) {}
 
   /**
    * draw this component.

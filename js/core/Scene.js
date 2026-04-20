@@ -77,7 +77,7 @@ export class Scene {
     this._registerDefaultComponents();
     this._setupCanvasEvents();
     this._refreshUI();
-    this._components.forEach(c => c.initialise());
+    this._components.forEach(c => c.initialise(this.state));
 
     this._loop = this._loop.bind(this);
   }
