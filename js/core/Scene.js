@@ -8,6 +8,7 @@ import {
   DrawForegroundTrees
 } from '../drawing/DrawTrees.js';
 import {DrawWeather} from '../drawing/DrawWeather.js';
+import {DrawLightning} from "../drawing/DrawLightning.js";
 import {DrawFox} from '../animals/DrawFox.js';
 import {DrawBunny} from '../animals/DrawBunny.js';
 import {DrawAvians} from '../animals/DrawAvians.js';
@@ -53,6 +54,7 @@ export class Scene {
     this._particles = new DrawParticles(this.eventBus, this.ctx, W, H);
     this._bgTrees = new DrawBackgroundTrees(this.eventBus, this.ctx);
     this._fgTrees = new DrawForegroundTrees(this.eventBus, this.ctx);
+    this._lightning = new DrawLightning(this.eventBus, this.ctx, W, H);
     this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
     this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
     this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
@@ -90,6 +92,7 @@ export class Scene {
     this.register(this._bgTrees);
     this.register(this._birds);
     this.register(this._fgTrees);
+    this.register(this._lightning);
     this.register(this._deer);
     this.register(this._hedgehog);
     this.register(this._bunny);
