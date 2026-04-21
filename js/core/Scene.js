@@ -313,10 +313,12 @@ export class Scene {
 
     document.getElementById('btn-halloween')?.addEventListener('click', () => {
       state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
+      state.savePref();
       this._refreshUI();
     });
     document.getElementById('btn-christmas')?.addEventListener('click', () => {
       state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
+      state.savePref();
       this._refreshUI();
     });
   }
