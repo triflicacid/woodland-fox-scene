@@ -13,6 +13,7 @@ import {DrawHedgehog} from '../animals/DrawHedgehog.js';
 import {DrawDeer} from '../animals/DrawDeer.js';
 import {Events} from "../event/Events.js";
 import {DrawSpecialEvents} from "../drawing/DrawSpecialEvents.js";
+import {DrawGhosts} from "../animals/DrawGhosts.js";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -58,6 +59,7 @@ export class Scene {
     this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
     this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
     this._birds = new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS);
+    this._ghosts = new DrawGhosts(this.eventBus, this.ctx, W, H);
     this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
     this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
   }
@@ -88,6 +90,7 @@ export class Scene {
    */
   _registerDefaultComponents() {
     this.register(this._world);
+    this.register(this._ghosts);
     this.register(this._bgTrees);
     this.register(this._birds);
     this.register(this._fgTrees);
