@@ -113,38 +113,85 @@ function drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H) {
     _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway);
   }
 
-  ctx.restore();
-
   if (specialEvent === 'christmas') {
-    drawChristmasLights(ctx, tr, frame, H);
+    drawChristmasLights(ctx, tr, frame, sway, trunkH);
   }
+
+  ctx.restore();
 }
 
 /**
- * draw twinkling christmas lights strung through a tree's canopy.
+ * draw twinkling christmas lights within the tree's local transform space.
+ * must be called between the tree's ctx.save() and ctx.restore().
  * @param {CanvasRenderingContext2D} ctx
  * @param {Object} tr
  * @param {number} frame
- * @param {number} H
+ * @param {number} sway
+ * @param {number} trunkH
  */
-function drawChristmasLights(ctx, tr, frame, H) {
+function drawChristmasLights(ctx, tr, frame, sway, trunkH) {
+  if (!tr.xmasLights) return;
+
   const colors = ['#ff2020', '#20ff20', '#2060ff', '#ffdd00', '#ff60ff'];
-  const count = Math.floor(tr.r * 0.5);
-  for (let i = 0; i < count; i++) {
-    const angle = (i / count) * Math.PI * 2;
-    const layer = i % tr.layers;
-    const ly = H * 0.62 - tr.h * 0.18 - layer * (tr.h * 0.16);
-    const lx = tr.x + Math.cos(angle) * tr.r * (0.5 - layer * 0.08);
-    const blink = 0.5 + 0.5 * Math.sin(frame * 0.08 + i * 1.7);
-    ctx.save();
-    ctx.globalAlpha = 0.7 + 0.3 * blink;
-    ctx.shadowBlur = 6 + blink * 6;
-    ctx.shadowColor = colors[i % colors.length];
-    ctx.fillStyle = colors[i % colors.length];
-    ctx.beginPath();
-    ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+
+  if (tr.type === 'pine') {
+    // scattered lights through canopy layers
+    const layers = tr.layers + 1;
+    const count = Math.floor(tr.r * 0.5);
+    for (let i = 0; i < count; i++) {
+      const layer = i % layers;
+      const angle = (i / count) * Math.PI * 2;
+      const ly = -(trunkH) - layer * (tr.h * 0.14);
+      const lr = tr.r * (1 - layer * 0.08);
+      const extraSway = sway * 0.7;
+      const ls = extraSway * (1 + layer * 0.3);
+      const lx = ls + Math.cos(angle) * lr * 0.7;
+      const blink = 0.5 + 0.5 * Math.sin(frame * 0.08 + i * 1.7);
+      ctx.save();
+      ctx.globalAlpha = 0.7 + 0.3 * blink;
+      ctx.shadowBlur = 6 + blink * 6;
+      ctx.shadowColor = colors[i % colors.length];
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.beginPath();
+      ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  } else {
+    // trafalgar-style: strings of lights hanging from the top of the trunk
+    // outward at various angles, with lights dotted along each string
+    const stringCount = 10;
+    const topY = -trunkH; // top of trunk in local space
+    const extraSway = sway * 0.7;
+
+    for (let s = 0; s < stringCount; s++) {
+      // spread strings in a full circle around the trunk top
+      const angle = (s / stringCount) * Math.PI * 2;
+      // how far out the string reaches at ground level
+      const reach = tr.r * 0.4 + extraSway * Math.cos(angle);
+      const endX = Math.cos(angle) * reach;
+      const endY = -tr.h * 0.08; // stop short of the ground
+      const lightsPerString = 6;
+
+      for (let l = 0; l < lightsPerString; l++) {
+        const t = l / (lightsPerString - 1);
+        const sag = Math.sin(t * Math.PI) * tr.r * 0.3;
+        const lx = endX * t + Math.cos(angle) * sag;
+        const ly = topY + (endY - topY) * t + sag * 0.4;
+        const blink = 0.5 + 0.5 * Math.sin(frame * 0.08 + s * 1.3 + l * 2.1);
+        const col = colors[(s * lightsPerString + l) % colors.length];
+
+        ctx.save();
+        ctx.globalAlpha = 0.75 + 0.25 * blink;
+        ctx.shadowBlur = 5 + blink * 7;
+        ctx.shadowColor = col;
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
   }
 }
 
