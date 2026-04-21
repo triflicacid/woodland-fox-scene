@@ -15,22 +15,7 @@ import {DrawSpecialEvents} from "@/drawing/DrawSpecialEvents";
 import {DrawGhosts} from "@/animals/DrawGhosts";
 import {ComponentGroup} from "./ComponentGroup";
 import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";
-import {SkyBackdropComponent} from "@/components/backdrop/sky/SkyBackdropComponent";
-import {MoonComponent} from "@/components/backdrop/sky/MoonComponent";
-import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
-import {StarsComponent} from "@/components/backdrop/sky/StarsComponent";
-import {SunComponent} from "@/components/backdrop/sky/SunComponent";
-import {DuskGlowComponent} from "@/components/backdrop/sky/DuskGlowComponent";
-import {CloudsComponent} from "@/components/backdrop/sky/CloudsComponent";
-import {MistComponent} from "@/components/backdrop/sky/MistComponent";
-import {GroundComponent} from "@/components/backdrop/ground/GroundComponent";
-import {UndergrowthComponent} from "@/components/backdrop/ground/UndergrowthComponent";
-import {FallenLeavesComponent} from "@/components/backdrop/ground/FallenLeavesComponent";
-import {SnowDriftsComponent} from "@/components/backdrop/ground/SnowDriftsComponent";
-import {SpringFlowersComponent} from "@/components/backdrop/ground/SpringFlowersComponent";
-import {PuddlesComponent} from "@/components/backdrop/ground/PuddlesComponent";
-import {GrassComponent} from "@/components/backdrop/ground/GrassComponent";
-import {WormsComponent} from "@/components/backdrop/ground/WormsComponent";
+import {GroundBackdropComponents, SkyBackdropComponents} from "@/components/backdrop/components";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -65,24 +50,8 @@ export class Scene {
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, [
       new TimeOfDayComponent(this.eventBus),
-
-      new SkyBackdropComponent(this.eventBus, this.ctx, W, H),
-      new StarsComponent(this.eventBus, this.ctx, W, H),
-      new MoonComponent(this.eventBus, this.ctx, W, H),
-      new SunComponent(this.eventBus, this.ctx, W, H),
-      new DuskGlowComponent(this.eventBus, this.ctx, W, H),
-      new AuroraComponent(this.eventBus, this.ctx, W, H),
-      new CloudsComponent(this.eventBus, this.ctx, W, H),
-      new MistComponent(this.eventBus, this.ctx, W, H), // TODO ??
-
-      new GroundComponent(this.eventBus, this.ctx, W, H),
-      new UndergrowthComponent(this.eventBus, this.ctx, W, H),
-      new FallenLeavesComponent(this.eventBus, this.ctx, W, H),
-      new SnowDriftsComponent(this.eventBus, this.ctx, W, H),
-      new SpringFlowersComponent(this.eventBus, this.ctx, W, H),
-      new PuddlesComponent(this.eventBus, this.ctx, W, H),
-      new WormsComponent(this.eventBus, this.ctx, W, H),
-      new GrassComponent(this.eventBus, this.ctx, W, H),
+      new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
+      new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
 
       new DrawSpecialEvents(this.eventBus, this.ctx, W, H),
       this._particles = new DrawParticles(this.eventBus, this.ctx, W, H),
