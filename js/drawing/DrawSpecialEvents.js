@@ -1,5 +1,6 @@
 import {rnd, rndf} from '../utils.js';
 import {Component} from "../core/Component.js";
+import {Events} from "../event/Events.js";
 
 const GRAVESTONES = [
   {x: 160, lean: -0.08}, {x: 230, lean: 0.05},
@@ -33,13 +34,15 @@ export class DrawSpecialEvents extends Component {
     this.ctx = ctx;
     this.W = W;
     this.H = H;
-    // ghosts have independent float state
-    this._ghosts = Array.from({length: 5}, (_, i) => ({
-      x: 80 + i * 130 + rndf(30),
-      y: H * 0.15 + rnd(H * 0.25),
-      vx: (0.3 + rnd(0.3)) * (i % 2 === 0 ? 1 : -1),
-      phase: rnd(Math.PI * 2),
-    }));
+
+    /** @type {Array<object>} */
+    this._ghosts = [];
+  }
+
+  initialise(state) {
+    this.eventBus.subscribe(Events.weatherChangeSubscription("DrawSpecialEvents", this._onWeatherChange.bind(this)));
+
+    this._generateGhosts(state);
   }
 
   /**
@@ -49,6 +52,28 @@ export class DrawSpecialEvents extends Component {
     if (!state.specialEvent) return;
     if (state.specialEvent === 'halloween') this._drawHalloween(state);
     if (state.specialEvent === 'christmas') this._drawChristmas(state);
+  }
+
+  /**
+   * @param {ValueChange<string>} update
+   */
+  _onWeatherChange(update) {
+    this._generateGhosts(update.state);
+  }
+
+  /**
+   * populate ghost array
+   * @param {SceneState} state
+   */
+  _generateGhosts(state) {
+    const {H} = this;
+    const length = state.weather === 'storm' ? 9 : 5;
+    this._ghosts = Array.from({length}, (_, i) => ({
+      x: 80 + i * 130 + rndf(30),
+      y: H * 0.15 + rnd(H * 0.25),
+      vx: (0.3 + rnd(0.3)) * (i % 2 === 0 ? 1 : -1),
+      phase: rnd(Math.PI * 2),
+    }));
   }
 
   /**

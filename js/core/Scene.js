@@ -290,7 +290,7 @@ export class Scene {
           this._clearInvalidSpecialEvent();
           state.savePref();
           this._refreshUI();
-          this.eventBus.receive(Events.seasonChange("Scene", oldWeather, state));
+          this.eventBus.receive(Events.weatherChange("Scene", oldWeather, state));
         }));
 
     // aurora toggle
@@ -329,7 +329,6 @@ export class Scene {
   _clearInvalidSpecialEvent() {
     const {state} = this;
 
-    console.log(state.specialEvent, state.season, state.timeOfDay);
     if (state.specialEvent === 'halloween' &&
         !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
