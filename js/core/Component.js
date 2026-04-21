@@ -1,4 +1,4 @@
-import {requireNonNull} from "../utils";
+import {requireNonNull} from "@/utils";
 
 /**
  * represents a component which may be registered to a scene.
