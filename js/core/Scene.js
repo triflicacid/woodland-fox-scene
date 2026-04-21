@@ -1,8 +1,7 @@
 import {CANVAS, TREE_DEFS} from '@/config';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
-import {DrawParticles} from '@/drawing/DrawParticles';
-import {DrawBackgroundTrees, DrawForegroundTrees} from '@/drawing/DrawTrees';
+import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
 import {DrawWeather} from '@/drawing/DrawWeather';
 import {DrawLightning} from "@/drawing/DrawLightning";
 import {DrawFox} from '@/animals/DrawFox';
@@ -19,6 +18,12 @@ import {GravestoneComponent} from "@/components/halloween/GravestoneComponent";
 import {ScarecrowComponent} from "@/components/halloween/ScarecrowComponent";
 import {SnowmenComponent} from "@/components/christmas/SnowmenComponent";
 import {PresentsComponent} from "@/components/christmas/PresentsComponent";
+import {SmokeComponent} from "@/components/particles/SmokeComponent";
+import {FirefliesComponent} from "@/components/particles/FirefliesComponent";
+import {HeartsComponent} from "@/components/particles/HeartsComponent";
+import {ButterfliesComponent} from "@/components/particles/ButterfliesComponent";
+import {SeasonTransitionLeavesComponent} from "@/components/particles/SeasonTransitionLeavesComponent";
+import {AutumnBlowingLeavesComponent} from "@/components/particles/AutumnBlowingLeavesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -56,15 +61,25 @@ export class Scene {
       new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
 
+      new BackgroundTreesComponent(this.eventBus, this.ctx),
+
+      new SmokeComponent(this.eventBus, this.ctx, W, H),
+
+      new ForegroundTreesComponent(this.eventBus, this.ctx),
+
       new GravestoneComponent(this.eventBus, this.ctx, W, H),
       new ScarecrowComponent(this.eventBus, this.ctx, W, H),
 
       new SnowmenComponent(this.eventBus, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.ctx, W, H),
 
-      this._particles = new DrawParticles(this.eventBus, this.ctx, W, H),
-      new DrawBackgroundTrees(this.eventBus, this.ctx),
-      new DrawForegroundTrees(this.eventBus, this.ctx),
+      new FirefliesComponent(this.eventBus, this.ctx, W, H),
+      new ButterfliesComponent(this.eventBus, this.ctx, W, H),
+      new HeartsComponent(this.eventBus, this.ctx, W, H),
+
+      new SeasonTransitionLeavesComponent(this.eventBus, this.ctx, W, H),
+      new AutumnBlowingLeavesComponent(this.eventBus, this.ctx, W, H),
+
       new DrawLightning(this.eventBus, this.ctx, W, H),
       new DrawWeather(this.eventBus, this.ctx, W, H),
       new DrawFox(this.eventBus, this.ctx, W, H),
@@ -125,7 +140,6 @@ export class Scene {
 
     this._components.tick(state, setStatus, enableButtons);
     this._components.draw(state);
-    this._particles.drawCanopyLeaves(state);
 
     requestAnimationFrame(this._loop);
   }

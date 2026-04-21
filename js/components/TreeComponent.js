@@ -1,5 +1,5 @@
-import {TREE_DEFS} from '../config.js';
-import {Component} from '../core/component.js';
+import {TREE_DEFS} from '@/config.js';
+import {Component} from '@/core/Component.js';
 
 /**
  * compute the current wind-driven sway offset for a tree.
@@ -320,7 +320,7 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway) {
  * DrawTrees renders trees either in the background, foreground, or both.
  * Used to split the rendering into layers.
  */
-export class DrawTrees extends Component {
+class TreesComponent extends Component {
   /**
    * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
@@ -334,10 +334,6 @@ export class DrawTrees extends Component {
     this.trees = TREE_DEFS;
   }
 
-  /**
-   * draw all background-layer trees.
-   * @param {SceneState} state
-   */
   draw(state) {
     const {ctx, trees, background} = this;
     const {season, weather, specialEvent, frame, H} = state;
@@ -351,7 +347,7 @@ export class DrawTrees extends Component {
 /**
  * DrawBackgroundTrees renders trees that appear in the background.
  */
-export class DrawBackgroundTrees extends DrawTrees {
+export class BackgroundTreesComponent extends TreesComponent {
   /**
    * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
@@ -364,7 +360,7 @@ export class DrawBackgroundTrees extends DrawTrees {
 /**
  * DrawForegroundTrees renders trees that appear in the foreground.
  */
-export class DrawForegroundTrees extends DrawTrees {
+export class ForegroundTreesComponent extends TreesComponent {
   /**
    * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
