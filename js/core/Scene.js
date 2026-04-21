@@ -265,6 +265,7 @@ export class Scene {
           const oldSeason = state.season;
           state.changeSeason(s);
           this._refreshUI();
+          this._clearInvalidSpecialEvent();
           this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
         }));
 
