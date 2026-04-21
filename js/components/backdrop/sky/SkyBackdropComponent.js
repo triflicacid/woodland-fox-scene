@@ -1,4 +1,4 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * render the sky backdrop (no moons etc.)

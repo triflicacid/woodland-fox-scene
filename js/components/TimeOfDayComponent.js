@@ -1,5 +1,5 @@
-import {Component} from "../core/Component.js";
-import {lerp} from "../utils.js";
+import {Component} from "../core/Component";
+import {lerp} from "../utils";
 
 /**
  * a non-drawing component which advanced time of day only.

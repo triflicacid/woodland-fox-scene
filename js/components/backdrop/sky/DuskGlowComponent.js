@@ -1,5 +1,5 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
-import {clamp} from "../../../utils.js";
+import {DrawComponent} from "@/core/DrawComponent";
+import {clamp} from "@/utils";
 
 /**
  * render the dawn/duck glow in tod transition

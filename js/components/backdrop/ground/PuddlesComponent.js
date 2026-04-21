@@ -1,5 +1,5 @@
-import {clamp, lerp, prob, rndf} from "../../../utils.js";
-import {DrawComponent} from "../../../core/DrawComponent.js";
+import {clamp, lerp, prob, rndf} from "@/utils";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * render assorted puddles when raining

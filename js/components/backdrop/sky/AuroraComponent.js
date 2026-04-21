@@ -1,4 +1,4 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * draw the Aurora Borealis if enabled

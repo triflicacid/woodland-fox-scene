@@ -1,4 +1,4 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * render fallen/littered leaves during autumn

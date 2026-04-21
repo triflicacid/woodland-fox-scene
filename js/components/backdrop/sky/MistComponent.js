@@ -1,4 +1,4 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * render a faint mist in the ground (different to fog, mutually exclusive)

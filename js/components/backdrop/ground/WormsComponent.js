@@ -1,6 +1,6 @@
-import {DrawComponent} from "../../../core/DrawComponent.js";
-import {Events} from "../../../event/Events.js";
-import {prob, rnd, rndchoice} from "../../../utils.js";
+import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/event/Events";
+import {prob, rnd, rndchoice} from "@/utils";
 
 /**
  * wiggling worms near puddles when raining

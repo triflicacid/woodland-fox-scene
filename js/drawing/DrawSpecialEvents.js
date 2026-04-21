@@ -1,4 +1,4 @@
-import {Component} from "../core/Component.js";
+import {Component} from "../core/Component";
 
 const GRAVESTONES = [
   {x: 160, lean: -0.08}, {x: 230, lean: 0.05},

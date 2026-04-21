@@ -1,5 +1,5 @@
 import {rnd} from '../utils.js';
-import {Component} from "../core/Component.js";
+import {Component} from "../core/Component";
 
 /**
  * DrawBunny manages the bunny visit sequence:

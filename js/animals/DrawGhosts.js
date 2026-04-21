@@ -1,6 +1,6 @@
 import {rnd, rndf} from '../utils.js';
 import {Component} from '../core/Component.js';
-import {Events} from "../event/Events.js";
+import {Events} from "../event/Events";
 
 /**
  * DrawGhosts manages ghost rendering and state.

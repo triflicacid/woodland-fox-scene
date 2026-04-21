@@ -1,5 +1,5 @@
-import {PROBABILITY} from "../config.js";
-import {clamp, eo, lerp, prob} from "../utils.js";
+import {PROBABILITY} from "../config";
+import {clamp, eo, lerp, prob} from "../utils";
 import {Component} from '../core/component.js';
 
 /**

@@ -4,6 +4,8 @@
     "vite-plugin-singlefile": "^2.3.3"
   },
   "scripts": {
-    "build": "vite build"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   }
 }

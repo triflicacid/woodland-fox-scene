@@ -1,6 +1,6 @@
-import {Event} from "./event.js";
-import {ValueChange} from "./ValueChange.js";
-import {Subscription} from "./Subscription.js";
+import {Event} from "./event";
+import {ValueChange} from "./ValueChange";
+import {Subscription} from "./Subscription";
 
 /**
  * utility for creating events used in this application
