@@ -264,21 +264,21 @@ export class Scene {
         document.getElementById('btn-' + s)?.addEventListener('click', () => {
           const oldSeason = state.season;
           state.changeSeason(s);
-          this._refreshUI();
           this._clearInvalidSpecialEvent();
+          this._refreshUI();
           this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
         }));
 
     // time of day buttons
     document.getElementById('btn-day')?.addEventListener('click', () => {
       state.setTOD('day');
-      this._refreshUI();
       this._clearInvalidSpecialEvent();
+      this._refreshUI();
     });
     document.getElementById('btn-night')?.addEventListener('click', () => {
       state.setTOD('night');
-      this._refreshUI();
       this._clearInvalidSpecialEvent();
+      this._refreshUI();
     });
 
     // weather buttons
@@ -287,9 +287,9 @@ export class Scene {
           if (w === 'snow' && state.season !== 'winter') return;
           const oldWeather = state.weather;
           state.weather = w;
+          this._clearInvalidSpecialEvent();
           state.savePref();
           this._refreshUI();
-          this._clearInvalidSpecialEvent();
           this.eventBus.receive(Events.seasonChange("Scene", oldWeather, state));
         }));
 
@@ -325,7 +325,9 @@ export class Scene {
    * clears out specialEvent if now invalid
    */
   _clearInvalidSpecialEvent() {
-    const { state } = this;
+    const {state} = this;
+
+    console.log(state.specialEvent, state.season, state.timeOfDay);
     if (state.specialEvent === 'halloween' &&
         !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
