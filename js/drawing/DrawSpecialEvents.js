@@ -1,6 +1,4 @@
-import {rnd, rndf} from '../utils.js';
 import {Component} from "../core/Component.js";
-import {Events} from "../event/Events.js";
 
 const GRAVESTONES = [
   {x: 160, lean: -0.08}, {x: 230, lean: 0.05},
@@ -34,15 +32,6 @@ export class DrawSpecialEvents extends Component {
     this.ctx = ctx;
     this.W = W;
     this.H = H;
-
-    /** @type {Array<object>} */
-    this._ghosts = [];
-  }
-
-  initialise(state) {
-    this.eventBus.subscribe(Events.weatherChangeSubscription("DrawSpecialEvents", this._onWeatherChange.bind(this)));
-
-    this._generateGhosts(state);
   }
 
   /**
@@ -55,79 +44,14 @@ export class DrawSpecialEvents extends Component {
   }
 
   /**
-   * @param {ValueChange<string>} update
-   */
-  _onWeatherChange(update) {
-    this._generateGhosts(update.state);
-  }
-
-  /**
-   * populate ghost array
-   * @param {SceneState} state
-   */
-  _generateGhosts(state) {
-    const {H} = this;
-    const length = state.weather === 'storm' ? 9 : 5;
-    this._ghosts = Array.from({length}, (_, i) => ({
-      x: 80 + i * 130 + rndf(30),
-      y: H * 0.15 + rnd(H * 0.25),
-      vx: (0.3 + rnd(0.3)) * (i % 2 === 0 ? 1 : -1),
-      phase: rnd(Math.PI * 2),
-    }));
-  }
-
-  /**
-   * draw all halloween decorations: pumpkin moon, ghosts, gravestones, scarecrows.
+   * draw all halloween decorations: gravestones, scarecrows.
+   * ghosts are in DrawAirborne, pumpkin moon in DrawWorld.
    * @param {SceneState} state
    */
   _drawHalloween(state) {
     const {frame} = state;
-    this._drawGhosts(state);
     this._drawGravestones(frame);
     this._drawScarecrows(frame);
-  }
-
-  /**
-   * draw and advance drifting ghosts in the background sky.
-   * @param {SceneState} state
-   */
-  _drawGhosts(state) {
-    const {ctx, W, H} = this;
-    const {frame} = state;
-    this._ghosts.forEach(g => {
-      g.x += g.vx;
-      if (g.x > W + 50) g.x = -50;
-      if (g.x < -50) g.x = W + 50;
-      const bob = Math.sin(frame * 0.025 + g.phase) * 8;
-      const y = g.y + bob;
-
-      ctx.save();
-      ctx.globalAlpha = 0.55;
-      // body
-      ctx.fillStyle = 'rgba(220,230,255,0.9)';
-      ctx.beginPath();
-      ctx.arc(g.x, y - 12, 14, Math.PI, 0);
-      ctx.lineTo(g.x + 14, y + 8);
-      // wavy bottom
-      for (let wx = 3; wx >= -3; wx--) {
-        ctx.quadraticCurveTo(
-            g.x + wx * 5 + 2, y + 14,
-            g.x + wx * 4.5, y + 8
-        );
-      }
-      ctx.lineTo(g.x - 14, y + 8);
-      ctx.closePath();
-      ctx.fill();
-      // eyes
-      ctx.fillStyle = 'rgba(30,10,60,0.8)';
-      ctx.beginPath();
-      ctx.ellipse(g.x - 5, y - 12, 3, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.ellipse(g.x + 5, y - 12, 3, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
   }
 
   /**

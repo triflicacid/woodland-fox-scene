@@ -8,7 +8,7 @@ import {DrawWeather} from '../drawing/DrawWeather.js';
 import {DrawLightning} from "../drawing/DrawLightning.js";
 import {DrawFox} from '../animals/DrawFox.js';
 import {DrawBunny} from '../animals/DrawBunny.js';
-import {DrawAvians} from '../animals/DrawAvians.js';
+import {DrawAirborne} from '../animals/DrawAirborne.js';
 import {DrawHedgehog} from '../animals/DrawHedgehog.js';
 import {DrawDeer} from '../animals/DrawDeer.js';
 import {Events} from "../event/Events.js";
@@ -57,7 +57,7 @@ export class Scene {
     this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
     this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
     this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
-    this._birds = new DrawAvians(this.eventBus, this.ctx, W, H, TREE_DEFS);
+    this._birds = new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS);
     this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
     this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
   }

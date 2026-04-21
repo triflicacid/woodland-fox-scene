@@ -1,12 +1,13 @@
-import {prob, rnd} from '../utils.js';
+import {prob, rnd, rndf} from '../utils.js';
 import {PROBABILITY} from '../config.js';
 import {getTreeTopPos} from '../drawing/DrawTrees.js';
 import {Component} from '../core/Component.js';
+import {Events} from "../event/Events.js";
 
 /**
- * DrawAvians manages all bird, bat, and owl rendering and state.
+ * DrawAirborne manages all bird, bat, owl, and ghost rendering and state.
  */
-export class DrawAvians extends Component {
+export class DrawAirborne extends Component {
   /**
    * @param {EventBus} eventBus
    * @param {CanvasRenderingContext2D} ctx
@@ -20,10 +21,41 @@ export class DrawAvians extends Component {
     this.W = W;
     this.H = H;
     this.trees = trees;
+
+    /** @type {Array<object>} */
+    this._ghosts = [];
+  }
+
+  initialise(state) {
+    this.eventBus.subscribe(Events.weatherChangeSubscription("DrawAirborne", this._onWeatherChange.bind(this)));
+
+    this._generateGhosts(state);
+  }
+
+  /**
+   * @param {ValueChange<string>} update
+   */
+  _onWeatherChange(update) {
+    this._generateGhosts(update.state);
+  }
+
+  /**
+   * populate ghost array
+   * @param {SceneState} state
+   */
+  _generateGhosts(state) {
+    const {H} = this;
+    const length = state.weather === 'storm' ? 9 : 5;
+    this._ghosts = Array.from({length}, (_, i) => ({
+      x: 80 + i * 130 + rndf(30),
+      y: H * 0.15 + rnd(H * 0.25),
+      vx: (0.3 + rnd(0.3)) * (i % 2 === 0 ? 1 : -1),
+      phase: rnd(Math.PI * 2),
+    }));
   }
 
   draw(state) {
-    const {season, weather, todBlend, owlForced} = state;
+    const {season, weather, todBlend, owlForced, specialEvent} = state;
 
     // trigger wind-startled birds when wind begins
     if (weather === 'wind' && !state.windWasOn) {
@@ -65,43 +97,44 @@ export class DrawAvians extends Component {
       return true;
     });
 
-    if (!this._birdsActive(state)) {
-      this._drawOwl(state);
-      return;
+    if (this._birdsActive(state)) {
+      // flock birds flying across the sky
+      const flockCount = weather === 'wind' ? 3 : state.flockBirds.length;
+      state.flockBirds.slice(0, flockCount).forEach(b => {
+        b.x += b.vx;
+        b.flapT += b.flapSpeed;
+        b.y += Math.sin(b.flapT * 0.2) * 0.3;
+        if (b.x > this.W + 30) {
+          b.x = -30;
+          b.y = 20 + rnd(this.H * 0.22);
+        }
+        this._drawFlyingBird(b.x, b.y, b.flapT, b.scale);
+      });
+
+      // perched birds on tree tops
+      state.perchBirds.forEach(pb => {
+        const tr = this.trees[pb.treeIdx];
+        if (season === 'winter' && tr.type !== 'pine') return;
+        const top = getTreeTopPos(tr, weather, season, state.specialEvent, state.frame, this.H);
+        const px = top.x + pb.offset * tr.r * 0.5;
+        const py = top.y + Math.sin(state.frame * 0.03 + pb.treeIdx) * 0.8;
+        const windE = (weather === 'wind' || weather === 'storm')
+            ? Math.sin(state.frame * 0.06 + tr.ph) * 10 : 0;
+        const lean = (Math.sin(state.frame * tr.sway + tr.ph) * 5 + windE) * 0.008;
+        this.ctx.save();
+        this.ctx.translate(px, py);
+        this.ctx.rotate(lean);
+        this.ctx.translate(-px, -py);
+        this._drawPerchBird(px, py, pb.side);
+        this.ctx.restore();
+      });
     }
 
-    // flock birds flying across the sky
-    const flockCount = weather === 'wind' ? 3 : state.flockBirds.length;
-    state.flockBirds.slice(0, flockCount).forEach(b => {
-      b.x += b.vx;
-      b.flapT += b.flapSpeed;
-      b.y += Math.sin(b.flapT * 0.2) * 0.3;
-      if (b.x > this.W + 30) {
-        b.x = -30;
-        b.y = 20 + rnd(this.H * 0.22);
-      }
-      this._drawFlyingBird(b.x, b.y, b.flapT, b.scale);
-    });
-
-    // perched birds on tree tops
-    state.perchBirds.forEach(pb => {
-      const tr = this.trees[pb.treeIdx];
-      if (season === 'winter' && tr.type !== 'pine') return;
-      const top = getTreeTopPos(tr, weather, season, state.frame, this.H);
-      const px = top.x + pb.offset * tr.r * 0.5;
-      const py = top.y + Math.sin(state.frame * 0.03 + pb.treeIdx) * 0.8;
-      const windE = (weather === 'wind' || weather === 'storm')
-          ? Math.sin(state.frame * 0.06 + tr.ph) * 10 : 0;
-      const lean = (Math.sin(state.frame * tr.sway + tr.ph) * 5 + windE) * 0.008;
-      this.ctx.save();
-      this.ctx.translate(px, py);
-      this.ctx.rotate(lean);
-      this.ctx.translate(-px, -py);
-      this._drawPerchBird(px, py, pb.side);
-      this.ctx.restore();
-    });
-
     this._drawOwl(state);
+
+    if (specialEvent === 'halloween') {
+      this._drawGhosts(state);
+    }
   }
 
   /**
@@ -376,5 +409,63 @@ export class DrawAvians extends Component {
     ctx.stroke();
 
     ctx.restore();
+  }
+
+  /**
+   * draw drifting ghosts.
+   * @param {SceneState} state
+   */
+  _drawGhosts(state) {
+    const {ctx} = this;
+    const {frame} = state;
+    this._ghosts.forEach(g => {
+      const bob = Math.sin(frame * 0.025 + g.phase) * 8;
+      const y = g.y + bob;
+
+      ctx.save();
+      ctx.globalAlpha = 0.55;
+      // body
+      ctx.fillStyle = 'rgba(220,230,255,0.9)';
+      ctx.beginPath();
+      ctx.arc(g.x, y - 12, 14, Math.PI, 0);
+      ctx.lineTo(g.x + 14, y + 8);
+      // wavy bottom
+      for (let wx = 3; wx >= -3; wx--) {
+        ctx.quadraticCurveTo(
+            g.x + wx * 5 + 2, y + 14,
+            g.x + wx * 4.5, y + 8
+        );
+      }
+      ctx.lineTo(g.x - 14, y + 8);
+      ctx.closePath();
+      ctx.fill();
+      // eyes
+      ctx.fillStyle = 'rgba(30,10,60,0.8)';
+      ctx.beginPath();
+      ctx.ellipse(g.x - 5, y - 12, 3, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(g.x + 5, y - 12, 3, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  tick(state, _1, _2) {
+    if (state.specialEvent === 'halloween') {
+      this._tickGhosts();
+    }
+  }
+
+  /**
+   * tick drifting ghost movement.
+   */
+  _tickGhosts() {
+    const {W} = this;
+    this._ghosts.forEach(g => {
+      g.x += g.vx;
+      if (g.x > W + 50) g.x = -50;
+      if (g.x < -50) g.x = W + 50;
+    });
   }
 }
