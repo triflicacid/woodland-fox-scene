@@ -8,10 +8,11 @@ import {DrawWeather} from '../drawing/DrawWeather.js';
 import {DrawLightning} from "../drawing/DrawLightning.js";
 import {DrawFox} from '../animals/DrawFox.js';
 import {DrawBunny} from '../animals/DrawBunny.js';
-import {DrawAvians} from '../animals/DrawAvians.js';
+import {DrawAirborne} from '../animals/DrawAirborne.js';
 import {DrawHedgehog} from '../animals/DrawHedgehog.js';
 import {DrawDeer} from '../animals/DrawDeer.js';
 import {Events} from "../event/Events.js";
+import {DrawSpecialEvents} from "../drawing/DrawSpecialEvents.js";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -48,6 +49,7 @@ export class Scene {
 
     // instantiate the core drawing components
     this._world = new DrawWorld(this.eventBus, this.ctx, W, H);
+    this._specialEvents = new DrawSpecialEvents(this.eventBus, this.ctx, W, H);
     this._particles = new DrawParticles(this.eventBus, this.ctx, W, H);
     this._bgTrees = new DrawBackgroundTrees(this.eventBus, this.ctx);
     this._fgTrees = new DrawForegroundTrees(this.eventBus, this.ctx);
@@ -55,7 +57,7 @@ export class Scene {
     this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
     this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
     this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
-    this._birds = new DrawAvians(this.eventBus, this.ctx, W, H, TREE_DEFS);
+    this._birds = new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS);
     this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
     this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
   }
@@ -89,6 +91,7 @@ export class Scene {
     this.register(this._bgTrees);
     this.register(this._birds);
     this.register(this._fgTrees);
+    this.register(this._specialEvents);
     this.register(this._lightning);
     this.register(this._deer);
     this.register(this._hedgehog);
@@ -164,11 +167,18 @@ export class Scene {
         document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.weather === s));
     document.getElementById('btn-aurora')?.classList.toggle('btn-active', state.auroraOn);
 
-    // conditional availability
     const snowBtn = document.getElementById('btn-snow');
     const auroraBtn = document.getElementById('btn-aurora');
     if (snowBtn) snowBtn.disabled = state.season !== 'winter';
     if (auroraBtn) auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night';
+
+    const halloweenBtn = document.getElementById('btn-halloween');
+    halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
+    halloweenBtn.classList.toggle('btn-active', state.specialEvent === 'halloween');
+
+    const christmasBtn = document.getElementById('btn-christmas');
+      christmasBtn.disabled = state.season !== 'winter';
+      christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
   }
 
   /**
@@ -254,6 +264,7 @@ export class Scene {
         document.getElementById('btn-' + s)?.addEventListener('click', () => {
           const oldSeason = state.season;
           state.changeSeason(s);
+          this._clearInvalidSpecialEvent();
           this._refreshUI();
           this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
         }));
@@ -261,10 +272,12 @@ export class Scene {
     // time of day buttons
     document.getElementById('btn-day')?.addEventListener('click', () => {
       state.setTOD('day');
+      this._clearInvalidSpecialEvent();
       this._refreshUI();
     });
     document.getElementById('btn-night')?.addEventListener('click', () => {
       state.setTOD('night');
+      this._clearInvalidSpecialEvent();
       this._refreshUI();
     });
 
@@ -274,9 +287,10 @@ export class Scene {
           if (w === 'snow' && state.season !== 'winter') return;
           const oldWeather = state.weather;
           state.weather = w;
+          this._clearInvalidSpecialEvent();
           state.savePref();
           this._refreshUI();
-          this.eventBus.receive(Events.seasonChange("Scene", oldWeather, state));
+          this.eventBus.receive(Events.weatherChange("Scene", oldWeather, state));
         }));
 
     // aurora toggle
@@ -296,6 +310,32 @@ export class Scene {
     document.getElementById('btn-yawn')?.addEventListener('click', () => this._triggerYawn());
     document.getElementById('btn-ear')?.addEventListener('click', () => this._triggerEarTwitch());
     document.getElementById('btn-grumble')?.addEventListener('click', () => this._triggerGrumble());
+
+    document.getElementById('btn-halloween')?.addEventListener('click', () => {
+      state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
+      state.savePref();
+      this._refreshUI();
+    });
+    document.getElementById('btn-christmas')?.addEventListener('click', () => {
+      state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
+      state.savePref();
+      this._refreshUI();
+    });
+  }
+
+  /**
+   * clears out specialEvent if now invalid
+   */
+  _clearInvalidSpecialEvent() {
+    const {state} = this;
+
+    if (state.specialEvent === 'halloween' &&
+        !(state.season === 'autumn' && state.timeOfDay === 'night')) {
+      state.specialEvent = null;
+    }
+    if (state.specialEvent === 'christmas' && state.season !== 'winter') {
+      state.specialEvent = null;
+    }
   }
 
   /**

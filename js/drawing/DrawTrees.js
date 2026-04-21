@@ -18,9 +18,11 @@ function getWindSway(tr, weather, frame) {
  * return true if the tree should be drawn without foliage (winter, non-pine).
  * @param {Object} tr
  * @param {string} season
+ * @param {string} specialEvent
  * @returns {boolean}
  */
-function isBare(tr, season) {
+function isBare(tr, season, specialEvent) {
+  if (specialEvent === 'halloween' && tr.type !== 'pine') return true;
   return season === 'winter' && tr.type !== 'pine';
 }
 
@@ -40,13 +42,14 @@ function getTrunkHeight(tr, bare) {
  * @param {Object} tr - tree definition
  * @param {string} weather
  * @param {string} season
+ * @param {string} specialEvent
  * @param {number} frame
  * @param {number} H - canvas height
  * @returns {{x: number, y: number}}
  */
-export function getTreeTopPos(tr, weather, season, frame, H) {
+export function getTreeTopPos(tr, weather, season, specialEvent, frame, H) {
   const sway = getWindSway(tr, weather, frame);
-  const bare = isBare(tr, season);
+  const bare = isBare(tr, season, specialEvent);
   const trunkH = getTrunkHeight(tr, bare);
   const isPine = tr.type === 'pine';
   const topLayerLy = -(trunkH) - (tr.layers - 1) * (tr.h * (isPine ? 0.14 : 0.16));
@@ -61,12 +64,13 @@ export function getTreeTopPos(tr, weather, season, frame, H) {
  * @param {Object} pal - current season palette
  * @param {string} season
  * @param {string} weather
+ * @param {string} specialEvent
  * @param {number} frame
  * @param {number} H - canvas height
  */
-function drawTree(ctx, tr, pal, season, weather, frame, H) {
+function drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H) {
   const sway = getWindSway(tr, weather, frame);
-  const bare = isBare(tr, season);
+  const bare = isBare(tr, season, specialEvent);
   const trunkH = getTrunkHeight(tr, bare);
 
   ctx.save();
@@ -104,12 +108,91 @@ function drawTree(ctx, tr, pal, season, weather, frame, H) {
   }
 
   if (bare) {
-    _drawBareBranches(ctx, tr, trunkH, season, isBirch);
+    _drawBareBranches(ctx, tr, trunkH, season, specialEvent, isBirch);
   } else {
-    _drawLeafyCanopy(ctx, tr, trunkH, pal, season, sway);
+    _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway);
+  }
+
+  if (specialEvent === 'christmas') {
+    drawChristmasLights(ctx, tr, frame, sway, trunkH);
   }
 
   ctx.restore();
+}
+
+/**
+ * draw twinkling christmas lights within the tree's local transform space.
+ * must be called between the tree's ctx.save() and ctx.restore().
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Object} tr
+ * @param {number} frame
+ * @param {number} sway
+ * @param {number} trunkH
+ */
+function drawChristmasLights(ctx, tr, frame, sway, trunkH) {
+  if (!tr.xmasLights) return;
+
+  const colors = ['#ff2020', '#20ff20', '#2060ff', '#ffdd00', '#ff60ff'];
+
+  if (tr.type === 'pine') {
+    // scattered lights through canopy layers
+    const layers = tr.layers + 1;
+    const count = Math.floor(tr.r * 0.5);
+    for (let i = 0; i < count; i++) {
+      const layer = i % layers;
+      const angle = (i / count) * Math.PI * 2;
+      const ly = -(trunkH) - layer * (tr.h * 0.14);
+      const lr = tr.r * (1 - layer * 0.08);
+      const extraSway = sway * 0.7;
+      const ls = extraSway * (1 + layer * 0.3);
+      const lx = ls + Math.cos(angle) * lr * 0.7;
+      const blink = 0.5 + 0.5 * Math.sin(frame * 0.08 + i * 1.7);
+      ctx.save();
+      ctx.globalAlpha = 0.7 + 0.3 * blink;
+      ctx.shadowBlur = 6 + blink * 6;
+      ctx.shadowColor = colors[i % colors.length];
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.beginPath();
+      ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  } else {
+    // trafalgar-style: strings of lights hanging from the top of the trunk
+    // outward at various angles, with lights dotted along each string
+    const stringCount = 10;
+    const topY = -trunkH; // top of trunk in local space
+    const extraSway = sway * 0.7;
+
+    for (let s = 0; s < stringCount; s++) {
+      // spread strings in a full circle around the trunk top
+      const angle = (s / stringCount) * Math.PI * 2;
+      // how far out the string reaches at ground level
+      const reach = tr.r * 0.4 + extraSway * Math.cos(angle);
+      const endX = Math.cos(angle) * reach;
+      const endY = -tr.h * 0.08; // stop short of the ground
+      const lightsPerString = 6;
+
+      for (let l = 0; l < lightsPerString; l++) {
+        const t = l / (lightsPerString - 1);
+        const sag = Math.sin(t * Math.PI) * tr.r * 0.3;
+        const lx = endX * t + Math.cos(angle) * sag;
+        const ly = topY + (endY - topY) * t + sag * 0.4;
+        const blink = 0.5 + 0.5 * Math.sin(frame * 0.08 + s * 1.3 + l * 2.1);
+        const col = colors[(s * lightsPerString + l) % colors.length];
+
+        ctx.save();
+        ctx.globalAlpha = 0.75 + 0.25 * blink;
+        ctx.shadowBlur = 5 + blink * 7;
+        ctx.shadowColor = col;
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.arc(lx, ly, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
 }
 
 /**
@@ -118,10 +201,13 @@ function drawTree(ctx, tr, pal, season, weather, frame, H) {
  * @param {Object} tr
  * @param {number} trunkH
  * @param {string} season
+ * @param {string} specialEvent
  * @param {boolean} isBirch
  */
-function _drawBareBranches(ctx, tr, trunkH, season, isBirch) {
-  const branchColor = isBirch ? '#8a7858' : '#4a3a2a';
+function _drawBareBranches(ctx, tr, trunkH, season, specialEvent, isBirch) {
+  const branchColor = specialEvent === 'halloween'
+      ? '#0a0a0a' // spooky oooh
+      : isBirch ? '#8a7858' : '#4a3a2a';
   ctx.lineCap = 'round';
 
   /**
@@ -178,9 +264,10 @@ function _drawBareBranches(ctx, tr, trunkH, season, isBirch) {
  * @param {number} trunkH
  * @param {Object} pal - season palette
  * @param {string} season
+ * @param {string} specialEvent
  * @param {number} sway
  */
-function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, sway) {
+function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway) {
   const layers = tr.type === 'pine' ? tr.layers + 1 : tr.layers;
   const extraSway = sway * 0.7;
 
@@ -202,7 +289,7 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, sway) {
       ctx.closePath();
       ctx.fill();
       ctx.shadowBlur = 0;
-      if (season === 'winter') {
+      if (season === 'winter' || specialEvent === 'christmas') {
         ctx.fillStyle = 'rgba(225,238,252,0.82)';
         ctx.beginPath();
         ctx.moveTo(ls, ly - lr * 0.75);
@@ -253,11 +340,11 @@ export class DrawTrees extends Component {
    */
   draw(state) {
     const {ctx, trees, background} = this;
-    const {season, weather, frame} = state;
+    const {season, weather, specialEvent, frame, H} = state;
     const pal = state.pal();
     trees
         .filter(t => background === undefined || t.background === background)
-        .forEach(tr => drawTree(ctx, tr, pal, season, weather, frame, state.H));
+        .forEach(tr => drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H));
   }
 }
 

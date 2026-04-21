@@ -73,7 +73,7 @@ export class DrawWorld extends Component {
     const {ctx, W, H} = this;
     const p = state.pal();
     const td = state.todBlend;
-    const {frame, season, weather} = state;
+    const {frame, season, weather, specialEvent} = state;
 
     // blend todBlend toward target
     state.todBlend = lerp(state.todBlend, state.todTarget, 0.025);
@@ -109,10 +109,14 @@ export class DrawWorld extends Component {
     }
 
     // moon and stars at night
-    if (td < 0.8 && weather !== 'storm' && weather !== 'rain') {
-      this._drawMoon(td, frame);
-      if (weather === 'clear' || weather === 'wind') {
-        this._drawStars(td, frame);
+    if (td < 0.8) {
+      if (specialEvent === 'halloween') {
+        this._drawPumpkinMoon(frame);
+      } else if (weather !== 'storm' && weather !== 'rain') {
+        this._drawMoon(td, frame);
+        if (weather === 'clear' || weather === 'wind') {
+          this._drawStars(td, frame);
+        }
       }
     }
 
@@ -177,7 +181,7 @@ export class DrawWorld extends Component {
   }
 
   /**
-   * draw the moon and its shadow disc.
+   * draw the ordinary moon and its shadow disc.
    * @param {number} td - time-of-day blend
    * @param {number} frame
    */
@@ -224,6 +228,52 @@ export class DrawWorld extends Component {
       ctx.fill();
     });
     ctx.globalAlpha = 1;
+  }
+
+  /**
+   * draw a special jack-o-lantern moon for halloween
+   * @param {number} frame
+   */
+  _drawPumpkinMoon(frame) {
+    const {ctx} = this;
+    ctx.save();
+    ctx.shadowBlur = 40;
+    ctx.shadowColor = '#ff6600';
+    // pumpkin body
+    ctx.fillStyle = '#e06010';
+    ctx.beginPath();
+    ctx.arc(580, 55, 22, 0, Math.PI * 2);
+    ctx.fill();
+    // ribs
+    ctx.strokeStyle = '#c04800';
+    ctx.lineWidth = 1.5;
+    [-8, 0, 8].forEach(ox => {
+      ctx.beginPath();
+      ctx.ellipse(580 + ox, 55, 6, 20, ox * 0.04, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    // face
+    ctx.fillStyle = 'rgba(255,200,0,0.9)';
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#ffcc00';
+    // eyes
+    [[-8, -6], [6, -6]].forEach(([ex, ey]) => {
+      ctx.beginPath();
+      ctx.moveTo(580 + ex, 55 + ey - 4);
+      ctx.lineTo(580 + ex - 4, 55 + ey + 3);
+      ctx.lineTo(580 + ex + 4, 55 + ey + 3);
+      ctx.closePath();
+      ctx.fill();
+    });
+    // mouth
+    ctx.beginPath();
+    ctx.moveTo(580 - 9, 55 + 5);
+    ctx.lineTo(580 - 5, 55 + 9);
+    ctx.lineTo(580 - 1, 55 + 6);
+    ctx.lineTo(580 + 3, 55 + 9);
+    ctx.lineTo(580 + 7, 55 + 5);
+    ctx.stroke();
+    ctx.restore();
   }
 
   /**

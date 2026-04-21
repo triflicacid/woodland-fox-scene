@@ -14,9 +14,14 @@ export class SceneState {
     this.W = W;
     this.H = H;
 
+    /** @type{string} */
     this.season = localStorage.getItem('season') || 'summer';
+    /** @type{string} */
     this.timeOfDay = localStorage.getItem('tod') || 'night';
+    /** @type{string} */
     this.weather = localStorage.getItem('weather') || 'clear';
+    /** @type{string | null} */
+    this.specialEvent = localStorage.getItem('special_event') || null;
     this.auroraOn = false;
 
     // prevent invalid combos on first load
@@ -351,6 +356,7 @@ export class SceneState {
     localStorage.setItem('season', this.season);
     localStorage.setItem('tod', this.timeOfDay);
     localStorage.setItem('weather', this.weather);
+    localStorage.setItem('special_event', this.specialEvent);
   }
 
   /**
