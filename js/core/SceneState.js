@@ -189,6 +189,9 @@ export class SceneState {
       phase: rnd(Math.PI * 2),
       size: 1.5 + rnd(1.5),
     }));
+
+    /** @type {null | string} */
+    this.specialEvent = null; // see SPECIAL_EVENTS
   }
 
   /**
