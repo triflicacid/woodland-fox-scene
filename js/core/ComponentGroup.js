@@ -26,11 +26,19 @@ export class ComponentGroup extends Component {
     this._components.forEach(c => c.initialise(state));
   }
 
+  isEnabled(state) {
+    return this._components.some(c => c.isEnabled(state));
+  }
+
   tick(state, setStatus, enableButtons) {
-    this._components.forEach(c => c.tick(state, setStatus, enableButtons));
+    this._components
+        .filter(c => c.isEnabled(state))
+        .forEach(c => c.tick(state, setStatus, enableButtons));
   }
 
   draw(state) {
-    this._components.forEach(c => c.draw(state));
+    this._components
+        .filter(c => c.isEnabled(state))
+        .forEach(c => c.draw(state));
   }
 }

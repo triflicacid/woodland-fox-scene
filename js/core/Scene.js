@@ -14,6 +14,7 @@ import {DrawDeer} from '../animals/DrawDeer.js';
 import {Events} from "../event/Events.js";
 import {DrawSpecialEvents} from "../drawing/DrawSpecialEvents.js";
 import {DrawGhosts} from "../animals/DrawGhosts.js";
+import {ComponentGroup} from "./ComponentGroup.js";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -38,9 +39,6 @@ export class Scene {
     // give state a reference to tree defs so canopy leaves can use it
     this.state.trees = TREE_DEFS;
 
-    /** @type {Array<Component>} */
-    this._components = [];
-
     // store the handle for the drawing loop
     /** @type {number | undefined} */
     this._handle = undefined;
@@ -48,28 +46,24 @@ export class Scene {
     // store the event bus for this scene
     this.eventBus = new EventBus();
 
-    // instantiate the core drawing components
-    this._world = new DrawWorld(this.eventBus, this.ctx, W, H);
-    this._specialEvents = new DrawSpecialEvents(this.eventBus, this.ctx, W, H);
-    this._particles = new DrawParticles(this.eventBus, this.ctx, W, H);
-    this._bgTrees = new DrawBackgroundTrees(this.eventBus, this.ctx);
-    this._fgTrees = new DrawForegroundTrees(this.eventBus, this.ctx);
-    this._lightning = new DrawLightning(this.eventBus, this.ctx, W, H);
-    this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
-    this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
-    this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
-    this._birds = new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS);
-    this._ghosts = new DrawGhosts(this.eventBus, this.ctx, W, H);
-    this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
-    this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
-  }
+    ;
 
-  /**
-   * register a component.
-   * @param {Component} component
-   */
-  register(component) {
-    this._components.push(component);
+    /** @type {ComponentGroup} */
+    this._components = new ComponentGroup(this.eventBus, [
+      new DrawWorld(this.eventBus, this.ctx, W, H),
+      new DrawSpecialEvents(this.eventBus, this.ctx, W, H),
+      this._particles = new DrawParticles(this.eventBus, this.ctx, W, H),
+      new DrawBackgroundTrees(this.eventBus, this.ctx),
+      new DrawForegroundTrees(this.eventBus, this.ctx),
+      new DrawLightning(this.eventBus, this.ctx, W, H),
+      new DrawWeather(this.eventBus, this.ctx, W, H),
+      new DrawFox(this.eventBus, this.ctx, W, H),
+      new DrawBunny(this.eventBus, this.ctx, W, H),
+      new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS),
+      new DrawGhosts(this.eventBus, this.ctx, W, H),
+      this._deer = new DrawDeer(this.eventBus, this.ctx, W, H),
+      this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H),
+    ]);
   }
 
   /**
@@ -77,31 +71,11 @@ export class Scene {
    */
   initialise() {
     Events.registerAll(this.eventBus);
-    this._registerDefaultComponents();
     this._setupCanvasEvents();
     this._refreshUI();
-    this._components.forEach(c => c.initialise(this.state));
+    this._components.initialise(this.state);
 
     this._loop = this._loop.bind(this);
-  }
-
-  /**
-   * register up all the built-in components in the correct draw order.
-   */
-  _registerDefaultComponents() {
-    this.register(this._world);
-    this.register(this._ghosts);
-    this.register(this._bgTrees);
-    this.register(this._birds);
-    this.register(this._fgTrees);
-    this.register(this._specialEvents);
-    this.register(this._lightning);
-    this.register(this._deer);
-    this.register(this._hedgehog);
-    this.register(this._bunny);
-    this.register(this._fox);
-    this.register(this._particles);
-    this.register(this._weather);
   }
 
   /**
@@ -139,8 +113,8 @@ export class Scene {
       this._setButtonsDisabled(false);
     };
 
-    this._components.forEach(c => c.tick(state, setStatus, enableButtons));
-    this._components.forEach(c => c.draw(state));
+    this._components.tick(state, setStatus, enableButtons);
+    this._components.draw(state);
     this._particles.drawCanopyLeaves(state);
 
     requestAnimationFrame(this._loop);

@@ -21,6 +21,17 @@ export class Component {
   initialise(state) {}
 
   /**
+   * is this component enabled this frame?
+   * if returns `false`, we do not tick or draw this component.
+   * (this is not enforced in this class and should be done elsewhere.)
+   * @param {SceneState} state
+   * @returns {boolean} is the component enabled? (defaults to true)
+   */
+  isEnabled(state) {
+    return true;
+  }
+
+  /**
    * draw this component.
    * @param {SceneState} state
    */
