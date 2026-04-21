@@ -1,4 +1,4 @@
-import {DrawComponent} from "../core/DrawComponent";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * ...
