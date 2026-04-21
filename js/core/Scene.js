@@ -11,11 +11,14 @@ import {DrawAirborne} from '@/animals/DrawAirborne';
 import {DrawHedgehog} from '@/animals/DrawHedgehog';
 import {DrawDeer} from '@/animals/DrawDeer';
 import {Events} from "@/event/Events";
-import {DrawSpecialEvents} from "@/drawing/DrawSpecialEvents";
 import {DrawGhosts} from "@/animals/DrawGhosts";
 import {ComponentGroup} from "./ComponentGroup";
 import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";
 import {GroundBackdropComponents, SkyBackdropComponents} from "@/components/backdrop/components";
+import {GravestoneComponent} from "@/components/halloween/GravestoneComponent";
+import {ScarecrowComponent} from "@/components/halloween/ScarecrowComponent";
+import {SnowmenComponent} from "@/components/christmas/SnowmenComponent";
+import {PresentsComponent} from "@/components/christmas/PresentsComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -53,7 +56,12 @@ export class Scene {
       new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
 
-      new DrawSpecialEvents(this.eventBus, this.ctx, W, H),
+      new GravestoneComponent(this.eventBus, this.ctx, W, H),
+      new ScarecrowComponent(this.eventBus, this.ctx, W, H),
+
+      new SnowmenComponent(this.eventBus, this.ctx, W, H),
+      new PresentsComponent(this.eventBus, this.ctx, W, H),
+
       this._particles = new DrawParticles(this.eventBus, this.ctx, W, H),
       new DrawBackgroundTrees(this.eventBus, this.ctx),
       new DrawForegroundTrees(this.eventBus, this.ctx),
