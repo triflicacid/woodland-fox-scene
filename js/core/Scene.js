@@ -1,7 +1,6 @@
 import {CANVAS, TREE_DEFS} from '../config.js';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '../event/EventBus.js';
-import {DrawWorld} from '../drawing/DrawWorld.js';
 import {DrawParticles} from '../drawing/DrawParticles.js';
 import {DrawBackgroundTrees, DrawForegroundTrees} from '../drawing/DrawTrees.js';
 import {DrawWeather} from '../drawing/DrawWeather.js';
@@ -15,6 +14,23 @@ import {Events} from "../event/Events.js";
 import {DrawSpecialEvents} from "../drawing/DrawSpecialEvents.js";
 import {DrawGhosts} from "../animals/DrawGhosts.js";
 import {ComponentGroup} from "./ComponentGroup.js";
+import {TimeOfDayComponent} from "../components/TimeOfDayComponent.js";
+import {SkyBackdropComponent} from "../components/backdrop/sky/SkyBackdropComponent.js";
+import {MoonComponent} from "../components/backdrop/sky/MoonComponent.js";
+import {AuroraComponent} from "../components/backdrop/sky/AuroraComponent.js";
+import {StarsComponent} from "../components/backdrop/sky/StarsComponent.js";
+import {SunComponent} from "../components/backdrop/sky/SunComponent.js";
+import {DuskGlowComponent} from "../components/backdrop/sky/DuskGlowComponent.js";
+import {CloudsComponent} from "../components/backdrop/sky/CloudsComponent.js";
+import {MistComponent} from "../components/backdrop/sky/MistComponent.js";
+import {GroundComponent} from "../components/backdrop/ground/GroundComponent.js";
+import {UndergrowthComponent} from "../components/backdrop/ground/UndergrowthComponent.js";
+import {FallenLeavesComponent} from "../components/backdrop/ground/FallenLeavesComponent.js";
+import {SnowDriftsComponent} from "../components/backdrop/ground/SnowDriftsComponent.js";
+import {SpringFlowersComponent} from "../components/backdrop/ground/SpringFlowersComponent.js";
+import {PuddlesComponent} from "../components/backdrop/ground/PuddlesComponent.js";
+import {GrassComponent} from "../components/backdrop/ground/GrassComponent.js";
+import {WormsComponent} from "../components/backdrop/ground/WormsComponent.js";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -46,11 +62,28 @@ export class Scene {
     // store the event bus for this scene
     this.eventBus = new EventBus();
 
-    ;
-
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, [
-      new DrawWorld(this.eventBus, this.ctx, W, H),
+      new TimeOfDayComponent(this.eventBus),
+
+      new SkyBackdropComponent(this.eventBus, this.ctx, W, H),
+      new StarsComponent(this.eventBus, this.ctx, W, H),
+      new MoonComponent(this.eventBus, this.ctx, W, H),
+      new SunComponent(this.eventBus, this.ctx, W, H),
+      new DuskGlowComponent(this.eventBus, this.ctx, W, H),
+      new AuroraComponent(this.eventBus, this.ctx, W, H),
+      new CloudsComponent(this.eventBus, this.ctx, W, H),
+      new MistComponent(this.eventBus, this.ctx, W, H), // TODO ??
+
+      new GroundComponent(this.eventBus, this.ctx, W, H),
+      new UndergrowthComponent(this.eventBus, this.ctx, W, H),
+      new FallenLeavesComponent(this.eventBus, this.ctx, W, H),
+      new SnowDriftsComponent(this.eventBus, this.ctx, W, H),
+      new SpringFlowersComponent(this.eventBus, this.ctx, W, H),
+      new PuddlesComponent(this.eventBus, this.ctx, W, H),
+      new WormsComponent(this.eventBus, this.ctx, W, H),
+      new GrassComponent(this.eventBus, this.ctx, W, H),
+
       new DrawSpecialEvents(this.eventBus, this.ctx, W, H),
       this._particles = new DrawParticles(this.eventBus, this.ctx, W, H),
       new DrawBackgroundTrees(this.eventBus, this.ctx),

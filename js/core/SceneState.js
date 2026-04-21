@@ -197,6 +197,21 @@ export class SceneState {
   }
 
   /**
+   * are we currently in night-time?
+   */
+  isNight() {
+    return this.todBlend < 0.8;
+  }
+
+  /**
+   * are we currently in day-time?
+   * (note the overlap with `isNight`; this is because we also count transitioning)
+   */
+  isDay() {
+    return this.todBlend > 0.2;
+  }
+
+  /**
    * create a new raindrop particle (or reset an existing one).
    * @returns {Object}
    */
