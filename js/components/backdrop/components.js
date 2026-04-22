@@ -15,6 +15,7 @@ import {PuddlesComponent} from "@/components/backdrop/ground/PuddlesComponent";
 import {WormsComponent} from "@/components/backdrop/ground/WormsComponent";
 import {GrassComponent} from "@/components/backdrop/ground/GrassComponent";
 import {SkyBackdropComponent} from "@/components/backdrop/sky/SkyBackdropComponent";
+import {CometComponent} from "@/components/backdrop/sky/CometComponent";
 
 /**
  * group together backdrop ground components
@@ -64,6 +65,7 @@ export class SkyBackdropComponents extends ComponentGroup {
     this._components = [
       new SkyBackdropComponent(eventBus, ctx, W, H),
       new StarsComponent(eventBus, ctx, W, H),
+      new CometComponent(eventBus, ctx, W, H),
       new MoonComponent(eventBus, ctx, W, H),
       new SunComponent(eventBus, ctx, W, H),
       new DuskGlowComponent(eventBus, ctx, W, H),
