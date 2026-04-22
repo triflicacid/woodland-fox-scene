@@ -5,7 +5,6 @@ import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/T
 import {LightningComponent} from "@/components/weather/LightningComponent";
 import {DrawFox} from '@/animals/DrawFox';
 import {DrawBunny} from '@/animals/DrawBunny';
-import {DrawAirborne} from '@/animals/DrawAirborne';
 import {DrawHedgehog} from '@/animals/DrawHedgehog';
 import {DrawDeer} from '@/animals/DrawDeer';
 import {Events} from "@/event/Events";
@@ -27,6 +26,9 @@ import {RainComponent} from "@/components/weather/RainComponent";
 import {SnowflakesComponent} from "@/components/weather/SnowflakesComponent";
 import {WindComponent} from "@/components/weather/WindComponent";
 import {FogOverlayComponent} from "@/components/weather/FogOverlayComponent";
+import {BirdsComponent} from "@/components/animals/BirdsComponent";
+import {BatsComponent} from "@/components/animals/BatsComponent";
+import {OwlComponent} from "@/components/animals/OwlComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -89,9 +91,12 @@ export class Scene {
       new WindComponent(this.eventBus, this.ctx, W, H),
       new FogOverlayComponent(this.eventBus, this.ctx, W, H),
 
+      new BatsComponent(this.eventBus, this.ctx, W, H),
+      this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
+      new OwlComponent(this.eventBus, this.ctx, W, H),
+
       new DrawFox(this.eventBus, this.ctx, W, H),
       new DrawBunny(this.eventBus, this.ctx, W, H),
-      new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS),
       new DrawGhosts(this.eventBus, this.ctx, W, H),
       this._deer = new DrawDeer(this.eventBus, this.ctx, W, H),
       this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H),
@@ -214,16 +219,9 @@ export class Scene {
       }
 
       // click on a tree top to startle a bird
-      TREE_DEFS.slice(0, 8).forEach(tr => {
+      TREE_DEFS.forEach(tr => {
         if (Math.abs(cx - tr.x) < tr.r && cy < H * 0.62 && cy > H * 0.62 - tr.h * 0.7) {
-          if (this._birdsActive()) {
-            const {rnd, prob} = {rnd: n => Math.random() * n, prob: n => Math.random() < n};
-            state.windStartledBirds.push({
-              x: tr.x, y: H * 0.62 - tr.h * 0.5,
-              vx: (2 + rnd(3)) * (prob(0.5) ? 1 : -1), vy: -(3 + rnd(2)),
-              flapT: 0, flapSpeed: 0.18, scale: 0.8 + rnd(0.3), life: 0,
-            });
-          }
+          this._birds.spawnStartledBird(state, tr);
         }
       });
     });

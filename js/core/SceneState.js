@@ -1,5 +1,5 @@
 import {FOX, PALETTES} from '@/config';
-import {clamp, eo, lerp, prob, rnd, rndf} from '@/utils';
+import {clamp, eo, lerp, rnd, rndf} from '@/utils';
 
 /**
  * SceneState manages the mutable state of the scene:
@@ -93,15 +93,6 @@ export class SceneState {
     // birds/owl state
     this.owlForced = false;
     this.windWasOn = false;
-    this.windStartledBirds = [];
-
-    this.owl = {
-      headAngle: 0,
-      headTarget: 0,
-      headTimer: 0,
-      blinkT: -1,
-      treeIdx: 6,
-    };
 
     // active lightning bolts
     this.bolts = [];
@@ -138,29 +129,6 @@ export class SceneState {
       y: H * 0.68 + rnd(H * 0.1),
       rx: 0, maxRx: 20 + rnd(25),
       ry: 0, maxRy: 5 + rnd(4),
-    }));
-
-    // birds
-    this.perchBirds = Array.from({length: 5}, (_, i) => ({
-      treeIdx: [0, 2, 6, 7, 1][i],
-      offset: [-0.7, -0.6, -0.55, -0.65, -0.5][i],
-      side: [1, -1, 1, -1, 1][i],
-    }));
-    this.flockBirds = Array.from({length: 12}, () => ({
-      x: rnd(W),
-      y: 20 + rnd(H * 0.25),
-      vx: 0.4 + rnd(0.5),
-      vy: 0,
-      flapT: rnd(Math.PI * 2),
-      flapSpeed: 0.08 + rnd(0.04),
-      scale: 0.7 + rnd(0.5),
-    }));
-    this.bats = Array.from({length: 6}, () => ({
-      x: rnd(W),
-      y: 40 + rnd(H * 0.3),
-      vx: (0.8 + rnd(0.6)) * (prob(0.5) ? 1 : -1),
-      flapT: rnd(Math.PI * 2),
-      flapSpeed: 0.14 + rnd(0.06),
     }));
 
     // butterflies
