@@ -1,5 +1,5 @@
 import {FOX, PALETTES} from '@/config';
-import {clamp, eo, lerp, rnd, rndf} from '@/utils';
+import {clamp, eo, lerp, rnd} from '@/utils';
 
 /**
  * SceneState manages the mutable state of the scene:
@@ -74,17 +74,7 @@ export class SceneState {
 
     this.puddleLevel = 0;
 
-    // fallen canopy leaves (autumn wind)
-    this.canopyLeaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
-
     // ground decoration
-    this.fallenLeaves = Array.from({length: 80}, () => ({
-      x: rnd(W),
-      y: H * 0.62 + rnd(H * 0.25),
-      size: 3 + rnd(4),
-      rot: rnd(Math.PI * 2),
-      hueOff: rndf(10),
-    }));
     this.puddles = Array.from({length: 5}, (_, i) => ({
       x: 120 + i * 110,
       y: H * 0.68 + rnd(H * 0.1),
@@ -138,40 +128,6 @@ export class SceneState {
     p.len = 8 + rnd(14);
     p.speed = 12 + rnd(8);
     return p;
-  }
-
-  /**
-   * create or reset a canopy-leaf particle.
-   * @param {Array} trees - tree definitions array (needed for source position)
-   * @returns {Object}
-   */
-  makeCanopyLeaf(trees) {
-    const candidates = [trees[0], trees[2], trees[6], trees[7]];
-    const tr = candidates[Math.floor(rnd(4))];
-    return {
-      x: tr.x + rndf(tr.r),
-      y: this.H * 0.62 - tr.h * 0.5,
-      vx: rndf(1.5),
-      vy: 0.3 + rnd(0.8),
-      rot: rnd(Math.PI * 2),
-      drot: rndf(0.08),
-      hue: 15 + rnd(30),
-      active: false,
-      timer: rnd(300) | 0,
-    };
-  }
-
-  /**
-   * create a canopy leaf without tree data (used at init before trees are set up).
-   * @returns {Object}
-   */
-  _makeCanopyLeaf() {
-    return {
-      x: rnd(this.W), y: this.H * 0.62,
-      vx: rndf(1.5), vy: 0.3 + rnd(0.8),
-      rot: rnd(Math.PI * 2), drot: rndf(0.08),
-      hue: 15 + rnd(30), active: false, timer: rnd(300) | 0,
-    };
   }
 
   /**

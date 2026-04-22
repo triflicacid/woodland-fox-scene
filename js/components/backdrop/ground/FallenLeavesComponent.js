@@ -1,18 +1,33 @@
 import {DrawComponent} from "@/core/DrawComponent";
+import {rnd, rndf} from "@/utils";
 
 /**
  * render fallen/littered leaves during autumn
  */
 export class FallenLeavesComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  leaves;
+
+  initialise(state) {
+    const {W, H} = this;
+    this.leaves = Array.from({length: 80}, () => ({
+      x: rnd(W),
+      y: H * 0.62 + rnd(H * 0.25),
+      size: 3 + rnd(4),
+      rot: rnd(Math.PI * 2),
+      hueOff: rndf(10),
+    }));
+  }
+
   isEnabled(state) {
     return state.season === 'autumn';
   }
 
   draw(state) {
     const {ctx, W, H} = this;
-    const {frame, weather, fallenLeaves} = state;
+    const {frame, weather} = state;
 
-    fallenLeaves.forEach(l => {
+    this.leaves.forEach(l => {
       ctx.save();
       ctx.translate(l.x, l.y);
       ctx.rotate(l.rot + Math.sin(frame * 0.01 + l.x * 0.05) * (weather === 'wind' ? 0.35 : 0.1));
@@ -34,7 +49,7 @@ export class FallenLeavesComponent extends DrawComponent {
 
     // wind-carried leaves
     if (weather === 'wind' || weather === 'storm') {
-      fallenLeaves.slice(0, 25).forEach((l, i) => {
+      this.leaves.slice(0, 25).forEach((l, i) => {
         const fl = (l.x + frame * 2 * (1 + i * 0.05)) % W;
         const fy = H * 0.55 + Math.sin(frame * 0.05 + i) * 30;
         ctx.save();

@@ -1,21 +1,46 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {rnd} from "@/utils";
+import {rnd, rndf} from "@/utils";
 
 /**
  * render autumn canopy leaves dislodged by wind
  */
 export class AutumnBlowingLeavesComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  leaves;
+
+  initialise(state) {
+    this.leaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
+  }
+
+  /**
+   * create a canopy leaf without tree data (used at init before trees are set up).
+   * @returns {Object}
+   */
+  _makeCanopyLeaf() {
+    return {
+      x: rnd(this.W),
+      y: this.H * 0.62,
+      vx: rndf(1.5),
+      vy: 0.3 + rnd(0.8),
+      rot: rnd(Math.PI * 2),
+      drot: rndf(0.08),
+      hue: 15 + rnd(30),
+      active: false,
+      timer: rnd(300) | 0,
+    };
+  }
+
   tick(state, setStatus, enableButtons) {
     const {H} = this;
-    const {season, weather, canopyLeaves} = state;
+    const {season, weather} = state;
     const shouldFall = season === 'autumn' && (weather === 'wind' || weather === 'storm');
 
-    canopyLeaves.forEach(l => {
+    this.leaves.forEach(l => {
       if (!l.active) { // TODO debug, this doesn't feel right
         if (shouldFall) {
           l.timer--;
           if (l.timer <= 0) {
-            Object.assign(l, state._makeCanopyLeaf());
+            Object.assign(l, this._makeCanopyLeaf());
             l.active = true;
           }
         }
@@ -33,9 +58,8 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
 
   draw(state) {
     const {ctx} = this;
-    const {canopyLeaves} = state;
 
-    canopyLeaves
+    this.leaves
         .filter(l => l.active)
         .forEach(l => {
           ctx.save();
