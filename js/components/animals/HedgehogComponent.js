@@ -1,32 +1,19 @@
-import {clamp, eo, lerp, prob} from '../utils.js';
-import {PROBABILITY} from '../config.js';
-import {Component} from '../core/component.js';
+import {clamp, eo, lerp, prob} from '@/utils';
+import {PROBABILITY} from '@/config';
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
- * DrawHedgehog manages hedgehog state (waddling in, sniffing, leaving) and rendering.
- * only appears in autumn, triggered by low probability each frame.
+ * render a hedgehog which occasionally walks into frame
  */
-export class DrawHedgehog extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
-  }
+export class HedgehogComponent extends DrawComponent {
+  hog = {
+    x: -60,
+    phase: 'off',
+    phaseT: 0,
+  };
 
-  /**
-   * tick hedgehog phase state and draw if visible.
-   * @param {SceneState} state
-   */
-  // TODO split
-  draw(state) {
-    const hog = state.hog;
+  tick(state, setStatus, enableButtons) {
+    const {hog} = this;
     const {fox, bunny, season} = state;
 
     // spontaneous arrival in autumn
@@ -56,38 +43,23 @@ export class DrawHedgehog extends Component {
       hog.x = lerp(fox.x - 90, this.W + 80, eo(clamp(hog.phaseT / 280, 0, 1)));
       if (hog.phaseT >= 280) hog.phase = 'off';
     }
+  }
 
-    if (hog.phase !== 'off') {
-      const facingRight = hog.phase === 'in' || hog.phase === 'out';
-      this._drawHedgehog(hog.x, this.H * 0.62 - 4, facingRight, state.frame);
+  draw(state) {
+    const {ctx, hog} = this;
+    if (hog.phase === 'off') {
+      return;
     }
-  }
 
-  /**
-   * summon the hedgehog immediately (called by the summon button).
-   * @param {SceneState} state
-   */
-  summon(state) {
-    state.hog.phase = 'in';
-    state.hog.phaseT = 0;
-    state.hog.x = -60;
-  }
+    const x = hog.x;
+    const y = this.H * 0.62 - 5;
+    const facingRight = hog.phase === 'in' || hog.phase === 'out';
+    const waddle = Math.sin(state.frame * 0.14) * 2.5;
 
-  /**
-   * draw the hedgehog sprite.
-   * @param {number} x
-   * @param {number} y
-   * @param {boolean} facingRight
-   * @param {number} frame
-   */
-  _drawHedgehog(x, y, facingRight, frame) {
-    const {ctx} = this;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(1.4, 1.4);
     if (facingRight) ctx.scale(-1, 1);
-
-    const waddle = Math.sin(frame * 0.14) * 2.5;
 
     // legs
     ctx.strokeStyle = '#6a4020';
@@ -181,5 +153,14 @@ export class DrawHedgehog extends Component {
     ctx.fill();
 
     ctx.restore();
+  }
+
+  /**
+   * summon the hedgehog immediately (called by the summon button)
+   */
+  summon() {
+    this.hog.phase = 'in';
+    this.hog.phaseT = 0;
+    this.hog.x = -60;
   }
 }

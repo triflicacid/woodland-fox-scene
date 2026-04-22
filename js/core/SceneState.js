@@ -75,21 +75,6 @@ export class SceneState {
     // contains heart particles
     this.hearts = [];
 
-    // deer state
-    this.deer = {
-      x: W + 80,
-      phase: 'off',
-      phaseT: 0,
-      cooldown: 0,
-    };
-
-    // hedgehog state
-    this.hog = {
-      x: -60,
-      phase: 'off',
-      phaseT: 0,
-    };
-
     // birds/owl state
     this.owlForced = false;
     this.windWasOn = false;

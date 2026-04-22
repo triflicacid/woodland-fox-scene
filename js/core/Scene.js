@@ -5,8 +5,8 @@ import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/T
 import {LightningComponent} from "@/components/weather/LightningComponent";
 import {DrawFox} from '@/animals/DrawFox';
 import {DrawBunny} from '@/animals/DrawBunny';
-import {DrawHedgehog} from '@/animals/DrawHedgehog';
-import {DrawDeer} from '@/animals/DrawDeer';
+import {HedgehogComponent} from '@/components/animals/HedgehogComponent';
+import {DeerComponent} from '@/components/animals/DeerComponent';
 import {Events} from "@/event/Events";
 import {GhostsComponent} from "@/components/halloween/GhostsComponent";
 import {ComponentGroup} from "./ComponentGroup";
@@ -98,8 +98,8 @@ export class Scene {
       new DrawFox(this.eventBus, this.ctx, W, H),
       new DrawBunny(this.eventBus, this.ctx, W, H),
       new GhostsComponent(this.eventBus, this.ctx, W, H),
-      this._deer = new DrawDeer(this.eventBus, this.ctx, W, H),
-      this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H),
+      this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
+      this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
     ]);
   }
 
@@ -307,7 +307,7 @@ export class Scene {
     });
 
     // animal / reaction summon buttons
-    document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon(state));
+    document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon());
     document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon(state));
     document.getElementById('btn-owl')?.addEventListener('click', function() {
       state.owlForced = !state.owlForced;
@@ -374,17 +374,5 @@ export class Scene {
     fox.earTwitchT = 0;
     fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
     this.statusEl.textContent = "The fox's ear twitches...";
-  }
-
-  /**
-   * return true if daytime birds are currently active (used for click-startle).
-   * @returns {boolean}
-   */
-  _birdsActive() {
-    const {season, todBlend, weather} = this.state;
-    if (season === 'winter') return false;
-    if (todBlend <= 0.4) return false;
-    if (weather === 'storm' || weather === 'wind') return false;
-    return true;
   }
 }
