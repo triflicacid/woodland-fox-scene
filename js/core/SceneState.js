@@ -74,9 +74,6 @@ export class SceneState {
 
     this.puddleLevel = 0;
 
-    // woodsmoke
-    this.smoke = Array.from({length: 12}, (_, i) => this._makeSmoke(i));
-
     // fallen canopy leaves (autumn wind)
     this.canopyLeaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
 
@@ -175,40 +172,6 @@ export class SceneState {
       rot: rnd(Math.PI * 2), drot: rndf(0.08),
       hue: 15 + rnd(30), active: false, timer: rnd(300) | 0,
     };
-  }
-
-  /**
-   * create or reset a smoke particle.
-   * @param {number} [i=0] - index used to stagger particles vertically
-   * @returns {Object}
-   */
-  _makeSmoke(i = 0) {
-    return {
-      x: 640 + rndf(3),
-      y: this.H * 0.62 - 50 - i * 8,
-      vx: rndf(0.3) + 0.2,
-      vy: -0.4 - rnd(0.3),
-      size: 4 + i * 1.5,
-      alpha: 0.18 - i * 0.013,
-      life: 0,
-    };
-  }
-
-  /**
-   * reset an existing smoke particle.
-   * @param {Object} p
-   * @param {number} [i=0]
-   * @returns {Object}
-   */
-  resetSmoke(p, i = 0) {
-    p.x = 640 + rndf(3);
-    p.y = this.H * 0.62 - 50 - i * 8;
-    p.vx = rndf(0.3) + 0.2;
-    p.vy = -0.4 - rnd(0.3);
-    p.size = 4 + i * 1.5;
-    p.alpha = 0.18 - i * 0.013;
-    p.life = 0;
-    return p;
   }
 
   /**
