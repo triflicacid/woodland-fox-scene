@@ -22,7 +22,6 @@ export class SceneState {
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
     this.specialEvent = localStorage.getItem('special_event') || null;
-    this.auroraOn = false;
 
     // prevent invalid combos on first load
     if (this.weather === 'snow' && this.season !== 'winter') this.weather = 'clear';
@@ -32,14 +31,6 @@ export class SceneState {
 
     // global animation frame counter
     this.frame = 0;
-
-    this.seasonLeafActive = false;
-    this.seasonLeaves = Array.from({length: 40}, () => ({
-      x: rnd(W), y: -rnd(200),
-      vx: rndf(1.5), vy: 1.5 + rnd(2),
-      rot: rnd(Math.PI * 2), drot: 0.04 + rnd(0.08),
-      hue: 20 + rnd(30), life: 0,
-    }));
 
     // fox state
     this.fox = {
@@ -77,23 +68,11 @@ export class SceneState {
 
     // birds/owl state
     this.owlForced = false;
-    this.windWasOn = false;
 
     // active lightning bolts
     this.bolts = [];
 
     this.puddleLevel = 0;
-
-    // aurora bands
-    this.auroraBands = Array.from({length: 6}, (_, i) => ({
-      phase: i * Math.PI * 0.35,
-      amp: 25 + rnd(45),
-      freq: 0.003 + rnd(0.003),
-      hue: i % 2 === 0 ? 45 + rnd(20) : 270 + rnd(40),
-      alpha: 0.10 + rnd(0.10),
-      width: 70 + rnd(70),
-      y: H * 0.07 + i * H * 0.07,
-    }));
 
     // woodsmoke
     this.smoke = Array.from({length: 12}, (_, i) => this._makeSmoke(i));
@@ -266,20 +245,8 @@ export class SceneState {
    */
   changeSeason(s) {
     if (s === this.season) return;
-    this.prevSeason = this.season;
     this.season = s;
     if (this.weather === 'snow' && s !== 'winter') this.weather = 'clear';
-    if (this.auroraOn && (s !== 'winter' || this.timeOfDay !== 'night')) this.auroraOn = false;
-    if (s === 'spring' || s === 'autumn') {
-      this.seasonLeafActive = true;
-      this.seasonLeaves.forEach(l => {
-        l.x = rnd(this.W);
-        l.y = -rnd(200);
-        l.life = 0;
-        l.vy = 1.5 + rnd(2);
-        l.hue = s === 'spring' ? 300 + rnd(60) : 15 + rnd(30);
-      });
-    }
     this.savePref();
   }
 

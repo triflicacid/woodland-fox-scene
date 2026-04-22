@@ -1,20 +1,48 @@
 import {DrawComponent} from "@/core/DrawComponent";
+import {rnd} from "@/utils";
+import {Events} from "@/event/Events";
 
 /**
  * draw the Aurora Borealis if enabled
  */
 export class AuroraComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  auroraBands;
+  on = false;
+
+  initialise(state) {
+    const {H} = this;
+    this.auroraBands = Array.from({length: 6}, (_, i) => ({
+      phase: i * Math.PI * 0.35,
+      amp: 25 + rnd(45),
+      freq: 0.003 + rnd(0.003),
+      hue: i % 2 === 0 ? 45 + rnd(20) : 270 + rnd(40),
+      alpha: 0.10 + rnd(0.10),
+      width: 70 + rnd(70),
+      y: H * 0.07 + i * H * 0.07,
+    }));
+
+    this.eventBus.subscribe(Events.seasonChangeSubscription("SeasonTransitionLeavesComponent", this._onSeasonChange.bind(this)));
+  }
+
+  /**
+   * @param {ValueChange<string>} update
+   */
+  _onSeasonChange(update) {
+    if (this.on && (update.updated !== 'winter' || update.state.timeOfDay !== 'night')) this.on = false;
+  }
+
   isEnabled(state) {
     // winter night only
-    return state.auroraOn && state.season === 'winter' && state.todBlend < 0.35;
+    return this.on && state.season === 'winter' && state.todBlend < 0.35;
   }
 
   draw(state) {
     const {ctx, W, H} = this;
-    const {frame, auroraBands} = state;
+    const {frame} = state;
 
     ctx.save();
-    auroraBands.forEach(b => {
+    this.auroraBands.forEach(b => {
       const g = ctx.createLinearGradient(0, b.y - b.width, 0, b.y + b.width);
       const shimmer = b.alpha + Math.sin(frame * 0.008 + b.phase) * 0.05;
       const hShift = Math.sin(frame * 0.003 + b.phase) * 18;
@@ -34,5 +62,12 @@ export class AuroraComponent extends DrawComponent {
       ctx.fill();
     });
     ctx.restore();
+  }
+
+  /**
+   * toggle the status of the aurora
+   */
+  toggle() {
+    this.on = !this.on;
   }
 }

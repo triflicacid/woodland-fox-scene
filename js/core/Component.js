@@ -15,6 +15,14 @@ export class Component {
   }
 
   /**
+   * get the name of this component
+   * @returns {string}
+   */
+  getName() {
+    return this.constructor.name;
+  }
+
+  /**
    * called once after scene has been initialised
    * @param {SceneState} state
    */

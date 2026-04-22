@@ -32,19 +32,12 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
   }
 
   draw(state) {
-    const {ctx, H} = this;
-    const {season, weather, canopyLeaves} = state;
+    const {ctx} = this;
+    const {canopyLeaves} = state;
 
     canopyLeaves
         .filter(l => l.active)
         .forEach(l => {
-          l.x += l.vx + (weather === 'wind' ? 1.5 : 0);
-          l.y += l.vy;
-          l.rot += l.drot;
-          if (l.y > H * 0.63) {
-            l.active = false;
-            l.timer = rnd(120) | 0;
-          }
           ctx.save();
           ctx.translate(l.x, l.y);
           ctx.rotate(l.rot);

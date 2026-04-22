@@ -29,6 +29,7 @@ import {FogOverlayComponent} from "@/components/weather/FogOverlayComponent";
 import {BirdsComponent} from "@/components/animals/BirdsComponent";
 import {BatsComponent} from "@/components/animals/BatsComponent";
 import {OwlComponent} from "@/components/animals/OwlComponent";
+import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -100,6 +101,7 @@ export class Scene {
       this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
       this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
     ]);
+    this._aurora = this._components.getComponent("AuroraComponent");
   }
 
   /**
@@ -177,7 +179,7 @@ export class Scene {
         document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.timeOfDay === s));
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(s =>
         document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.weather === s));
-    document.getElementById('btn-aurora')?.classList.toggle('btn-active', state.auroraOn);
+    document.getElementById('btn-aurora')?.classList.toggle('btn-active', this._aurora.on);
 
     const snowBtn = document.getElementById('btn-snow');
     const auroraBtn = document.getElementById('btn-aurora');
@@ -270,8 +272,8 @@ export class Scene {
           const oldSeason = state.season;
           state.changeSeason(s);
           this._clearInvalidSpecialEvent();
-          this._refreshUI();
           this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
+          this._refreshUI();
         }));
 
     // time of day buttons
@@ -301,7 +303,7 @@ export class Scene {
     // aurora toggle
     document.getElementById('btn-aurora')?.addEventListener('click', () => {
       if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
-      state.auroraOn = !state.auroraOn;
+      this._aurora.toggle();
       this._refreshUI();
     });
 

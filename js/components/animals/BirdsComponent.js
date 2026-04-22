@@ -12,6 +12,7 @@ export class BirdsComponent extends DrawComponent {
   windStartledBirds;
   /** @type{Array<Object>} */
   flyingBirds;
+  windWasOn = false;
 
 
   initialise(state) {
@@ -36,7 +37,7 @@ export class BirdsComponent extends DrawComponent {
     const {weather, season, frame, specialEvent} = state;
 
     // trigger wind-startled birds when wind begins
-    if (weather === 'wind' && !state.windWasOn) {
+    if (weather === 'wind' && !this.windWasOn) {
       this.perchedBirds.forEach(pb => {
         const tr = state.trees[pb.treeIdx];
         const top = getTreeTopPos(tr, weather, season, specialEvent, frame, this.H);
@@ -51,9 +52,9 @@ export class BirdsComponent extends DrawComponent {
           life: 0,
         });
       });
-      state.windWasOn = true;
+      this.windWasOn = true;
     }
-    if (weather !== 'wind' && weather !== 'storm') state.windWasOn = false;
+    if (weather !== 'wind' && weather !== 'storm') this.windWasOn = false;
 
     // wind-startled birds
     this.windStartledBirds = this.windStartledBirds.filter(b => {

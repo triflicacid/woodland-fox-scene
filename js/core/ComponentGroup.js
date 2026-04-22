@@ -22,6 +22,25 @@ export class ComponentGroup extends Component {
     this._components.push(component);
   }
 
+  /**
+   * return the component with the given name
+   * @param {string} name name of the component, as returned by `Component::getName`
+   * @returns {null | Component}
+   */
+  getComponent(name) {
+    for (const component of this._components) {
+      if (component instanceof ComponentGroup) {
+        const found = component.getComponent(name);
+        if (found !== null) {
+          return found;
+        }
+      } else if (component.getName() === name) {
+        return component;
+      }
+    }
+    return null;
+  }
+
   initialise(state) {
     this._components.forEach(c => c.initialise(state));
   }
