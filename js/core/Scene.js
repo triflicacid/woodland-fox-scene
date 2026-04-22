@@ -3,8 +3,8 @@ import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
 import {LightningComponent} from "@/components/weather/LightningComponent";
-import {DrawFox} from '@/animals/DrawFox';
-import {DrawBunny} from '@/animals/DrawBunny';
+import {FoxComponent} from '@/components/animals/FoxComponent';
+import {BunnyComponent} from '@/components/animals/BunnyComponent';
 import {HedgehogComponent} from '@/components/animals/HedgehogComponent';
 import {DeerComponent} from '@/components/animals/DeerComponent';
 import {Events} from "@/event/Events";
@@ -94,9 +94,8 @@ export class Scene {
       new BatsComponent(this.eventBus, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.ctx, W, H),
-
-      new DrawFox(this.eventBus, this.ctx, W, H),
-      new DrawBunny(this.eventBus, this.ctx, W, H),
+      new FoxComponent(this.eventBus, this.ctx, W, H),
+      new BunnyComponent(this.eventBus, this.ctx, W, H),
       new GhostsComponent(this.eventBus, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
       this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
@@ -308,7 +307,7 @@ export class Scene {
 
     // animal / reaction summon buttons
     document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon());
-    document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon(state));
+    document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon());
     document.getElementById('btn-owl')?.addEventListener('click', function() {
       state.owlForced = !state.owlForced;
       this.classList.toggle('btn-active');

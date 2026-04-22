@@ -1,27 +1,17 @@
-import {rnd} from '../utils.js';
-import {Component} from "../core/Component";
+import {rnd} from '@/utils';
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
- * DrawBunny manages the bunny visit sequence:
- * hopping in, waking the fox, nuzzling, and hopping out.
+ * render bunny which hops to greet the fox
  */
-export class DrawBunny extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
+export class BunnyComponent extends DrawComponent {
+  isEnabled(state) {
+    const phase = state.bunny.phase;
+    return !(phase === 'off' || phase === 'done');
   }
 
   tick(state, setStatus, enableButtons) {
     const {bunny, fox} = state;
-    if (bunny.phase === 'off' || bunny.phase === 'done') return;
     bunny.phaseT++;
 
     if (bunny.phase === 'hopping_in') {
@@ -90,7 +80,6 @@ export class DrawBunny extends Component {
   draw(state) {
     const {ctx} = this;
     const {bunny, fox} = state;
-    if (bunny.phase === 'off' || bunny.phase === 'done') return;
 
     this._drawBunny(bunny.x, bunny.y, bunny.hop.arc);
 
