@@ -1,32 +1,22 @@
-import {rnd, rndf} from '../utils.js';
-import {Component} from '../core/Component.js';
-import {Events} from "../event/Events";
+import {rnd, rndf} from '@/utils';
+import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/event/Events";
 
 /**
- * DrawGhosts manages ghost rendering and state.
- * This is separate to DrawAirborne so we can layer ghosts behind.
+ * render floating ghosts during Halloween
  */
-export class DrawGhosts extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
-
-    /** @type {Array<object>} */
-    this._ghosts = [];
-  }
+export class GhostsComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  ghosts;
 
   initialise(state) {
     this.eventBus.subscribe(Events.weatherChangeSubscription("DrawAirborne", this._onWeatherChange.bind(this)));
 
     this._generateGhosts(state);
+  }
+
+  isEnabled(state) {
+    return state.specialEvent === 'halloween';
   }
 
   /**
@@ -43,7 +33,7 @@ export class DrawGhosts extends Component {
   _generateGhosts(state) {
     const {H} = this;
     const length = state.weather === 'storm' ? 9 : 5;
-    this._ghosts = Array.from({length}, (_, i) => ({
+    this.ghosts = Array.from({length}, (_, i) => ({
       x: 80 + i * 130 + rndf(30),
       y: H * 0.15 + rnd(H * 0.25),
       vx: (0.3 + rnd(0.3)) * (i % 2 === 0 ? 1 : -1),
@@ -52,11 +42,9 @@ export class DrawGhosts extends Component {
   }
 
   draw(state) {
-    if (state.specialEvent !== 'halloween') return;
-
     const {ctx} = this;
     const {frame} = state;
-    this._ghosts.forEach(g => {
+    this.ghosts.forEach(g => {
       const bob = Math.sin(frame * 0.025 + g.phase) * 8;
       const y = g.y + bob;
 
@@ -90,10 +78,8 @@ export class DrawGhosts extends Component {
   }
 
   tick(state, _1, _2) {
-    if (state.specialEvent !== 'halloween') return;
-
     const {W} = this;
-    this._ghosts.forEach(g => {
+    this.ghosts.forEach(g => {
       g.x += g.vx;
       if (g.x > W + 50) g.x = -50;
       if (g.x < -50) g.x = W + 50;

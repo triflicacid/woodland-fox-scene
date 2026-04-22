@@ -8,7 +8,7 @@ import {DrawBunny} from '@/animals/DrawBunny';
 import {DrawHedgehog} from '@/animals/DrawHedgehog';
 import {DrawDeer} from '@/animals/DrawDeer';
 import {Events} from "@/event/Events";
-import {DrawGhosts} from "@/animals/DrawGhosts";
+import {GhostsComponent} from "@/components/halloween/GhostsComponent";
 import {ComponentGroup} from "./ComponentGroup";
 import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";
 import {GroundBackdropComponents, SkyBackdropComponents} from "@/components/backdrop/components";
@@ -97,7 +97,7 @@ export class Scene {
 
       new DrawFox(this.eventBus, this.ctx, W, H),
       new DrawBunny(this.eventBus, this.ctx, W, H),
-      new DrawGhosts(this.eventBus, this.ctx, W, H),
+      new GhostsComponent(this.eventBus, this.ctx, W, H),
       this._deer = new DrawDeer(this.eventBus, this.ctx, W, H),
       this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H),
     ]);
