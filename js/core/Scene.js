@@ -2,8 +2,7 @@ import {CANVAS, TREE_DEFS} from '@/config';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
-import {DrawWeather} from '@/drawing/DrawWeather';
-import {DrawLightning} from "@/drawing/DrawLightning";
+import {LightningComponent} from "@/components/weather/LightningComponent";
 import {DrawFox} from '@/animals/DrawFox';
 import {DrawBunny} from '@/animals/DrawBunny';
 import {DrawAirborne} from '@/animals/DrawAirborne';
@@ -24,6 +23,10 @@ import {HeartsComponent} from "@/components/particles/HeartsComponent";
 import {ButterfliesComponent} from "@/components/particles/ButterfliesComponent";
 import {SeasonTransitionLeavesComponent} from "@/components/particles/SeasonTransitionLeavesComponent";
 import {AutumnBlowingLeavesComponent} from "@/components/particles/AutumnBlowingLeavesComponent";
+import {RainComponent} from "@/components/weather/RainComponent";
+import {SnowflakesComponent} from "@/components/weather/SnowflakesComponent";
+import {WindComponent} from "@/components/weather/WindComponent";
+import {FogOverlayComponent} from "@/components/weather/FogOverlayComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -80,8 +83,12 @@ export class Scene {
       new SeasonTransitionLeavesComponent(this.eventBus, this.ctx, W, H),
       new AutumnBlowingLeavesComponent(this.eventBus, this.ctx, W, H),
 
-      new DrawLightning(this.eventBus, this.ctx, W, H),
-      new DrawWeather(this.eventBus, this.ctx, W, H),
+      new LightningComponent(this.eventBus, this.ctx, W, H),
+      new RainComponent(this.eventBus, this.ctx, W, H),
+      new SnowflakesComponent(this.eventBus, this.ctx, W, H),
+      new WindComponent(this.eventBus, this.ctx, W, H),
+      new FogOverlayComponent(this.eventBus, this.ctx, W, H),
+
       new DrawFox(this.eventBus, this.ctx, W, H),
       new DrawBunny(this.eventBus, this.ctx, W, H),
       new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS),

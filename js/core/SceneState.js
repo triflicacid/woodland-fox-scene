@@ -122,19 +122,6 @@ export class SceneState {
     // woodsmoke
     this.smoke = Array.from({length: 12}, (_, i) => this._makeSmoke(i));
 
-    // rain/snow/fog/wind particles
-    this.raindrops = Array.from({length: 200}, () => this._makeRain());
-    this.weatherSnow = Array.from({length: 120}, () => this._makeSnow());
-    this.fogParticles = Array.from({length: 14}, (_, i) => ({
-      x: (i / 14) * W * 1.3 - W * 0.15,
-      y: H * 0.3 + rnd(H * 0.4),
-      w: 100 + rnd(200),
-      h: 45 + rnd(65),
-      speed: 0.15 + rnd(0.2),
-      alpha: 0.04 + rnd(0.06),
-    }));
-    this.windDebris = Array.from({length: 50}, () => this._makeWind());
-
     // fallen canopy leaves (autumn wind)
     this.canopyLeaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
 
@@ -212,14 +199,6 @@ export class SceneState {
   }
 
   /**
-   * create a new raindrop particle (or reset an existing one).
-   * @returns {Object}
-   */
-  _makeRain() {
-    return {x: rnd(this.W), y: rnd(this.H), len: 8 + rnd(14), speed: 12 + rnd(8)};
-  }
-
-  /**
    * reset a raindrop to the top of the canvas.
    * @param {Object} p - existing particle
    * @returns {Object}
@@ -229,62 +208,6 @@ export class SceneState {
     p.y = rnd(this.H);
     p.len = 8 + rnd(14);
     p.speed = 12 + rnd(8);
-    return p;
-  }
-
-  /**
-   * create a new snowflake particle.
-   * @returns {Object}
-   */
-  _makeSnow() {
-    return {
-      x: rnd(this.W), y: -10 - rnd(this.H),
-      size: 1.5 + rnd(3), speed: 0.5 + rnd(0.8),
-      phase: rnd(Math.PI * 2),
-    };
-  }
-
-  /**
-   * reset a snowflake to the top of the canvas.
-   * @param {Object} p
-   * @returns {Object}
-   */
-  resetSnow(p) {
-    p.x = rnd(this.W);
-    p.y = -10 - rnd(this.H);
-    p.size = 1.5 + rnd(3);
-    p.speed = 0.5 + rnd(0.8);
-    p.phase = rnd(Math.PI * 2);
-    return p;
-  }
-
-  /**
-   * create a new wind-debris particle.
-   * @returns {Object}
-   */
-  _makeWind() {
-    return {
-      x: -30 - rnd(100),
-      y: this.H * 0.2 + rnd(this.H * 0.7),
-      vx: 4 + rnd(3),
-      vy: rndf(0.5),
-      len: 12 + rnd(22),
-      alpha: 0.2 + rnd(0.4),
-    };
-  }
-
-  /**
-   * reset a wind-debris particle off the left edge.
-   * @param {Object} p
-   * @returns {Object}
-   */
-  resetWind(p) {
-    p.x = -30 - rnd(100);
-    p.y = this.H * 0.2 + rnd(this.H * 0.7);
-    p.vx = 4 + rnd(3);
-    p.vy = rndf(0.5);
-    p.len = 12 + rnd(22);
-    p.alpha = 0.2 + rnd(0.4);
     return p;
   }
 

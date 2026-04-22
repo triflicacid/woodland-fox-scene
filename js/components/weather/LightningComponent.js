@@ -1,40 +1,16 @@
-import {prob, rnd, rndf} from '../utils.js';
-import {PROBABILITY} from '../config.js';
-import {Component} from '../core/component.js';
+import {prob, rnd, rndf} from '@/utils';
+import {PROBABILITY} from '@/config';
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
- * DrawWeather handles rendering lightning bolts.
- * This is separated from DrawWeather so bolts are more in the background.
+ * render lightning bolts during a storm
  */
-export class DrawLightning extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
+export class LightningComponent extends DrawComponent {
+  isEnabled(state) {
+    return state.weather === 'storm';
   }
 
   draw(state) {
-    const {weather} = state;
-    if (weather === 'storm') this._drawLightning(state);
-  }
-
-  tick(state, _1, _2) {
-    const {weather} = state;
-    if (weather === 'storm') this._tickLightning(state);
-  }
-
-  /**
-   * draw all active bolts and a combined canvas flash.
-   * @param {SceneState} state
-   */
-  _drawLightning(state) {
     const {ctx, W, H} = this;
     if (!state.bolts.length) return;
 
@@ -68,11 +44,7 @@ export class DrawLightning extends Component {
     });
   }
 
-  /**
-   * randomly spawn new bolts and advance existing ones.
-   * @param {SceneState} state
-   */
-  _tickLightning(state) {
+  tick(state, setStatus, enableButtons) {
     const {H} = this;
 
     // chance to spawn a new bolt each frame
