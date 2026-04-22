@@ -45,6 +45,7 @@ export const PROBABILITY = {
   HEDGEHOG: 0.004,
   DEER: 0.008,
   OWL_BLINK: 0.15,
+  COMET: 0.1,
 };
 
 /**
