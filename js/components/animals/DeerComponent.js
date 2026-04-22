@@ -1,27 +1,25 @@
-import {PROBABILITY} from "../config.js";
-import {clamp, eo, lerp, prob} from "../utils.js";
-import {Component} from '../core/component.js';
+import {PROBABILITY} from "@/config";
+import {clamp, eo, lerp, prob} from "@/utils";
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
- * DrawDeer manages deer state (entering, grazing, leaving) and rendering.
- * the deer appears spontaneously at dawn/dusk transitions.
+ * render a deer which sometimes walks into frame
  */
-export class DrawDeer extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
+export class DeerComponent extends DrawComponent {
+  /** @type{Object} */
+  deer;
+
+  initialise(state) {
+    this.deer = {
+      x: this.W + 80,
+      phase: 'off',
+      phaseT: 0,
+      cooldown: 0,
+    };
   }
 
-  draw(state) {
-    const deer = state.deer;
+  tick(state, setStatus, enableButtons) {
+    const {deer} = this;
     deer.cooldown--;
 
     if (deer.phase === 'off') {
@@ -59,41 +57,27 @@ export class DrawDeer extends Component {
         deer.x = this.W + 80;
       }
     }
+  }
 
-    if (deer.phase !== 'off') {
-      this._drawDeer(deer.x, this.H * 0.62 - 28, deer.phase === 'grazing', deer.phase === 'leaving', state.frame);
+  draw(state) {
+    const {ctx, deer} = this;
+    if (deer.phase === 'off') {
+      return;
     }
-  }
 
-  /**
-   * summon the deer immediately (called by the summon button).
-   * @param {SceneState} state
-   */
-  summon(state) {
-    state.deer.phase = 'entering';
-    state.deer.phaseT = 0;
-    state.deer.x = this.W + 80;
-    state.deer.cooldown = 2400;
-  }
+    const {frame} = state;
+    const x = deer.x;
+    const y = this.H * 0.62 - 28;
+    const grazing = deer.phase === 'grazing';
+    const facingRight = deer.phase === 'leaving';
+    const graze = grazing ? Math.sin(frame * 0.04) * 0.18 : 0;
+    const lb = Math.sin(frame * 0.09) * 2.5;
+    const sc = '#6a4020';
 
-  /**
-   * draw the deer sprite.
-   * @param {number} x
-   * @param {number} y
-   * @param {boolean} grazing - head down grazing pose
-   * @param {boolean} facingRight
-   * @param {number} frame
-   */
-  _drawDeer(x, y, grazing, facingRight, frame) {
-    const {ctx} = this;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(1.15, 1.15);
     if (facingRight) ctx.scale(-1, 1);
-
-    const graze = grazing ? Math.sin(frame * 0.04) * 0.18 : 0;
-    const lb = Math.sin(frame * 0.09) * 2.5;
-    const sc = '#6a4020';
 
     // legs
     ctx.strokeStyle = sc;
@@ -228,5 +212,15 @@ export class DrawDeer extends Component {
 
     ctx.restore(); // neck rotation
     ctx.restore(); // translate + scale
+  }
+
+  /**
+   * summon the deer immediately (called by the summon button).
+   */
+  summon() {
+    this.deer.phase = 'entering';
+    this.deer.phaseT = 0;
+    this.deer.x = this.W + 80;
+    this.deer.cooldown = 2400;
   }
 }

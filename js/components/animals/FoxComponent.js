@@ -1,25 +1,12 @@
-import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '../utils.js';
-import {FOX_PHASES, PROBABILITY} from '../config.js';
-import {Component} from '../core/component.js';
+import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '@/utils';
+import {FOX_PHASES, PROBABILITY} from '@/config';
+import {DrawComponent} from "@/core/DrawComponent";
 
 /**
- * DrawFox manages fox animation state ticking and all fox drawing.
+ * FoxComponent manages fox animation state ticking and all fox drawing.
  * it also handles the bunny interaction sequence.
  */
-export class DrawFox extends Component {
-  /**
-   * @param {EventBus} eventBus
-   * @param {CanvasRenderingContext2D} ctx
-   * @param {number} W
-   * @param {number} H
-   */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
-    this.ctx = ctx;
-    this.W = W;
-    this.H = H;
-  }
-
+export class FoxComponent extends DrawComponent {
   tick(state, setStatus, enableButtons) {
     const fox = state.fox;
     const {weather} = state;

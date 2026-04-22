@@ -1,19 +1,35 @@
-import {CANVAS, TREE_DEFS} from '../config.js';
+import {CANVAS, TREE_DEFS} from '@/config';
 import {SceneState} from './SceneState.js';
-import {EventBus} from '../event/EventBus.js';
-import {DrawWorld} from '../drawing/DrawWorld.js';
-import {DrawParticles} from '../drawing/DrawParticles.js';
-import {DrawBackgroundTrees, DrawForegroundTrees} from '../drawing/DrawTrees.js';
-import {DrawWeather} from '../drawing/DrawWeather.js';
-import {DrawLightning} from "../drawing/DrawLightning.js";
-import {DrawFox} from '../animals/DrawFox.js';
-import {DrawBunny} from '../animals/DrawBunny.js';
-import {DrawAirborne} from '../animals/DrawAirborne.js';
-import {DrawHedgehog} from '../animals/DrawHedgehog.js';
-import {DrawDeer} from '../animals/DrawDeer.js';
-import {Events} from "../event/Events.js";
-import {DrawSpecialEvents} from "../drawing/DrawSpecialEvents.js";
-import {DrawGhosts} from "../animals/DrawGhosts.js";
+import {EventBus} from '@/event/EventBus';
+import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
+import {LightningComponent} from "@/components/weather/LightningComponent";
+import {FoxComponent} from '@/components/animals/FoxComponent';
+import {BunnyComponent} from '@/components/animals/BunnyComponent';
+import {HedgehogComponent} from '@/components/animals/HedgehogComponent';
+import {DeerComponent} from '@/components/animals/DeerComponent';
+import {Events} from "@/event/Events";
+import {GhostsComponent} from "@/components/halloween/GhostsComponent";
+import {ComponentGroup} from "./ComponentGroup";
+import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";
+import {GroundBackdropComponents, SkyBackdropComponents} from "@/components/backdrop/components";
+import {GravestoneComponent} from "@/components/halloween/GravestoneComponent";
+import {ScarecrowComponent} from "@/components/halloween/ScarecrowComponent";
+import {SnowmenComponent} from "@/components/christmas/SnowmenComponent";
+import {PresentsComponent} from "@/components/christmas/PresentsComponent";
+import {SmokeComponent} from "@/components/particles/SmokeComponent";
+import {FirefliesComponent} from "@/components/particles/FirefliesComponent";
+import {HeartsComponent} from "@/components/particles/HeartsComponent";
+import {ButterfliesComponent} from "@/components/particles/ButterfliesComponent";
+import {SeasonTransitionLeavesComponent} from "@/components/particles/SeasonTransitionLeavesComponent";
+import {AutumnBlowingLeavesComponent} from "@/components/particles/AutumnBlowingLeavesComponent";
+import {RainComponent} from "@/components/weather/RainComponent";
+import {SnowflakesComponent} from "@/components/weather/SnowflakesComponent";
+import {WindComponent} from "@/components/weather/WindComponent";
+import {FogOverlayComponent} from "@/components/weather/FogOverlayComponent";
+import {BirdsComponent} from "@/components/animals/BirdsComponent";
+import {BatsComponent} from "@/components/animals/BatsComponent";
+import {OwlComponent} from "@/components/animals/OwlComponent";
+import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -38,9 +54,6 @@ export class Scene {
     // give state a reference to tree defs so canopy leaves can use it
     this.state.trees = TREE_DEFS;
 
-    /** @type {Array<Component>} */
-    this._components = [];
-
     // store the handle for the drawing loop
     /** @type {number | undefined} */
     this._handle = undefined;
@@ -48,28 +61,47 @@ export class Scene {
     // store the event bus for this scene
     this.eventBus = new EventBus();
 
-    // instantiate the core drawing components
-    this._world = new DrawWorld(this.eventBus, this.ctx, W, H);
-    this._specialEvents = new DrawSpecialEvents(this.eventBus, this.ctx, W, H);
-    this._particles = new DrawParticles(this.eventBus, this.ctx, W, H);
-    this._bgTrees = new DrawBackgroundTrees(this.eventBus, this.ctx);
-    this._fgTrees = new DrawForegroundTrees(this.eventBus, this.ctx);
-    this._lightning = new DrawLightning(this.eventBus, this.ctx, W, H);
-    this._weather = new DrawWeather(this.eventBus, this.ctx, W, H);
-    this._fox = new DrawFox(this.eventBus, this.ctx, W, H);
-    this._bunny = new DrawBunny(this.eventBus, this.ctx, W, H);
-    this._birds = new DrawAirborne(this.eventBus, this.ctx, W, H, TREE_DEFS);
-    this._ghosts = new DrawGhosts(this.eventBus, this.ctx, W, H);
-    this._deer = new DrawDeer(this.eventBus, this.ctx, W, H);
-    this._hedgehog = new DrawHedgehog(this.eventBus, this.ctx, W, H);
-  }
+    /** @type {ComponentGroup} */
+    this._components = new ComponentGroup(this.eventBus, [
+      new TimeOfDayComponent(this.eventBus),
+      new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
+      new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
 
-  /**
-   * register a component.
-   * @param {Component} component
-   */
-  register(component) {
-    this._components.push(component);
+      new BackgroundTreesComponent(this.eventBus, this.ctx),
+
+      new SmokeComponent(this.eventBus, this.ctx, W, H),
+
+      new ForegroundTreesComponent(this.eventBus, this.ctx),
+
+      new GravestoneComponent(this.eventBus, this.ctx, W, H),
+      new ScarecrowComponent(this.eventBus, this.ctx, W, H),
+
+      new SnowmenComponent(this.eventBus, this.ctx, W, H),
+      new PresentsComponent(this.eventBus, this.ctx, W, H),
+
+      new FirefliesComponent(this.eventBus, this.ctx, W, H),
+      new ButterfliesComponent(this.eventBus, this.ctx, W, H),
+      new HeartsComponent(this.eventBus, this.ctx, W, H),
+
+      new SeasonTransitionLeavesComponent(this.eventBus, this.ctx, W, H),
+      new AutumnBlowingLeavesComponent(this.eventBus, this.ctx, W, H),
+
+      new LightningComponent(this.eventBus, this.ctx, W, H),
+      new RainComponent(this.eventBus, this.ctx, W, H),
+      new SnowflakesComponent(this.eventBus, this.ctx, W, H),
+      new WindComponent(this.eventBus, this.ctx, W, H),
+      new FogOverlayComponent(this.eventBus, this.ctx, W, H),
+
+      new BatsComponent(this.eventBus, this.ctx, W, H),
+      this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
+      new OwlComponent(this.eventBus, this.ctx, W, H),
+      new FoxComponent(this.eventBus, this.ctx, W, H),
+      new BunnyComponent(this.eventBus, this.ctx, W, H),
+      new GhostsComponent(this.eventBus, this.ctx, W, H),
+      this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
+      this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
+    ]);
+    this._aurora = this._components.getComponent("AuroraComponent");
   }
 
   /**
@@ -77,31 +109,11 @@ export class Scene {
    */
   initialise() {
     Events.registerAll(this.eventBus);
-    this._registerDefaultComponents();
     this._setupCanvasEvents();
     this._refreshUI();
-    this._components.forEach(c => c.initialise(this.state));
+    this._components.initialise(this.state);
 
     this._loop = this._loop.bind(this);
-  }
-
-  /**
-   * register up all the built-in components in the correct draw order.
-   */
-  _registerDefaultComponents() {
-    this.register(this._world);
-    this.register(this._ghosts);
-    this.register(this._bgTrees);
-    this.register(this._birds);
-    this.register(this._fgTrees);
-    this.register(this._specialEvents);
-    this.register(this._lightning);
-    this.register(this._deer);
-    this.register(this._hedgehog);
-    this.register(this._bunny);
-    this.register(this._fox);
-    this.register(this._particles);
-    this.register(this._weather);
   }
 
   /**
@@ -139,9 +151,8 @@ export class Scene {
       this._setButtonsDisabled(false);
     };
 
-    this._components.forEach(c => c.tick(state, setStatus, enableButtons));
-    this._components.forEach(c => c.draw(state));
-    this._particles.drawCanopyLeaves(state);
+    this._components.tick(state, setStatus, enableButtons);
+    this._components.draw(state);
 
     requestAnimationFrame(this._loop);
   }
@@ -168,7 +179,7 @@ export class Scene {
         document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.timeOfDay === s));
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(s =>
         document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.weather === s));
-    document.getElementById('btn-aurora')?.classList.toggle('btn-active', state.auroraOn);
+    document.getElementById('btn-aurora')?.classList.toggle('btn-active', this._aurora.on);
 
     const snowBtn = document.getElementById('btn-snow');
     const auroraBtn = document.getElementById('btn-aurora');
@@ -209,16 +220,9 @@ export class Scene {
       }
 
       // click on a tree top to startle a bird
-      TREE_DEFS.slice(0, 8).forEach(tr => {
+      TREE_DEFS.forEach(tr => {
         if (Math.abs(cx - tr.x) < tr.r && cy < H * 0.62 && cy > H * 0.62 - tr.h * 0.7) {
-          if (this._birdsActive()) {
-            const {rnd, prob} = {rnd: n => Math.random() * n, prob: n => Math.random() < n};
-            state.windStartledBirds.push({
-              x: tr.x, y: H * 0.62 - tr.h * 0.5,
-              vx: (2 + rnd(3)) * (prob(0.5) ? 1 : -1), vy: -(3 + rnd(2)),
-              flapT: 0, flapSpeed: 0.18, scale: 0.8 + rnd(0.3), life: 0,
-            });
-          }
+          this._birds.spawnStartledBird(state, tr);
         }
       });
     });
@@ -268,8 +272,8 @@ export class Scene {
           const oldSeason = state.season;
           state.changeSeason(s);
           this._clearInvalidSpecialEvent();
-          this._refreshUI();
           this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
+          this._refreshUI();
         }));
 
     // time of day buttons
@@ -299,13 +303,13 @@ export class Scene {
     // aurora toggle
     document.getElementById('btn-aurora')?.addEventListener('click', () => {
       if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
-      state.auroraOn = !state.auroraOn;
+      this._aurora.toggle();
       this._refreshUI();
     });
 
     // animal / reaction summon buttons
-    document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon(state));
-    document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon(state));
+    document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon());
+    document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon());
     document.getElementById('btn-owl')?.addEventListener('click', function() {
       state.owlForced = !state.owlForced;
       this.classList.toggle('btn-active');
@@ -371,17 +375,5 @@ export class Scene {
     fox.earTwitchT = 0;
     fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
     this.statusEl.textContent = "The fox's ear twitches...";
-  }
-
-  /**
-   * return true if daytime birds are currently active (used for click-startle).
-   * @returns {boolean}
-   */
-  _birdsActive() {
-    const {season, todBlend, weather} = this.state;
-    if (season === 'winter') return false;
-    if (todBlend <= 0.4) return false;
-    if (weather === 'storm' || weather === 'wind') return false;
-    return true;
   }
 }

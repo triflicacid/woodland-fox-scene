@@ -68,7 +68,6 @@ export class EventBus {
       throw new Error(`Unknown subscription event: ${event.eventName}`);
     }
 
-    console.log("received event", event);
     this._subscriptions.get(event.eventName)
         .filter(s => s.eventName === s.eventName) // not needed, but eh
         .filter(s => event.alertOriginator || s.subscriber !== event.originator)

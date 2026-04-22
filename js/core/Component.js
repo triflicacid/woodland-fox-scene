@@ -1,4 +1,4 @@
-import {requireNonNull} from "../utils.js";
+import {requireNonNull} from "@/utils";
 
 /**
  * represents a component which may be registered to a scene.
@@ -15,10 +15,29 @@ export class Component {
   }
 
   /**
+   * get the name of this component
+   * @returns {string}
+   */
+  getName() {
+    return this.constructor.name;
+  }
+
+  /**
    * called once after scene has been initialised
    * @param {SceneState} state
    */
   initialise(state) {}
+
+  /**
+   * is this component enabled this frame?
+   * if returns `false`, we do not tick or draw this component.
+   * (this is not enforced in this class and should be done elsewhere.)
+   * @param {SceneState} state
+   * @returns {boolean} is the component enabled? (defaults to true)
+   */
+  isEnabled(state) {
+    return true;
+  }
 
   /**
    * draw this component.
