@@ -2,8 +2,8 @@ import {FOX, PALETTES} from '@/config';
 import {clamp, eo, lerp, rnd} from '@/utils';
 
 /**
- * SceneState manages the mutable state of the scene:
- * environment (season, weather, time), and all entity states.
+ * manages the shared state of the scene.
+ * most state is kept to individual components unless it is needed by multiple.
  */
 export class SceneState {
   /**
@@ -96,19 +96,6 @@ export class SceneState {
    */
   isDay() {
     return this.todBlend > 0.2;
-  }
-
-  /**
-   * reset a raindrop to the top of the canvas.
-   * @param {Object} p - existing particle
-   * @returns {Object}
-   */
-  resetRain(p) {
-    p.x = rnd(this.W);
-    p.y = rnd(this.H);
-    p.len = 8 + rnd(14);
-    p.speed = 12 + rnd(8);
-    return p;
   }
 
   /**

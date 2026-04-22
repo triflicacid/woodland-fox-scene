@@ -9,12 +9,19 @@ export class RainComponent extends DrawComponent {
   raindrops;
 
   initialise(state) {
-    this.raindrops = Array.from({length: 200}, () => ({
+    this.raindrops = Array.from({length: 250}, () => this._makeRain());
+  }
+
+  /**
+   * make a new raindrop
+   */
+  _makeRain() {
+    return {
       x: rnd(this.W),
       y: rnd(this.H),
       len: 8 + rnd(14),
       speed: 12 + rnd(8)
-    }));
+    };
   }
 
   isEnabled(state) {
@@ -36,7 +43,7 @@ export class RainComponent extends DrawComponent {
     this.raindrops.forEach(r => {
       r.y += r.speed;
       r.x += r.speed * angle;
-      if (r.y > H || r.x > W) state.resetRain(r);
+      if (r.y > H || r.x > W) Object.assign(r, this._makeRain());
     });
   }
 
