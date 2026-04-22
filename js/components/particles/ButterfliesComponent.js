@@ -1,9 +1,24 @@
 import {DrawComponent} from "@/core/DrawComponent";
+import {rnd} from "@/utils";
 
 /**
  * render butterflies in spring and summer
  */
 export class ButterfliesComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  butterflies;
+
+  initialise(state) {
+    const {H} = this;
+    this.butterflies = Array.from({length: 5}, (_, i) => ({
+      x: 100 + i * 120,
+      y: H * 0.3 + rnd(H * 0.2),
+      vx: 0.5 + rnd(0.4),
+      flapT: rnd(Math.PI * 2),
+      col: `hsl(${[280, 320, 40, 200, 160][i]},70%,65%)`,
+    }));
+  }
+
   isEnabled(state) {
     const {todBlend, season, weather} = state;
     return todBlend > 0.4
@@ -16,11 +31,9 @@ export class ButterfliesComponent extends DrawComponent {
    * @param {SceneState} state
    */
   _getButterflies(state) {
-    const {weather, butterflies} = state;
-
-    return weather === 'wind'
-        ? butterflies.slice(0, 2)
-        : butterflies;
+    return state.weather === 'wind'
+        ? this.butterflies.slice(0, 2)
+        : this.butterflies;
   }
 
   tick(state, setStatus, enableButtons) {

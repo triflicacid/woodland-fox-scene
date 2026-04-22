@@ -81,25 +81,6 @@ export class SceneState {
       rx: 0, maxRx: 20 + rnd(25),
       ry: 0, maxRy: 5 + rnd(4),
     }));
-
-    // butterflies
-    this.butterflies = Array.from({length: 5}, (_, i) => ({
-      x: 100 + i * 120,
-      y: H * 0.3 + rnd(H * 0.2),
-      vx: 0.5 + rnd(0.4),
-      flapT: rnd(Math.PI * 2),
-      col: `hsl(${[280, 320, 40, 200, 160][i]},70%,65%)`,
-    }));
-
-    // fireflies
-    this.fireflies = Array.from({length: 18}, () => ({
-      x: 80 + rnd(W - 160),
-      y: H * 0.35 + rnd(H * 0.3),
-      speed: 0.3 + rnd(0.4),
-      angle: rnd(Math.PI * 2),
-      phase: rnd(Math.PI * 2),
-      size: 1.5 + rnd(1.5),
-    }));
   }
 
   /**
