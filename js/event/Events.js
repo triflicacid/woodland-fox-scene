@@ -13,6 +13,7 @@ export class Events {
   static EVENT_MOON_PHASE_CHANGE = "MoonPhaseChange";
   static EVENT_FIREWORK_BANG = 'FireworkBang';
   static EVENT_LIGHTNING_STRIKE = 'LightningStrike';
+  static EVENT_CHARACTER_ACTION = 'CharacterAction';
 
   /**
    * register all events we support onto the given bus
@@ -25,6 +26,7 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_MOON_PHASE_CHANGE);
     eventBus.registerEvent(Events.EVENT_FIREWORK_BANG);
     eventBus.registerEvent(Events.EVENT_LIGHTNING_STRIKE);
+    eventBus.registerEvent(Events.EVENT_CHARACTER_ACTION);
   }
 
   /**
@@ -155,5 +157,26 @@ export class Events {
    */
   static lightningStrikeSubscription(subscriber, onChange) {
     return new Subscription(Events.EVENT_LIGHTNING_STRIKE, subscriber, onChange);
+  }
+
+  /**
+   * create a character action event
+   * @param {string} originator name of event originator
+   * @param {string} character name of the character performing the action
+   * @param {string} action the action being performed e.g. 'enter', 'exit', 'sniff', 'nuzzle'
+   * @returns {Event}
+   */
+  static characterAction(originator, character, action) {
+    return new Event(Events.EVENT_CHARACTER_ACTION, originator, { character, action });
+  }
+
+  /**
+   * create a new subscription for a character action event
+   * @param {string} subscriber
+   * @param {function({character: string, action: string}): void} onChange
+   * @returns {Subscription}
+   */
+  static characterActionSubscription(subscriber, onChange) {
+    return new Subscription(Events.EVENT_CHARACTER_ACTION, subscriber, onChange);
   }
 }

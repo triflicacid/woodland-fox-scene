@@ -96,6 +96,7 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'stretch';
         fox.phaseT = 0;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wake'));
       }
 
     } else if (fox.phase === 'stretch') {
@@ -132,6 +133,7 @@ export class FoxComponent extends DrawComponent {
         fox.poseBlend = 0;
         setStatus('Curled up, fast asleep...');
         enableButtons();
+        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'sleep'));
       }
 
     } else if (fox.phase === 'bunny_standup') {
@@ -152,6 +154,7 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'wander_sniff';
         fox.phaseT = 0;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wander.start'));
       }
 
     } else if (fox.phase === 'wander_sniff') {
@@ -168,6 +171,7 @@ export class FoxComponent extends DrawComponent {
         fox.phaseT = 0;
         fox.wanderX = fox.x;
         setStatus('Back home, curling up...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wander.end'));
       }
     }
   }

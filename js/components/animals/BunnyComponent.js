@@ -1,5 +1,6 @@
 import {rnd} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/event/Events";
 
 /**
  * render bunny which hops to greet the fox
@@ -23,6 +24,7 @@ export class BunnyComponent extends DrawComponent {
         fox.phaseT = 0;
         fox.poseBlend = 0;
         setStatus('The fox stirs...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'enter'));
       }
 
     } else if (bunny.phase === 'fox_waking') {
@@ -31,6 +33,7 @@ export class BunnyComponent extends DrawComponent {
         bunny.phaseT = 0;
         state.hearts = [];
         setStatus('They touch noses...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
 
     } else if (bunny.phase === 'nuzzle') {
@@ -58,6 +61,7 @@ export class BunnyComponent extends DrawComponent {
         fox.phaseT = 0;
         state.hearts = [];
         setStatus('The fox drifts off...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
     } else if (bunny.phase === 'fox_sleep') {
@@ -73,6 +77,7 @@ export class BunnyComponent extends DrawComponent {
         bunny.phase = 'done';
         setStatus('Curled up, fast asleep...');
         enableButtons();
+        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'exit'));
       }
     }
   }
