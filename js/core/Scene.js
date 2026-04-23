@@ -44,6 +44,7 @@ import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
 import {ChicksComponent} from "@/components/animals/ChicksComponent";
 import {PlanetsComponent} from "@/components/stargazing/PlanetsComponent";
 import {ConstellationsComponent} from "@/components/stargazing/ConstellationsComponent";
+import {NorthStarComponent} from "@/components/stargazing/NorthStarComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -84,6 +85,7 @@ export class Scene {
 
       new PlanetsComponent(this.eventBus, this.state, this.ctx, W, H),
       new ConstellationsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new NorthStarComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
