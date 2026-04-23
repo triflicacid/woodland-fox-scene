@@ -439,8 +439,8 @@ export class FoxComponent extends DrawComponent {
       ctx.restore();
     }
 
-    // zzz sleep indicators
-    if (todBlend < 0.5 && fox.phase === 'idle') {
+    // zzz sleep indicators (when asleep and at night)
+    if (todBlend < 0.5 && fox.phase === 'idle' && fox.asleep) {
       ['z', 'z', 'Z'].forEach((z, i) => {
         ctx.globalAlpha = 0.45 + 0.3 * Math.sin(frame * 0.04 + i * 0.9 + Math.PI);
         ctx.fillStyle = 'rgba(180,210,255,0.9)';
