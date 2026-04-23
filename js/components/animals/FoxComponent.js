@@ -641,4 +641,39 @@ export class FoxComponent extends DrawComponent {
       fox.eyeTransitionT = 0;
     }
   }
+
+  /**
+   * trigger the fox grumble animation
+   */
+  triggerGrumble() {
+    const {fox} = this.scene;
+    fox.grumbleT = 0;
+    fox.earTwitchT = 0;
+    fox.earTwitchSide = 1;
+    this.eventBus.receive(Events.statusText(this.getName(), 'The fox grumbles sleeply...'));
+    this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'grumble'));
+  }
+
+  /**
+   * trigger the fox yawn animation if idle
+   */
+  triggerYawn() {
+    const {fox} = this.scene;
+    if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
+      fox.yawnT = 0;
+      this.eventBus.receive(Events.statusText(this.getName(), 'The fox has a big yawn...'));
+      this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'yawn'));
+    }
+  }
+
+  /**
+   * trigger the fox ear-twitch animation
+   */
+  triggerEarTwitch() {
+    const {fox} = this.scene;
+    fox.earTwitchT = 0;
+    fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
+    this.eventBus.receive(Events.statusText(this.getName(), 'The fox\'s ear twitches...'));
+    this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
+  }
 }

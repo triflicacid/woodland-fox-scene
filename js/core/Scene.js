@@ -105,7 +105,7 @@ export class Scene {
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
-      new FoxComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H),
       new BunnyComponent(this.eventBus, this.state, this.ctx, W, H),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -242,7 +242,7 @@ export class Scene {
 
       if (Math.abs(cx - fx) < 46 && Math.abs(cy - (state.fox.y - 15)) < 32) {
         if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05 && state.bunny.phase === 'off') {
-          this._triggerGrumble();
+          this._fox.triggerGrumble();
         }
         return;
       }
@@ -344,9 +344,9 @@ export class Scene {
       state.owlForced = !state.owlForced;
       this.classList.toggle('btn-active');
     });
-    document.getElementById('btn-yawn')?.addEventListener('click', () => this._triggerYawn());
-    document.getElementById('btn-ear')?.addEventListener('click', () => this._triggerEarTwitch());
-    document.getElementById('btn-grumble')?.addEventListener('click', () => this._triggerGrumble());
+    document.getElementById('btn-yawn')?.addEventListener('click', () => this._fox.triggerYawn());
+    document.getElementById('btn-ear')?.addEventListener('click', () => this._fox.triggerEarTwitch());
+    document.getElementById('btn-grumble')?.addEventListener('click', () => this._fox.triggerGrumble());
 
     document.getElementById('btn-halloween')?.addEventListener('click', () => {
       state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
@@ -407,43 +407,5 @@ export class Scene {
     else if (state.specialEvent === 'bonfire' && !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
     }
-  }
-
-  /**
-   * trigger the fox grumble animation.
-   */
-  _triggerGrumble() {
-    // TODO move into fox
-    const {fox} = this.state;
-    fox.grumbleT = 0;
-    fox.earTwitchT = 0;
-    fox.earTwitchSide = 1;
-    this.statusEl.textContent = 'The fox grumbles sleepily...';
-    this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'grumble'));
-  }
-
-  /**
-   * trigger the fox yawn animation if idle.
-   */
-  _triggerYawn() {
-    // TODO move into fox
-    const {fox} = this.state;
-    if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
-      fox.yawnT = 0;
-      this.statusEl.textContent = 'The fox has a big yawn...';
-      this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'yawn'));
-    }
-  }
-
-  /**
-   * trigger the fox ear-twitch animation.
-   */
-  _triggerEarTwitch() {
-    // TODO move into fox
-    const {fox} = this.state;
-    fox.earTwitchT = 0;
-    fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
-    this.statusEl.textContent = "The fox's ear twitches...";
-    this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'ear_twitch'));
   }
 }
