@@ -12,7 +12,7 @@ export class FirefliesComponent extends DrawComponent {
   initialise(state) {
     this._generateFireflies(state);
 
-    this.eventBus.subscribe(Events.captureAllSubscription(this.getName(), state => {
+    this.eventBus.subscribe(Events.mutateSceneStateSubscription(this.getName(), state => {
       if (this.isEnabled(state)) {
         this._generateFireflies(state);
       }

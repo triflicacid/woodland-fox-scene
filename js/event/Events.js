@@ -30,15 +30,27 @@ export class Events {
   }
 
   /**
-   * create a new subscription to capture all events.
+   * create a new subscription to capture all events which mutate SceneState
    * if this captures any events which do not hold state, ignore.
    * @param {string} subscriber
    * @param {function(SceneState): void} onChange
    * @returns {Subscription<SceneState>}
    */
-  static captureAllSubscription(subscriber, onChange) {
+  static mutateSceneStateSubscription(subscriber, onChange) {
     // payload is a ValueChange
     return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => update instanceof SceneState && onChange(update.state));
+  }
+
+  /**
+   * create a new subscription to capture all events
+   * if this captures any events which do not hold state, ignore.
+   * @param {string} subscriber
+   * @param {function(any): void} onChange
+   * @returns {Subscription<any>}
+   */
+  static captureAllSubscription(subscriber, onChange) {
+    // payload is a ValueChange
+    return new Subscription(Subscription.CAPTURE_ALL, subscriber, onChange);
   }
 
   /**
