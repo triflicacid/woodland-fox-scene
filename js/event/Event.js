@@ -3,9 +3,10 @@
  */
 export class Event {
   /**
+   * @template T
    * @param {string} eventName
    * @param {string} originator name of the originator
-   * @param {object} payload event payload
+   * @param {T} payload event payload
    * @param {boolean | undefined} alertOriginator
    */
   constructor(eventName, originator, payload, alertOriginator=false) {

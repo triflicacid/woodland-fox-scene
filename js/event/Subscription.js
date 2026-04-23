@@ -11,26 +11,23 @@ export class Subscription {
    * @template T type of event payload
    * @param {string} eventName
    * @param {string} subscriber name of the subscriber
-   * @param {(function(value: T): void) | (function(initiator: string, value: T): void)} onReceive called with the event's value
+   * @param {(function(value: T): void) | (function(event: Event<T>): void)} onReceive called with the event's value or the event itself
+   * @param {boolean} detail provide callback with entire event or just its payload
    */
-  constructor(eventName, subscriber, onReceive) {
+  constructor(eventName, subscriber, onReceive, detail=false) {
     this.eventName = eventName;
     this.subscriber = subscriber;
     this.onReceive = onReceive;
+    this.detailed = detail;
   }
 
   /**
    * trigger an update for the given event
-   * @param {string} initiator
-   * @param {T} payload
+   * @param {Event<T>} event
    */
-  trigger(initiator, payload) {
+  trigger(event) {
     if (typeof this.onReceive === 'function') {
-      if (this.onReceive.length === 2) {
-        this.onReceive(initiator, payload);
-      } else {
-        this.onReceive(payload);
-      }
+      this.onReceive(this.detailed ? event : event.payload);
     }
   }
 }

@@ -1,12 +1,14 @@
 import {Component} from "@/core/Component";
-import {Subscriptions} from "@/core/Subscriptions";
+import {Subscription} from "@/event/Subscription";
 
 /**
  * a component for debugging, we intercept all events
  */
 export class EventListenerComponent extends Component {
   initialise(state) {
-    this.eventBus.subscribe(Subscriptions.captureAll(this.getName(), (a, b) => console.log(a, "|", b)));
+    this.eventBus.subscribe(new Subscription(Subscription.CAPTURE_ALL, this.getName(), event => {
+      console.log(`${event.eventName} (${event.originator})`, event.payload);
+    }, true));
   }
 }
 
