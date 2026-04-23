@@ -370,7 +370,7 @@ export class Scene {
     });
 
     document.getElementById('btn-eye').addEventListener('click', () => {
-      state.fox.eyeOpenT = 0;
+      state.fox.eyeTransitionT = 0;
     });
   }
 

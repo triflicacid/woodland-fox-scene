@@ -4,6 +4,23 @@ import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/event/Events";
 
 /**
+ * return the current eye openness from 0 (closed) to 1 (open).
+ * handles transitions in both directions.
+ * @param {Object} fox
+ * @returns {number}
+ */
+function eyeOpenAmount(fox) {
+  if (fox.eyeTransitionT < 0) {
+    return fox.asleep ? 0 : 1;
+  }
+  const t = clamp(fox.eyeTransitionT / 50, 0, 1);
+  const curve = Math.sin(t * Math.PI); // bell curve - peaks at 0.5
+  return fox.asleep
+      ? curve          // asleep: transitions open then back closed
+      : 1 - curve;     // awake: transitions closed then back open (blink)
+}
+
+/**
  * FoxComponent manages fox animation state ticking and all fox drawing.
  * it also handles the bunny interaction sequence.
  */
@@ -14,7 +31,7 @@ export class FoxComponent extends DrawComponent {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
-          this._triggerEyeOpen(state);
+          this._triggerEyeTransition(state);
         }
       }
     }));
@@ -23,7 +40,7 @@ export class FoxComponent extends DrawComponent {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
-          this._triggerEyeOpen(state);
+          this._triggerEyeTransition(state);
         }
       }
     }));
@@ -56,9 +73,9 @@ export class FoxComponent extends DrawComponent {
     }
 
     // countdown the eye open animation
-    if (fox.eyeOpenT >= 0) {
-      fox.eyeOpenT++;
-      if (fox.eyeOpenT >= 50) fox.eyeOpenT = -1;
+    if (fox.eyeTransitionT >= 0) {
+      fox.eyeTransitionT++;
+      if (fox.eyeTransitionT >= 50) fox.eyeTransitionT = -1;
     }
 
     if (fox.phase === 'idle') return;
@@ -340,10 +357,8 @@ export class FoxComponent extends DrawComponent {
     ctx.arc(-44.5, -17 + hb, 1, 0, Math.PI * 2);
     ctx.fill();
 
-    // near eye, opens briefly on startle
-    const eyeOpen = fox.eyeOpenT >= 0
-        ? Math.sin(clamp(fox.eyeOpenT / 50, 0, 1) * Math.PI) // bell curve open/close
-        : 0;
+    // near eye, open or closed
+    const eyeOpen = eyeOpenAmount(fox);
     ctx.strokeStyle = '#4a1804';
     ctx.lineWidth   = 1.5;
     if (eyeOpen > 0.1) {
@@ -608,12 +623,12 @@ export class FoxComponent extends DrawComponent {
   }
 
   /**
-   * trigger the eye-open startle animation.
+   * trigger an eye transition (either opening or closing)
    * @param {SceneState} state
    */
-  _triggerEyeOpen(state) {
-    if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05 && state.fox.eyeOpenT <= 0) {
-      state.fox.eyeOpenT = 0;
+  _triggerEyeTransition(state) {
+    if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05) {
+      state.fox.eyeTransitionT = 0;
     }
   }
 }
