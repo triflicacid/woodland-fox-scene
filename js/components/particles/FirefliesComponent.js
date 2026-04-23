@@ -10,23 +10,25 @@ export class FirefliesComponent extends DrawComponent {
   fireflies = [];
 
   initialise(state) {
-    this._generateFireflies(state.moonPhase);
+    this._generateFireflies(state);
 
     this.eventBus.subscribe(Events.captureAllSubscription(this.getName(), state => {
       if (this.isEnabled(state)) {
-        this._generateFireflies(state.moonPhase);
+        this._generateFireflies(state);
       }
     }));
   }
 
   /**
    * generate fireflies
-   * @param {number} moonPhase
+   * @param {SceneState} state
    */
-  _generateFireflies(moonPhase) {
+  _generateFireflies(state) {
+    if (state.specialEvent === 'bonfire') return; // reasoning: too loud
+
     const {W, H} = this;
     const max = 48, min = 8;
-    const t = Math.abs(moonPhase - 4) / 4; // 0 at full, 1 at new
+    const t = Math.abs(state.moonPhase - 4) / 4; // 0 at full, 1 at new
     const length = Math.round(min + (max - min) * t * t);
 
     this.fireflies = Array.from({length}, () => ({

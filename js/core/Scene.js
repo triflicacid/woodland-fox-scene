@@ -30,6 +30,9 @@ import {BirdsComponent} from "@/components/animals/BirdsComponent";
 import {BatsComponent} from "@/components/animals/BatsComponent";
 import {OwlComponent} from "@/components/animals/OwlComponent";
 import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
+import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
+import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
+import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -79,6 +82,8 @@ export class Scene {
       new SnowmenComponent(this.eventBus, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.ctx, W, H),
 
+      new FireworksComponent(this.eventBus, this.ctx, W, H),
+
       new FirefliesComponent(this.eventBus, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.ctx, W, H),
       new HeartsComponent(this.eventBus, this.ctx, W, H),
@@ -95,11 +100,14 @@ export class Scene {
       new BatsComponent(this.eventBus, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.ctx, W, H),
+      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.ctx, W, H),
       new FoxComponent(this.eventBus, this.ctx, W, H),
       new BunnyComponent(this.eventBus, this.ctx, W, H),
       new GhostsComponent(this.eventBus, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
+
       this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
+      new BonfireComponent(this.eventBus, this.ctx, W, H),
     ]);
     this._aurora = this._components.getComponent("AuroraComponent");
   }
@@ -194,11 +202,18 @@ export class Scene {
       christmasBtn.disabled = state.season !== 'winter';
       christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
 
+    const bonfireBtn = document.getElementById('btn-bonfire');
+    bonfireBtn.disabled = state.season !== 'autumn' || state.timeOfDay !== 'night';
+    bonfireBtn.classList.toggle('btn-active', state.specialEvent === 'bonfire');
+
     MOON_PHASES.forEach((_, i) => {
       const btn = document.getElementById(`btn-phase-${i}`);
       btn.classList.toggle('btn-active', state.moonPhase === i);
       btn.disabled = state.timeOfDay !== 'night';
     });
+
+    const guyBtn = document.getElementById('btn-guy-fawkes');
+    guyBtn.disabled = state.specialEvent !== 'bonfire';
   }
 
   /**
@@ -334,6 +349,11 @@ export class Scene {
       state.savePref();
       this._refreshUI();
     });
+    document.getElementById('btn-bonfire')?.addEventListener('click', () => {
+      state.specialEvent = state.specialEvent === 'bonfire' ? null : 'bonfire';
+      state.savePref();
+      this._refreshUI();
+    });
 
     MOON_PHASES.forEach((_, i) => {
       document.getElementById(`btn-phase-${i}`)?.addEventListener('click', () => {
@@ -343,6 +363,10 @@ export class Scene {
         this.eventBus.receive(Events.moonPhaseChange("Scene", oldMoonPhase, state));
         this._refreshUI();
       });
+    });
+
+    document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
+      this._guyFawkes.summon();
     });
   }
 
@@ -356,7 +380,10 @@ export class Scene {
         !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
     }
-    if (state.specialEvent === 'christmas' && state.season !== 'winter') {
+    else if (state.specialEvent === 'christmas' && state.season !== 'winter') {
+      state.specialEvent = null;
+    }
+    else if (state.specialEvent === 'bonfire' && !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
     }
   }

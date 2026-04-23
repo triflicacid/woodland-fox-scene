@@ -1,15 +1,24 @@
 import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '@/utils';
 import {FOX_PHASES, PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/event/Events";
 
 /**
  * FoxComponent manages fox animation state ticking and all fox drawing.
  * it also handles the bunny interaction sequence.
  */
 export class FoxComponent extends DrawComponent {
+  initialise(state) {
+    this.eventBus.subscribe(Events.fireworkBangSubscription('FoxComponent', ({loud}) => {
+      if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
+        state.fox.earTwitchT = 0;
+        state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+      }
+    }));
+  }
+
   tick(state, setStatus, enableButtons) {
-    const fox = state.fox;
-    const {weather} = state;
+    const {weather, fox} = state;
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
