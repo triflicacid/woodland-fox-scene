@@ -19,6 +19,9 @@ export class EventBus {
    * @param {string} eventName
    */
   registerEvent(eventName) {
+    if (typeof eventName !== 'string') {
+      throw new TypeError('eventName must be a string, got ' + typeof eventName);
+    }
     this._subscriptions.set(eventName, []);
   }
 

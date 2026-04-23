@@ -30,7 +30,7 @@ export class SnowflakesComponent extends DrawComponent {
     return this.scene.weather === 'snow';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {H} = this;
     const {frame} = this.scene;
     this.snowflakes.forEach(sf => {

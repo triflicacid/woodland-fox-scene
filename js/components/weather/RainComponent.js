@@ -36,7 +36,7 @@ export class RainComponent extends DrawComponent {
     return weather === 'storm' ? 0.15 : 0.06;
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W, H} = this;
     const angle = this._getRainAngle(this.scene.weather);
     this.raindrops.forEach(r => {

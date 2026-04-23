@@ -13,6 +13,12 @@ export class Events {
   static EVENT_FIREWORK_BANG = 'FireworkBang';
   static EVENT_LIGHTNING_STRIKE = 'LightningStrike';
   static EVENT_CHARACTER_ACTION = 'CharacterAction';
+  static EVENT_STATUS_TEXT = 'StatusText';
+  /**
+   * used for bunny/fox only
+   * @deprecated
+   */
+  static EVENT_MAIN_BUTTONS = 'MainButtons';
 
   /**
    * register all events we support onto the given bus
@@ -26,6 +32,8 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_FIREWORK_BANG);
     eventBus.registerEvent(Events.EVENT_LIGHTNING_STRIKE);
     eventBus.registerEvent(Events.EVENT_CHARACTER_ACTION);
+    eventBus.registerEvent(Events.EVENT_STATUS_TEXT);
+    eventBus.registerEvent(Events.EVENT_MAIN_BUTTONS);
   }
 
   /**
@@ -95,5 +103,25 @@ export class Events {
    */
   static characterAction(originator, character, action) {
     return new Event(Events.EVENT_CHARACTER_ACTION, originator, { character, action });
+  }
+
+  /**
+   * create a status text event
+   * @param {string} originator name of event originator
+   * @param {string} text the status text to display
+   * @returns {Event}
+   */
+  static statusText(originator, text) {
+    return new Event(Events.EVENT_STATUS_TEXT, originator, { text });
+  }
+
+  /**
+   * create a buttons enabled event, fired when the main action buttons should be re-enabled
+   * @param {string} originator name of event originator
+   * @param {boolean} enabled whether to enable (or disable) the main buttons
+   * @returns {Event}
+   */
+  static setMainButtons(originator, enabled) {
+    return new Event(Events.EVENT_MAIN_BUTTONS, originator, {enabled});
   }
 }

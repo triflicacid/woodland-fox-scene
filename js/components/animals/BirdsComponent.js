@@ -73,7 +73,7 @@ export class BirdsComponent extends DrawComponent {
     }
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     // wind-startled birds
     this.windStartledBirds = this.windStartledBirds.filter(b => {
       b.x += b.vx;

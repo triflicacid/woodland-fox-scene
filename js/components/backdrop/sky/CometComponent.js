@@ -14,7 +14,7 @@ export class CometComponent extends DrawComponent {
     return this.scene.isNight() && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     if (prob(PROBABILITY.COMET)) {
       this.comets.push(this._spawn());
     }

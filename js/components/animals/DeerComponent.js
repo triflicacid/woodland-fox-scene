@@ -19,7 +19,7 @@ export class DeerComponent extends DrawComponent {
     };
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {deer} = this;
     deer.cooldown--;
 

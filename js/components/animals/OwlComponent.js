@@ -20,7 +20,7 @@ export class OwlComponent extends DrawComponent {
     return this.scene.owlForced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {owl} = this;
 
     owl.headTimer++;

@@ -100,4 +100,24 @@ export class Subscriptions {
   static onCharacterAction(subscriber, onChange) {
     return new Subscription(Events.EVENT_CHARACTER_ACTION, subscriber, onChange);
   }
+
+  /**
+   * create a new subscription for a status text event
+   * @param {string} subscriber
+   * @param {function({text: string}): void} onChange
+   * @returns {Subscription}
+   */
+  static onStatusTextChange(subscriber, onChange) {
+    return new Subscription(Events.EVENT_STATUS_TEXT, subscriber, onChange);
+  }
+
+  /**
+   * create a new subscription for a main buttons enable/disable event
+   * @param {string} subscriber
+   * @param {function({enabled:boolean}): void} onChange
+   * @returns {Subscription}
+   */
+  static onMainButtonsStateChange(subscriber, onChange) {
+    return new Subscription(Events.EVENT_MAIN_BUTTONS, subscriber, onChange);
+  }
 }
