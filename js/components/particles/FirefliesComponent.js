@@ -9,6 +9,11 @@ export class FirefliesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   fireflies = [];
 
+  static COMPONENT_NAME = "FirefliesComponent";
+  getName() {
+    return FirefliesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this._generateFireflies();
 

@@ -15,6 +15,11 @@ export class OwlComponent extends DrawComponent {
     treeIdx: 2,
   };
 
+  static COMPONENT_NAME = "OwlComponent";
+  getName() {
+    return OwlComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {season, weather} = this.scene;
     return this.scene.owlForced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');

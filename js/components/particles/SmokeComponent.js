@@ -8,6 +8,11 @@ export class SmokeComponent extends DrawComponent {
   /** @type{Array<Object>} */
   particles;
 
+  static COMPONENT_NAME = "SmokeComponent";
+  getName() {
+    return SmokeComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.particles = Array.from({length: 12}, (_, i) => this._makeSmoke(i))
   }

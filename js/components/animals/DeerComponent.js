@@ -25,6 +25,11 @@ export class DeerComponent extends DrawComponent {
     this._notes = notes;
   }
 
+  static COMPONENT_NAME = "DeerComponent";
+  getName() {
+    return DeerComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.deer = {
       x: this.W + 80,

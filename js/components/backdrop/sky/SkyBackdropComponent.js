@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render the sky backdrop (no moons etc.)
  */
 export class SkyBackdropComponent extends DrawComponent {
+  static COMPONENT_NAME = "SkyBackdropComponent";
+  getName() {
+    return SkyBackdropComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx, W, H} = this;
     const {weather, todBlend: td} = this.scene;

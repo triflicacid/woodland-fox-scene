@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render some springtime flowers
  */
 export class SpringFlowersComponent extends DrawComponent {
+  static COMPONENT_NAME = "SpringFlowersComponent";
+  getName() {
+    return SpringFlowersComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.season === 'spring';
   }

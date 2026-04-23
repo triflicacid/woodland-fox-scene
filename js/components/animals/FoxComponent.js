@@ -56,6 +56,11 @@ export class FoxComponent extends DrawComponent {
     this._notes = notes;
   }
 
+  static COMPONENT_NAME = "FoxComponent";
+  getName() {
+    return FoxComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {

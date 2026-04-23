@@ -8,6 +8,11 @@ export class FogOverlayComponent extends DrawComponent {
   /** @type {Array<Object>} */
   fogParticles;
 
+  static COMPONENT_NAME = "FogOverlayComponent";
+  getName() {
+    return FogOverlayComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     const {W, H} = this;
     this.fogParticles = Array.from({length: 14}, (_, i) => ({

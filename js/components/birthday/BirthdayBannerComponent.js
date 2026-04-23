@@ -10,6 +10,11 @@ const LETTER_COLS = ['#ffcc00', '#ff6633', '#ff3399', '#33aaff', '#66cc33', '#cc
  * draws a HAPPY BIRTHDAY banner with bubbly gold letters strung between the two large trees.
  */
 export class BirthdayBannerComponent extends DrawComponent {
+  static COMPONENT_NAME = "BirthdayBannerComponent";
+  getName() {
+    return BirthdayBannerComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.specialEvent === 'birthday';
   }

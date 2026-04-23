@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render snow drifts during winter
  */
 export class SnowDriftsComponent extends DrawComponent {
+  static COMPONENT_NAME = "SnowDriftsComponent";
+  getName() {
+    return SnowDriftsComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.season === 'winter';
   }

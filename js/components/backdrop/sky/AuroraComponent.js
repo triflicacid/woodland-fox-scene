@@ -10,6 +10,11 @@ export class AuroraComponent extends DrawComponent {
   auroraBands;
   on = false;
 
+  static COMPONENT_NAME = "AuroraComponent";
+  getName() {
+    return AuroraComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     const {H} = this;
     this.auroraBands = Array.from({length: 6}, (_, i) => ({

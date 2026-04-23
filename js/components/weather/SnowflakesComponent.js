@@ -8,6 +8,11 @@ export class SnowflakesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   snowflakes;
 
+  static COMPONENT_NAME = "SnowflakesComponent";
+  getName() {
+    return SnowflakesComponent.COMPONENT_NAME;
+  }
+
   /**
    * make a new snowflake object
    * @returns {Object}

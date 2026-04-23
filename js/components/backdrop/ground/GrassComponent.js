@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render grass blades in foreground
  */
 export class GrassComponent extends DrawComponent {
+  static COMPONENT_NAME = "GrassComponent";
+  getName() {
+    return GrassComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx, W, H} = this;
     const {season, weather, frame} = this.scene;

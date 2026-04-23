@@ -23,6 +23,11 @@ export class GuyFawkesComponent extends DrawComponent {
   _fromRight = false;
   _cooldown = 0;
 
+  static COMPONENT_NAME = "GuyFawkesComponent";
+  getName() {
+    return GuyFawkesComponent.COMPONENT_NAME;
+  }
+
   /**
    * summon guy fawkes immediately.
    */

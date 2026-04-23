@@ -8,6 +8,11 @@ export class BonfireComponent extends DrawComponent {
   /** @type {Array<Object>} */
   smoke = [];
 
+  static COMPONENT_NAME = "BonfireComponent";
+  getName() {
+    return BonfireComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.smoke = Array.from({length: 20}, (_, i) =>
         this._makeSmoke(i * 3)

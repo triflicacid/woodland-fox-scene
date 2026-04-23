@@ -6,6 +6,11 @@ import {clamp} from "@/utils";
  * depending on season etc, it may move, or be a pumpkin moon.
  */
 export class MoonComponent extends DrawComponent {
+  static COMPONENT_NAME = "MoonComponent";
+  getName() {
+    return MoonComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.isNight();
   }

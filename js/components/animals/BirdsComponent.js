@@ -14,6 +14,11 @@ export class BirdsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   flyingBirds;
 
+  static COMPONENT_NAME = "BirdsComponent";
+  getName() {
+    return BirdsComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.perchedBirds = Array.from({length: 5}, (_, i) => ({
       treeIdx: [0, 2, 6, 7, 1][i],

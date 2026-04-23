@@ -5,6 +5,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * TODO is needed?
  */
 export class MistComponent extends DrawComponent {
+  static COMPONENT_NAME = "MistComponent";
+  getName() {
+    return MistComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.weather !== 'fog';
   }

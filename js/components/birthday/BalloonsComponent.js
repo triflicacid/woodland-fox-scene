@@ -12,6 +12,11 @@ export class BalloonsComponent extends DrawComponent {
   /** @type {Array<Object>} */
   _balloons = [];
 
+  static COMPONENT_NAME = "BalloonsComponent";
+  getName() {
+    return BalloonsComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {specialEvent} = this.scene;
     return specialEvent === 'birthday' || specialEvent === 'easter';

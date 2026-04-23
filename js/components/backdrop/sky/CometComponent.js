@@ -10,6 +10,11 @@ export class CometComponent extends DrawComponent {
   /** @type {Array<Object>} */
   comets = [];
 
+  static COMPONENT_NAME = "CometComponent";
+  getName() {
+    return CometComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.isNight() && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
   }

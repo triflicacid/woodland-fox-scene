@@ -126,7 +126,7 @@ export class Scene {
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
-    this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));
+    this._aurora = requireNonNull(this._components.getComponent(AuroraComponent.COMPONENT_NAME));
   }
 
   /**

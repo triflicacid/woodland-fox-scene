@@ -5,6 +5,11 @@ import {clamp} from "@/utils";
  * render the sun on clear days
  */
 export class SunComponent extends DrawComponent {
+  static COMPONENT_NAME = "SunComponent";
+  getName() {
+    return SunComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {weather} = this.scene;
     return this.scene.isDay() && weather !== 'fog' && weather !== 'rain' && weather !== 'storm';
