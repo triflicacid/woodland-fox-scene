@@ -58,6 +58,16 @@ export class FoxComponent extends DrawComponent {
         }
       }
     }));
+    this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
+      if (character !== 'guyfawkes') return;
+      if (action === 'watch.start') {
+        this.scene.fox.asleep = false;
+        this.scene.fox.eyeTransitionT = 0;
+      } else if (action === 'watch.end') {
+        this.scene.fox.asleep = true;
+        this.scene.fox.eyeTransitionT = 0;
+      }
+    }));
   }
 
   tick() {
@@ -65,7 +75,7 @@ export class FoxComponent extends DrawComponent {
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
-      if (fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
+      if (fox.asleep && fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
         fox.yawnT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'yawn'));
       }
