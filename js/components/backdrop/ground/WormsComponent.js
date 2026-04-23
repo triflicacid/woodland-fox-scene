@@ -1,6 +1,6 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
 import {prob, rnd, rndchoice} from "@/utils";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * wiggling worms near puddles when raining
@@ -10,8 +10,8 @@ export class WormsComponent extends DrawComponent {
   _worms = [];
 
   initialise(state) {
-    this.eventBus.subscribe(Events.seasonChangeSubscription("WormsComponent", this._onSeasonOrWeatherChange.bind(this)));
-    this.eventBus.subscribe(Events.weatherChangeSubscription("WormsComponent", this._onSeasonOrWeatherChange.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._onSeasonOrWeatherChange.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onSeasonOrWeatherChange.bind(this)));
 
     this._generateWorms(state);
   }

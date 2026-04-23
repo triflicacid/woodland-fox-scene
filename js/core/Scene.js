@@ -7,7 +7,7 @@ import {FoxComponent} from '@/components/animals/FoxComponent';
 import {BunnyComponent} from '@/components/animals/BunnyComponent';
 import {HedgehogComponent} from '@/components/animals/HedgehogComponent';
 import {DeerComponent} from '@/components/animals/DeerComponent';
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 import {GhostsComponent} from "@/components/halloween/GhostsComponent";
 import {ComponentGroup} from "./ComponentGroup";
 import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";

@@ -1,6 +1,6 @@
 import {rnd} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 
 /**
  * render bunny which hops to greet the fox

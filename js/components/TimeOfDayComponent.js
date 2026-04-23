@@ -1,6 +1,6 @@
 import {Component} from "@/core/Component";
 import {lerp} from "@/utils";
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 
 /**
  * a non-drawing component which advanced time of day only.

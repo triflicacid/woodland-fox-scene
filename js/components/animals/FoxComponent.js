@@ -1,7 +1,8 @@
 import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '@/utils';
 import {FOX_PHASES, PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * return the current eye openness from 0 (closed) to 1 (open).
@@ -26,7 +27,7 @@ function eyeOpenAmount(fox) {
  */
 export class FoxComponent extends DrawComponent {
   initialise(state) {
-    this.eventBus.subscribe(Events.fireworkBangSubscription(this.getName(), ({loud}) => {
+    this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
@@ -35,7 +36,7 @@ export class FoxComponent extends DrawComponent {
         }
       }
     }));
-    this.eventBus.subscribe(Events.lightningStrikeSubscription(this.getName(), ({superBolt}) => {
+    this.eventBus.subscribe(Subscriptions.onLightningStrike(this.getName(), ({superBolt}) => {
       if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;

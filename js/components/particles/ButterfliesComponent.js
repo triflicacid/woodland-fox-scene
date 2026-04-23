@@ -1,6 +1,6 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {rnd} from "@/utils";
-import {Events} from "@/event/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render butterflies in spring and summer
@@ -12,8 +12,10 @@ export class ButterfliesComponent extends DrawComponent {
   initialise(state) {
     this._generateButterflies(state.weather);
 
-    this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), update => {
-      this._generateButterflies(update.state.weather);
+    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), update => {
+      if (update.previous === 'wind' || update.updated === 'wind') { // only regenerate if would change
+        this._generateButterflies(update.state.weather);
+      }
     }));
   }
 

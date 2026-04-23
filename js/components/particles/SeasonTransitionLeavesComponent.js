@@ -1,6 +1,6 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {rnd, rndf} from "@/utils";
-import {Events} from "@/event/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render leaf particles during season transitions
@@ -22,7 +22,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
       life: 0,
     }));
 
-    this.eventBus.subscribe(Events.seasonChangeSubscription("SeasonTransitionLeavesComponent", this._onSeasonChange.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._onSeasonChange.bind(this)));
   }
 
   /**

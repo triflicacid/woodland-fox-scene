@@ -1,7 +1,7 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {getTreeTopPos} from "@/components/TreeComponent";
 import {prob, rnd} from "@/utils";
-import {Events} from "@/event/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render flying birds, perched birds, and startled birds.
@@ -23,7 +23,7 @@ export class BirdsComponent extends DrawComponent {
     this.windStartledBirds = [];
     this._generateFlyingBirds(state.weather);
 
-    this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), this._onWeatherChange.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onWeatherChange.bind(this)));
   }
 
   /**

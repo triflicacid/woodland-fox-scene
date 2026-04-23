@@ -1,7 +1,7 @@
 import {clamp, eo, lerp, prob} from '@/utils';
 import {PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 
 /**
  * render a hedgehog which occasionally walks into frame

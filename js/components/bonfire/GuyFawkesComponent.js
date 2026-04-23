@@ -1,7 +1,7 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {PROBABILITY} from '@/config';
 import {clamp, eo, lerp, prob} from '@/utils';
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 
 const PHASES = {
   off: null,

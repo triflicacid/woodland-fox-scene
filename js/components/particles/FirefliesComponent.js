@@ -1,6 +1,6 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {clamp, rnd} from "@/utils";
-import {Events} from "@/event/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render fireflies during nighttime
@@ -12,7 +12,7 @@ export class FirefliesComponent extends DrawComponent {
   initialise(state) {
     this._generateFireflies(state);
 
-    this.eventBus.subscribe(Events.mutateSceneStateSubscription(this.getName(), state => {
+    this.eventBus.subscribe(Subscriptions.onSceneStateMutation(this.getName(), state => {
       if (this.isEnabled(state)) {
         this._generateFireflies(state);
       }
