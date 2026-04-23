@@ -12,19 +12,11 @@ export class FirefliesComponent extends DrawComponent {
   initialise(state) {
     this._generateFireflies(state.moonPhase);
 
-    this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), update => this._onEvent(update.state)));
-    this.eventBus.subscribe(Events.todChangeSubscription(this.getName(), update => this._onEvent(update.state)));
-    this.eventBus.subscribe(Events.seasonChangeSubscription(this.getName(), update => this._onEvent(update.state)));
-    this.eventBus.subscribe(Events.moonPhaseChangeSubscription(this.getName(), update => this._onEvent(update.state)));
-  }
-
-  /**
-   * @param {SceneState} state
-   */
-  _onEvent(state) {
-    if (this.isEnabled(state)) {
-      this._generateFireflies(state.moonPhase);
-    }
+    this.eventBus.subscribe(Events.captureAllSubscription(this.getName(), state => {
+      if (this.isEnabled(state)) {
+        this._generateFireflies(state.moonPhase);
+      }
+    }));
   }
 
   /**
