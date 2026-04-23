@@ -13,7 +13,8 @@ export class BalloonsComponent extends DrawComponent {
   _balloons = [];
 
   isEnabled() {
-    return this.scene.specialEvent === 'birthday';
+    const {specialEvent} = this.scene;
+    return specialEvent === 'birthday' || specialEvent === 'easter';
   }
 
   initialise() {

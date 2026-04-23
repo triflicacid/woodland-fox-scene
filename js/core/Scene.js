@@ -40,6 +40,7 @@ import {BuntingComponent} from "@/components/birthday/BuntingComponent";
 import {BirthdayBannerComponent} from "@/components/birthday/BirthdayBannerComponent";
 import {PresentsComponent} from "@/components/PresentsComponent";
 import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
+import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -92,6 +93,7 @@ export class Scene {
 
       new SnowmenComponent(this.eventBus, this.state, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BalloonsComponent(this.eventBus, this.state, this.ctx, W, H),
       new BirthdayBannerComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -234,6 +236,10 @@ export class Scene {
     const birthdayBtn = document.getElementById('btn-birthday');
     birthdayBtn.disabled = !!state.specialEvent && state.specialEvent !== 'birthday';
     birthdayBtn.classList.toggle('btn-active', state.specialEvent === 'birthday');
+
+    const easterBtn = document.getElementById('btn-easter');
+    easterBtn.disabled = !(state.season === 'spring' && state.timeOfDay === 'day');
+    easterBtn.classList.toggle('btn-active', state.specialEvent === 'easter');
   }
 
   /**
@@ -387,6 +393,14 @@ export class Scene {
       state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      this._refreshUI();
+    });
+    document.getElementById('btn-easter')?.addEventListener('click', () => {
+      const old = state.specialEvent;
+      state.specialEvent = state.specialEvent === 'easter' ? null : 'easter';
+      state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      this.eventBus.dispatch(Events.statusText('Scene', 'Happy Easter!'));
       this._refreshUI();
     });
 
