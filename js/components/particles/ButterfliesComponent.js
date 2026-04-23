@@ -9,18 +9,18 @@ export class ButterfliesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   butterflies;
 
-  initialise(state) {
-    this._generateButterflies(state.weather);
+  initialise() {
+    this._generateButterflies();
 
     this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), update => {
       if (update.previous === 'wind' || update.updated === 'wind') { // only regenerate if would change
-        this._generateButterflies(update.state.weather);
+        this._generateButterflies();
       }
     }));
   }
 
-  isEnabled(state) {
-    const {todBlend, season, weather} = state;
+  isEnabled() {
+    const {todBlend, season, weather} = this.scene;
     return todBlend > 0.4
         && !(season === 'winter' || season === 'autumn')
         && !(weather === 'rain' || weather === 'storm');
@@ -28,11 +28,10 @@ export class ButterfliesComponent extends DrawComponent {
 
   /**
    * generate butterflies
-   * @param {string} weather
    */
-  _generateButterflies(weather) {
+  _generateButterflies() {
     const {H} = this;
-    const length = weather === 'wind' ? 2 : 6;
+    const length = this.scene.weather === 'wind' ? 2 : 6;
     this.butterflies = Array.from({length}, (_, i) => ({
       x: 100 + i * 120,
       y: H * 0.3 + rnd(H * 0.2),
@@ -42,19 +41,18 @@ export class ButterfliesComponent extends DrawComponent {
     }));
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {W} = this;
-    const {weather} = state;
 
     this.butterflies.forEach(bf => {
-      bf.x += bf.vx + (weather === 'wind' ? 0.8 : 0);
+      bf.x += bf.vx + (this.scene.weather === 'wind' ? 0.8 : 0);
       bf.flapT += 0.12;
       bf.y += Math.sin(bf.flapT * 0.3) * 0.5;
       if (bf.x > W + 30) bf.x = -30;
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
 
     this.butterflies.forEach(bf => {

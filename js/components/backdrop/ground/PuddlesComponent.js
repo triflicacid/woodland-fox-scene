@@ -5,16 +5,16 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render assorted puddles when raining
  */
 export class PuddlesComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {weather, todBlend, puddles} = state;
+    const {weather, todBlend, puddles} = this.scene;
     const growing = weather === 'rain' || weather === 'storm';
 
-    state.puddleLevel = clamp(state.puddleLevel + (growing ? 0.004 : -0.002), 0, 1);
+    this.scene.puddleLevel = clamp(this.scene.puddleLevel + (growing ? 0.004 : -0.002), 0, 1);
 
     puddles.forEach(pd => {
-      pd.rx = lerp(0, pd.maxRx, state.puddleLevel);
-      pd.ry = lerp(0, pd.maxRy, state.puddleLevel);
+      pd.rx = lerp(0, pd.maxRx, this.scene.puddleLevel);
+      pd.ry = lerp(0, pd.maxRy, this.scene.puddleLevel);
       if (pd.rx < 1) return;
       const pg = ctx.createRadialGradient(pd.x, pd.y, 0, pd.x, pd.y, pd.rx);
       const c = todBlend > 0.5 ? 'rgba(120,160,200,' : 'rgba(20,40,80,';

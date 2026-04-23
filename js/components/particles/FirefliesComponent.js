@@ -9,26 +9,25 @@ export class FirefliesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   fireflies = [];
 
-  initialise(state) {
-    this._generateFireflies(state);
+  initialise() {
+    this._generateFireflies();
 
     this.eventBus.subscribe(Subscriptions.onSceneStateMutation(this.getName(), state => {
       if (this.isEnabled(state)) {
-        this._generateFireflies(state);
+        this._generateFireflies();
       }
     }));
   }
 
   /**
    * generate fireflies
-   * @param {SceneState} state
    */
-  _generateFireflies(state) {
-    if (state.specialEvent === 'bonfire') return; // reasoning: too loud
+  _generateFireflies() {
+    if (this.scene.specialEvent === 'bonfire') return; // reasoning: too loud
 
     const {W, H} = this;
     const max = 48, min = 8;
-    const t = Math.abs(state.moonPhase - 4) / 4; // 0 at full, 1 at new
+    const t = Math.abs(this.scene.moonPhase - 4) / 4; // 0 at full, 1 at new
     const length = Math.round(min + (max - min) * t * t);
 
     this.fireflies = Array.from({length}, () => ({
@@ -41,11 +40,11 @@ export class FirefliesComponent extends DrawComponent {
     }));
   }
 
-  isEnabled(state) {
-    return state.todBlend < 0.5 && !(state.weather === 'rain' || state.weather === 'storm');
+  isEnabled() {
+    return this.scene.todBlend < 0.5 && !(this.scene.weather === 'rain' || this.scene.weather === 'storm');
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {W, H} = this;
 
     this.fireflies.forEach(f => {
@@ -57,9 +56,9 @@ export class FirefliesComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {todBlend, frame} = state;
+    const {todBlend, frame} = this.scene;
 
     const alpha = clamp(1 - todBlend * 2, 0, 1);
     this.fireflies.forEach(f => {

@@ -10,11 +10,11 @@ export class CometComponent extends DrawComponent {
   /** @type {Array<Object>} */
   comets = [];
 
-  isEnabled(state) {
-    return state.isNight() && (state.weather === 'clear' || state.weather === 'wind');
+  isEnabled() {
+    return this.scene.isNight() && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     if (prob(PROBABILITY.COMET)) {
       this.comets.push(this._spawn());
     }
@@ -33,12 +33,12 @@ export class CometComponent extends DrawComponent {
         .filter(c => !(c.x < -200 || c.x > this.W + 200 || c.y < -200 || c.y > this.H * 0.6));
   }
 
-  draw(state) {
+  draw() {
     if (this.comets.length === 0) return;
 
     const {ctx} = this;
-    const alpha = clamp(1 - state.todBlend * 2, 0, 1) * 0.85;
-    const halloween = state.specialEvent === 'halloween';
+    const alpha = clamp(1 - this.scene.todBlend * 2, 0, 1) * 0.85;
+    const halloween = this.scene.specialEvent === 'halloween';
 
     this.comets.forEach(c => {
       // tail

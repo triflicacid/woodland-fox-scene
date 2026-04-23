@@ -4,14 +4,15 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render snowmen during Christmas
  */
 export class SnowmenComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.specialEvent === 'christmas';
+  snowmen = [{x: 180}, {x: 420}, {x: 560}];
+
+  isEnabled() {
+    return this.scene.specialEvent === 'christmas';
   }
 
-  draw(state) {
-    const SNOWMEN = [{x: 180}, {x: 420}, {x: 560}];
+  draw() {
     const {ctx, H} = this;
-    SNOWMEN.forEach((sm, i) => {
+    this.snowmen.forEach((sm, i) => {
       const y = H * 0.62;
       ctx.save();
       ctx.translate(sm.x, y);

@@ -26,29 +26,29 @@ function eyeOpenAmount(fox) {
  * it also handles the bunny interaction sequence.
  */
 export class FoxComponent extends DrawComponent {
-  initialise(state) {
+  initialise() {
     this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
-        state.fox.earTwitchT = 0;
-        state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        this.scene.fox.earTwitchT = 0;
+        this.scene.fox.earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
-          this._triggerEyeTransition(state);
+          this._triggerEyeTransition();
         }
       }
     }));
     this.eventBus.subscribe(Subscriptions.onLightningStrike(this.getName(), ({superBolt}) => {
       if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
-        state.fox.earTwitchT = 0;
-        state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        this.scene.fox.earTwitchT = 0;
+        this.scene.fox.earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
-          this._triggerEyeTransition(state);
+          this._triggerEyeTransition();
         }
       }
     }));
   }
 
-  tick(state, setStatus, enableButtons) {
-    const {fox} = state;
+  tick(setStatus, enableButtons) {
+    const {fox} = this.scene;
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
@@ -69,7 +69,7 @@ export class FoxComponent extends DrawComponent {
 
     // randomly blink if awake
     if (!fox.asleep && fox.eyeTransitionT < 0 && prob(PROBABILITY.FOX_BLINK)) {
-      this._triggerEyeTransition(state);
+      this._triggerEyeTransition();
     }
 
     // countdown the grumble animation
@@ -179,13 +179,10 @@ export class FoxComponent extends DrawComponent {
 
   /**
    * draw the fox for this frame (handles pose blend between curled and standing).
-   * @param {SceneState} state
    */
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const fox = state.fox;
-    const bunny = state.bunny;
-    const {season, weather, frame, todBlend} = state;
+    const {fox, bunny, season, weather, frame, todBlend} = this.scene;
 
     let fx = fox.x;
     if (fox.phase === 'wander_out' || fox.phase === 'wander_sniff' || fox.phase === 'wander_in') {
@@ -634,11 +631,11 @@ export class FoxComponent extends DrawComponent {
 
   /**
    * trigger an eye transition (either opening or closing)
-   * @param {SceneState} state
    */
-  _triggerEyeTransition(state) {
-    if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05) {
-      state.fox.eyeTransitionT = 0;
+  _triggerEyeTransition() {
+    const {fox} = this.scene;
+    if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
+      fox.eyeTransitionT = 0;
     }
   }
 }

@@ -9,14 +9,14 @@ export class GhostsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   ghosts;
 
-  initialise(state) {
+  initialise() {
     this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onWeatherChange.bind(this)));
 
-    this._generateGhosts(state);
+    this._generateGhosts();
   }
 
-  isEnabled(state) {
-    return state.specialEvent === 'halloween';
+  isEnabled() {
+    return this.scene.specialEvent === 'halloween';
   }
 
   /**
@@ -24,17 +24,16 @@ export class GhostsComponent extends DrawComponent {
    */
   _onWeatherChange(update) {
     if (update.previous === 'storm' || update.updated === 'storm') { // regenerate only if would change
-      this._generateGhosts(update.state);
+      this._generateGhosts();
     }
   }
 
   /**
    * populate ghost array
-   * @param {SceneState} state
    */
-  _generateGhosts(state) {
+  _generateGhosts() {
     const {H} = this;
-    const length = state.weather === 'storm' ? 9 : 5;
+    const length = this.scene.weather === 'storm' ? 9 : 5;
     this.ghosts = Array.from({length}, (_, i) => ({
       x: 80 + i * 130 + rndf(30),
       y: H * 0.15 + rnd(H * 0.25),
@@ -43,9 +42,9 @@ export class GhostsComponent extends DrawComponent {
     }));
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
     this.ghosts.forEach(g => {
       const bob = Math.sin(frame * 0.025 + g.phase) * 8;
       const y = g.y + bob;
@@ -79,7 +78,7 @@ export class GhostsComponent extends DrawComponent {
     });
   }
 
-  tick(state, _1, _2) {
+  tick(_1, _2) {
     const {W} = this;
     this.ghosts.forEach(g => {
       g.x += g.vx;

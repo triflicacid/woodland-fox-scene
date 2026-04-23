@@ -24,15 +24,15 @@ export class WindComponent extends DrawComponent {
     };
   }
 
-  initialise(state) {
+  initialise() {
     this.windDebris = Array.from({length: 50}, () => this._makeDebris());
   }
 
-  isEnabled(state) {
-    return state.weather === 'wind';
+  isEnabled() {
+    return this.scene.weather === 'wind';
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {W} = this;
     this.windDebris.forEach(wd => {
       wd.x += wd.vx;
@@ -41,7 +41,7 @@ export class WindComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
     this.windDebris.forEach(wd => {
       ctx.save();

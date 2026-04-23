@@ -4,11 +4,10 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render undergrowth
  */
 export class UndergrowthComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx, H} = this;
-    const {season, weather, frame} = state;
-    const p = state.pal();
-    const fox = state.fox;
+    const {fox, season, weather, frame} = this.scene;
+    const p = this.scene.pal();
 
     const bushDefs = [
       {x: 130, r: 28, dark: true}, {x: 175, r: 20, dark: false},

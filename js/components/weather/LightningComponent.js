@@ -10,11 +10,11 @@ export class LightningComponent extends DrawComponent {
   /** @type{Array<Object>} */
   _bolts = [];
   
-  isEnabled(state) {
-    return state.weather === 'storm';
+  isEnabled() {
+    return this.scene.weather === 'storm';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
     if (!this._bolts.length) return;
 
@@ -48,7 +48,7 @@ export class LightningComponent extends DrawComponent {
     });
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {H} = this;
 
     // chance to spawn a new bolt each frame

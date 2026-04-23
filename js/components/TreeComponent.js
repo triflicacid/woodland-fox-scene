@@ -323,21 +323,22 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway) {
 class TreesComponent extends Component {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    * @param {boolean | undefined} background
    */
-  constructor(eventBus, ctx, background) {
-    super(eventBus);
+  constructor(eventBus, scene, ctx, background) {
+    super(eventBus, scene);
     this.ctx = ctx;
     this.background = background;
     /** @type {Array<Object>} - tree data from config */
     this.trees = TREE_DEFS;
   }
 
-  draw(state) {
+  draw() {
     const {ctx, trees, background} = this;
-    const {season, weather, specialEvent, frame, H} = state;
-    const pal = state.pal();
+    const {season, weather, specialEvent, frame, H} = this.scene;
+    const pal = this.scene.pal();
     trees
         .filter(t => background === undefined || t.background === background)
         .forEach(tr => drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H));
@@ -350,10 +351,11 @@ class TreesComponent extends Component {
 export class BackgroundTreesComponent extends TreesComponent {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    */
-  constructor(eventBus, ctx) {
-    super(eventBus, ctx, false);
+  constructor(eventBus, scene, ctx) {
+    super(eventBus, scene, ctx, false);
   }
 }
 
@@ -363,9 +365,10 @@ export class BackgroundTreesComponent extends TreesComponent {
 export class ForegroundTreesComponent extends TreesComponent {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    */
-  constructor(eventBus, ctx) {
-    super(eventBus, ctx, true);
+  constructor(eventBus, scene, ctx) {
+    super(eventBus, scene, ctx, true);
   }
 }

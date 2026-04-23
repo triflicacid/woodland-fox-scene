@@ -8,35 +8,35 @@ export class BonfireComponent extends DrawComponent {
   /** @type {Array<Object>} */
   smoke = [];
 
-  initialise(state) {
+  initialise() {
     this.smoke = Array.from({length: 20}, (_, i) =>
-        this._makeSmoke(state, i * 3)
+        this._makeSmoke(i * 3)
     );
   }
 
-  isEnabled(state) {
-    return state.specialEvent === 'bonfire';
+  isEnabled() {
+    return this.scene.specialEvent === 'bonfire';
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     this.smoke.forEach(s => {
-      s.x += s.vx + (state.weather === 'wind' ? 2.5 : 0);
+      s.x += s.vx + (this.scene.weather === 'wind' ? 2.5 : 0);
       s.y += s.vy;
       s.life++;
       s.size += 0.12;
       s.alpha -= 0.008;
       if (s.life > 80 || s.alpha <= 0) {
-        Object.assign(s, this._makeSmoke(state, 0));
+        Object.assign(s, this._makeSmoke(0));
       }
     });
   }
 
-  draw(state) {
-    const {frame} = state;
-    const x = state.bonfire.x;
-    const y = this.H * state.bonfire.y_fraction;
+  draw() {
+    const {frame, weather} = this.scene;
+    const x = this.scene.bonfire.x;
+    const y = this.H * this.scene.bonfire.y_fraction;
 
-    const flameScale = this._getFlameScale(state);
+    const flameScale = this._getFlameScale();
 
     this._drawGlow(x, y, frame, flameScale);
     this._drawLogs(x, y);
@@ -44,11 +44,11 @@ export class BonfireComponent extends DrawComponent {
     if (flameScale > 0) {
       this._drawBackFlames(x, y, frame, flameScale);
       this._drawForeFlames(x, y, frame, flameScale);
-    } else if (state.weather !== 'storm') {
+    } else if (weather !== 'storm') {
       this._drawSmoulder(x, y, frame);
     }
 
-    if (state.weather !== 'storm') {
+    if (weather !== 'storm') {
       this._drawSmoke();
     }
   }
@@ -56,12 +56,12 @@ export class BonfireComponent extends DrawComponent {
   /**
    * return a flame scale factor based on weather.
    * rain suppresses flames, wind fans them.
-   * @param {SceneState} state
    * @returns {number} 0 = no flames, 1 = normal, >1 = enhanced
    */
-  _getFlameScale(state) {
-    if (state.weather === 'rain' || state.weather === 'storm') return 0;
-    if (state.weather === 'wind') return 1.6;
+  _getFlameScale() {
+    const {weather} = this.scene;
+    if (weather === 'rain' || weather === 'storm') return 0;
+    if (weather === 'wind') return 1.6;
     return 1;
   }
 
@@ -345,15 +345,14 @@ export class BonfireComponent extends DrawComponent {
 
   /**
    * create a new smoke particle.
-   * @param {SceneState} state
    * @param {number} [life=0] - initial life offset for staggering
    * @returns {Object}
    */
-  _makeSmoke(state, life = 0) {
+  _makeSmoke(life = 0) {
     const grey = 40 + Math.floor(rnd(40));
     return {
-      x: state.bonfire.x + rndf(4),
-      y: state.H * state.bonfire.y_fraction - 40,
+      x: this.scene.bonfire.x + rndf(4),
+      y: this.H * this.scene.bonfire.y_fraction - 40,
       vx: rndf(0.6) + 0.3,
       vy: -(0.8 + rnd(0.8)),
       size: 8 + rnd(6),

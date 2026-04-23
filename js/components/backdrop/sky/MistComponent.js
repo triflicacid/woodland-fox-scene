@@ -5,13 +5,13 @@ import {DrawComponent} from "@/core/DrawComponent";
  * TODO is needed?
  */
 export class MistComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.weather !== 'fog';
+  isEnabled() {
+    return this.scene.weather !== 'fog';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const {season} = state;
+    const {season} = this.scene;
 
     const mA = season === 'winter' ? 0.22 : season === 'autumn' ? 0.10 : 0.05;
     const mist = ctx.createLinearGradient(0, H * 0.5, 0, H * 0.72);

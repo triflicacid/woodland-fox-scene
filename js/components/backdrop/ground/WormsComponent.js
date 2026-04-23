@@ -9,26 +9,18 @@ export class WormsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   _worms = [];
 
-  initialise(state) {
-    this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._onSeasonOrWeatherChange.bind(this)));
-    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onSeasonOrWeatherChange.bind(this)));
+  initialise() {
+    this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._generateWorms.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._generateWorms.bind(this)));
 
-    this._generateWorms(state);
-  }
-
-  /**
-   * @param {ValueChange<string>} update
-   */
-  _onSeasonOrWeatherChange(update) {
-    this._generateWorms(update.state);
+    this._generateWorms();
   }
 
   /**
    * generate the _worms array
-   * @param {SceneState} state
    */
-  _generateWorms(state) {
-    const {weather, season} = state;
+  _generateWorms() {
+    const {weather, season, puddles} = this.scene;
 
     this._worms.length = 0;
 
@@ -39,32 +31,32 @@ export class WormsComponent extends DrawComponent {
 
     this._worms = Array.from({length: k + rnd(4)}, (_, i) => {
       // get a random puddle
-      const pd = rndchoice(state.puddles);
+      const pd = rndchoice(puddles);
 
       const p = prob(0.5);
       return {
-        alpha: st => Math.min(1, (st.puddleLevel - 0.3) / 0.4), // fade-in,
-        x: st => pd.x + Math.sin(st.frame * 0.008 + i * 2.1) * (pd.maxRx * 0.6),
+        alpha: pl => Math.min(1, (pl - 0.3) / 0.4), // fade-in,
+        x: f => pd.x + Math.sin(f * 0.008 + i * 2.1) * (pd.maxRx * 0.6),
         y: _ => pd.y + 6,
-        wiggle: st => st.frame * 0.04 + i * 1.3,
+        wiggle: f => f * 0.04 + i * 1.3,
         stroke: p ? '#c06080' : '#9060a0',
         fill: p ? '#d07090' : '#a070b0',
       };
     });
   }
 
-  isEnabled(state) {
+  isEnabled() {
     // only appear once puddles are established
-    return state.puddleLevel > 0.3;
+    return this.scene.puddleLevel > 0.3;
   }
 
-  draw(state) {
-    const {ctx} = this;
+  draw() {
+    const {ctx, frame} = this;
     this._worms.forEach(w => {
-      const alpha = w.alpha(state);
-      const wormX = w.x(state);
-      const wormY = w.y(state);
-      const wiggle = w.wiggle(state);
+      const alpha = w.alpha(this.scene.puddleLevel);
+      const wormX = w.x(frame);
+      const wormY = w.y(frame);
+      const wiggle = w.wiggle(frame);
 
       ctx.save();
       ctx.globalAlpha = 0.82 * alpha;

@@ -23,25 +23,26 @@ import {CometComponent} from "@/components/backdrop/sky/CometComponent";
 export class GroundBackdropComponents extends ComponentGroup {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
+  constructor(eventBus, scene, ctx, W, H) {
+    super(eventBus, scene);
     this.ctx = ctx;
     this.W = W;
     this.H = H;
 
     this._components = [
-      new GroundComponent(eventBus, ctx, W, H),
-      new UndergrowthComponent(eventBus, ctx, W, H),
-      new FallenLeavesComponent(eventBus, ctx, W, H),
-      new SnowDriftsComponent(eventBus, ctx, W, H),
-      new SpringFlowersComponent(eventBus, ctx, W, H),
-      new PuddlesComponent(eventBus, ctx, W, H),
-      new WormsComponent(eventBus, ctx, W, H),
-      new GrassComponent(eventBus, ctx, W, H),
+      new GroundComponent(eventBus, scene, ctx, W, H),
+      new UndergrowthComponent(eventBus, scene, ctx, W, H),
+      new FallenLeavesComponent(eventBus, scene, ctx, W, H),
+      new SnowDriftsComponent(eventBus, scene, ctx, W, H),
+      new SpringFlowersComponent(eventBus, scene, ctx, W, H),
+      new PuddlesComponent(eventBus, scene, ctx, W, H),
+      new WormsComponent(eventBus, scene, ctx, W, H),
+      new GrassComponent(eventBus, scene, ctx, W, H),
     ];
   }
 }
@@ -52,26 +53,27 @@ export class GroundBackdropComponents extends ComponentGroup {
 export class SkyBackdropComponents extends ComponentGroup {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
+  constructor(eventBus, scene, ctx, W, H) {
+    super(eventBus, scene);
     this.ctx = ctx;
     this.W = W;
     this.H = H;
 
     this._components = [
-      new SkyBackdropComponent(eventBus, ctx, W, H),
-      new StarsComponent(eventBus, ctx, W, H),
-      new CometComponent(eventBus, ctx, W, H),
-      new MoonComponent(eventBus, ctx, W, H),
-      new SunComponent(eventBus, ctx, W, H),
-      new DuskGlowComponent(eventBus, ctx, W, H),
-      new AuroraComponent(eventBus, ctx, W, H),
-      new CloudsComponent(eventBus, ctx, W, H),
-      new MistComponent(eventBus, ctx, W, H), // TODO ??
+      new SkyBackdropComponent(eventBus, scene, ctx, W, H),
+      new StarsComponent(eventBus, scene, ctx, W, H),
+      new CometComponent(eventBus, scene, ctx, W, H),
+      new MoonComponent(eventBus, scene, ctx, W, H),
+      new SunComponent(eventBus, scene, ctx, W, H),
+      new DuskGlowComponent(eventBus, scene, ctx, W, H),
+      new AuroraComponent(eventBus, scene, ctx, W, H),
+      new CloudsComponent(eventBus, scene, ctx, W, H),
+      new MistComponent(eventBus, scene, ctx, W, H), // TODO ??
     ];
   }
 }

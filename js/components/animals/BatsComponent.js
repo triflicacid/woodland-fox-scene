@@ -8,7 +8,7 @@ export class BatsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   bats;
 
-  initialise(state) {
+  initialise() {
     this.bats = Array.from({length: 6}, () => ({
       x: rnd(this.W),
       y: 40 + rnd(this.H * 0.3),
@@ -19,11 +19,11 @@ export class BatsComponent extends DrawComponent {
     }));
   }
 
-  isEnabled(state) {
-    return state.owlForced || (state.season === 'autumn' && state.specialEvent !== 'bonfire' && state.todBlend < 0.4)
+  isEnabled() {
+    return this.scene.owlForced || (this.scene.season === 'autumn' && this.scene.specialEvent !== 'bonfire' && this.scene.todBlend < 0.4)
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     this.bats.forEach(b => {
       b.x += b.vx;
       b.flapT += b.flapSpeed;
@@ -33,7 +33,7 @@ export class BatsComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     this.bats.forEach(b => this._drawBat(b));
   }
 

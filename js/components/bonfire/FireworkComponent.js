@@ -13,18 +13,19 @@ export class FireworksComponent extends DrawComponent {
   /** @type {Array<Object>} active burst particles */
   bursts = [];
 
-  isEnabled(state) {
-    return state.specialEvent === 'bonfire' && state.weather !== 'storm';
+  isEnabled() {
+    return this.scene.specialEvent === 'bonfire' && this.scene.weather !== 'storm';
   }
 
-  tick(state, setStatus, enableButtons) {
-    const {H} = this;
+  tick(setStatus, enableButtons) {
+    const {W, H} = this;
+    const {weather} = this.scene;
 
     // randomly launch a new rocket
     if (prob(PROBABILITY.FIREWORK_LAUNCH)) {
       const loud = prob(PROBABILITY.LOUD_FIREWORK);
       this.rockets.push({
-        x: 100 + rnd(state.W - 200),
+        x: 100 + rnd(W - 200),
         y: H * 0.62,
         vy: -(5 + rnd(4)),
         vx: rndf(1.2),
@@ -42,12 +43,12 @@ export class FireworksComponent extends DrawComponent {
       r.x += r.vx;
       r.y += r.vy;
       r.vy *= 0.98; // slight deceleration
-      if (state.weather === 'wind' || state.weather === 'storm') {
+      if (weather === 'wind' || weather === 'storm') {
         r.vx += 0.04; // wind movement
       }
 
       if (r.y <= r.targetY) {
-        this._explode(r, state.weather);
+        this._explode(r);
         return false;
       }
       return true;
@@ -58,7 +59,7 @@ export class FireworksComponent extends DrawComponent {
       p.x += p.vx;
       p.y += p.vy;
       p.vy += 0.09; // gravity
-      if (state.weather === 'wind' || state.weather === 'storm') {
+      if (weather === 'wind' || weather === 'storm') {
         p.vx += 0.12; // wind blows particles rightward
       }
       p.life++;
@@ -67,7 +68,7 @@ export class FireworksComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
 
     // draw rocket trails
@@ -103,9 +104,9 @@ export class FireworksComponent extends DrawComponent {
   /**
    * explode a rocket into a burst of particles.
    * @param {Object} rocket
-   * @param {string} weather
    */
-  _explode(rocket, weather) {
+  _explode(rocket) {
+    const {weather} = this.scene;
     const count = rocket.loud ? 80 + Math.floor(rnd(40)) : 30 + Math.floor(rnd(20));
     const speed = rocket.loud ? 4 + rnd(2) : 2 + rnd(1.5);
     const maxLife = rocket.loud ? 70 + Math.floor(rnd(20)) : 40 + Math.floor(rnd(15));

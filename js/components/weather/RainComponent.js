@@ -8,7 +8,7 @@ export class RainComponent extends DrawComponent {
   /** @type{Array<Object>} */
   raindrops;
 
-  initialise(state) {
+  initialise() {
     this.raindrops = Array.from({length: 250}, () => this._makeRain());
   }
 
@@ -24,22 +24,21 @@ export class RainComponent extends DrawComponent {
     };
   }
 
-  isEnabled(state) {
-    const {weather} = state;
+  isEnabled() {
+    const {weather} = this.scene;
     return weather === 'rain' || weather === 'storm';
   }
 
   /**
    * get angle of the rain
-   * @param {string} weather
    */
   _getRainAngle(weather) {
     return weather === 'storm' ? 0.15 : 0.06;
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {W, H} = this;
-    const angle = this._getRainAngle(state.weather);
+    const angle = this._getRainAngle(this.scene.weather);
     this.raindrops.forEach(r => {
       r.y += r.speed;
       r.x += r.speed * angle;
@@ -47,9 +46,9 @@ export class RainComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {weather} = state;
+    const {weather} = this.scene;
     const angle = this._getRainAngle(weather);
     ctx.strokeStyle = weather === 'storm' ? 'rgba(160,180,220,0.5)' : 'rgba(120,160,200,0.45)';
     ctx.lineWidth = weather === 'storm' ? 1.5 : 1;

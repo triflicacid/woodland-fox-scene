@@ -8,12 +8,13 @@ import {Component} from "./Component";
 export class DrawComponent extends Component {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    */
-  constructor(eventBus, ctx, W, H) {
-    super(eventBus);
+  constructor(eventBus, scene, ctx, W, H) {
+    super(eventBus, scene);
     this.ctx = ctx;
     this.W = W;
     this.H = H;

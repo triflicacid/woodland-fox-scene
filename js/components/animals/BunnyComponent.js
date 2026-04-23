@@ -6,17 +6,17 @@ import {Events} from "@/core/Events";
  * render bunny which hops to greet the fox
  */
 export class BunnyComponent extends DrawComponent {
-  isEnabled(state) {
-    const phase = state.bunny.phase;
+  isEnabled() {
+    const phase = this.scene.bunny.phase;
     return !(phase === 'off' || phase === 'done');
   }
 
-  tick(state, setStatus, enableButtons) {
-    const {bunny, fox} = state;
+  tick(setStatus, enableButtons) {
+    const {bunny, fox} = this.scene;
     bunny.phaseT++;
 
     if (bunny.phase === 'hopping_in') {
-      if (state.tickHop()) {
+      if (this.scene.tickHop()) {
         bunny.hop.arc = 0;
         bunny.phase = 'fox_waking';
         bunny.phaseT = 0;
@@ -31,7 +31,7 @@ export class BunnyComponent extends DrawComponent {
       if (bunny.phaseT >= 90) {
         bunny.phase = 'nuzzle';
         bunny.phaseT = 0;
-        state.hearts = [];
+        this.scene.hearts = [];
         setStatus('They touch noses...');
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
@@ -41,25 +41,25 @@ export class BunnyComponent extends DrawComponent {
       // spawn heart particles periodically
       if (bunny.phaseT % 20 === 0 && bunny.phaseT < 140) {
         const noseX = (bunny.x + 35 + fox.x - 34) / 2;
-        state.hearts.push({
+        this.scene.hearts.push({
           x: noseX + (Math.random() - 0.5) * 20,
           y: bunny.y - 72,
           vy: -0.55 - rnd(0.45),
           life: 0,
         });
       }
-      state.hearts.forEach(h => {
+      this.scene.hearts = this.scene.hearts.filter(h => {
         h.y += h.vy;
         h.life++;
+        return h.life < 65;
       });
-      state.hearts = state.hearts.filter(h => h.life < 65);
 
       if (bunny.phaseT >= 160) {
         bunny.phase = 'fox_sleep';
         bunny.phaseT = 0;
         fox.phase = 'bunny_curling';
         fox.phaseT = 0;
-        state.hearts = [];
+        this.scene.hearts = [];
         setStatus('The fox drifts off...');
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
@@ -68,12 +68,12 @@ export class BunnyComponent extends DrawComponent {
       if (bunny.phaseT >= 95) {
         bunny.phase = 'hopping_out';
         bunny.phaseT = 0;
-        state.startHop(bunny.x, this.W + 90, 130);
+        this.scene.startHop(bunny.x, this.W + 90, 130);
         setStatus('The bunny hops off...');
       }
 
     } else if (bunny.phase === 'hopping_out') {
-      if (state.tickHop()) {
+      if (this.scene.tickHop()) {
         bunny.phase = 'done';
         setStatus('Curled up, fast asleep...');
         enableButtons();
@@ -82,9 +82,9 @@ export class BunnyComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {bunny, fox} = state;
+    const {bunny, fox} = this.scene;
 
     this._drawBunny(bunny.x, bunny.y, bunny.hop.arc);
 

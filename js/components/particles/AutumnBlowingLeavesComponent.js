@@ -8,7 +8,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   leaves;
 
-  initialise(state) {
+  initialise() {
     this.leaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
   }
 
@@ -30,9 +30,9 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
     };
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {H} = this;
-    const {season, weather} = state;
+    const {season, weather} = this.scene;
     const shouldFall = season === 'autumn' && (weather === 'wind' || weather === 'storm');
 
     this.leaves.forEach(l => {
@@ -56,7 +56,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
 
     this.leaves

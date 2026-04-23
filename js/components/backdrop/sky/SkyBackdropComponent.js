@@ -4,11 +4,10 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render the sky backdrop (no moons etc.)
  */
 export class SkyBackdropComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const p = state.pal();
-    const td = state.todBlend;
-    const {weather} = state;
+    const {weather, todBlend: td} = this.scene;
+    const p = this.scene.pal();
 
     // base night sky
     const skyN = ctx.createLinearGradient(0, 0, 0, H * 0.7);

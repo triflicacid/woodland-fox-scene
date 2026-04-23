@@ -4,22 +4,23 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render presents during Christmas
  */
 export class PresentsComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.specialEvent === 'christmas';
+  presents = [
+    {x: 155, w: 22, h: 16, col: '#cc2020', ribbon: '#ffdd00'},
+    {x: 185, w: 16, h: 12, col: '#2060cc', ribbon: '#ff80ff'},
+    {x: 430, w: 20, h: 14, col: '#20aa40', ribbon: '#ff4040'},
+    {x: 455, w: 14, h: 18, col: '#aa20cc', ribbon: '#ffffaa'},
+    {x: 575, w: 18, h: 13, col: '#cc6020', ribbon: '#aaffaa'},
+  ];
+
+  isEnabled() {
+    return this.scene.specialEvent === 'christmas';
   }
 
-  draw(state) {
-    const PRESENTS = [
-      {x: 155, w: 22, h: 16, col: '#cc2020', ribbon: '#ffdd00'},
-      {x: 185, w: 16, h: 12, col: '#2060cc', ribbon: '#ff80ff'},
-      {x: 430, w: 20, h: 14, col: '#20aa40', ribbon: '#ff4040'},
-      {x: 455, w: 14, h: 18, col: '#aa20cc', ribbon: '#ffffaa'},
-      {x: 575, w: 18, h: 13, col: '#cc6020', ribbon: '#aaffaa'},
-    ];
+  draw() {
     const {ctx, H} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
 
-    PRESENTS.forEach((pr, i) => {
+    this.presents.forEach((pr, i) => {
       const y = H * 0.62;
       const bob = Math.sin(frame * 0.03 + i * 0.8) * 0.5;
       ctx.save();
