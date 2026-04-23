@@ -30,7 +30,7 @@ export class FoxComponent extends DrawComponent {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
-        if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
+        if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
           this._triggerEyeTransition(state);
         }
       }
@@ -39,7 +39,7 @@ export class FoxComponent extends DrawComponent {
       if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
-        if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
+        if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
           this._triggerEyeTransition(state);
         }
       }
@@ -64,6 +64,11 @@ export class FoxComponent extends DrawComponent {
         fox.earTwitchT++;
         if (fox.earTwitchT >= 20) fox.earTwitchT = -1;
       }
+    }
+
+    // randomly blink if awake
+    if (!fox.asleep && fox.eyeTransitionT < 0 && prob(PROBABILITY.FOX_BLINK)) {
+      this._triggerEyeTransition(state);
     }
 
     // countdown the grumble animation
