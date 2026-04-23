@@ -30,6 +30,7 @@ import {BirdsComponent} from "@/components/animals/BirdsComponent";
 import {BatsComponent} from "@/components/animals/BatsComponent";
 import {OwlComponent} from "@/components/animals/OwlComponent";
 import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
+import {BonfireNightComponent} from "@/components/bonfire/BonfireNightComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -78,6 +79,8 @@ export class Scene {
 
       new SnowmenComponent(this.eventBus, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.ctx, W, H),
+
+      new BonfireNightComponent(this.eventBus, this.ctx, W, H),
 
       new FirefliesComponent(this.eventBus, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.ctx, W, H),
@@ -193,6 +196,10 @@ export class Scene {
     const christmasBtn = document.getElementById('btn-christmas');
       christmasBtn.disabled = state.season !== 'winter';
       christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
+
+    const bonfireBtn = document.getElementById('btn-bonfire');
+    bonfireBtn.disabled = state.season !== 'autumn' || state.timeOfDay !== 'night';
+    bonfireBtn.classList.toggle('btn-active', state.specialEvent === 'bonfire');
 
     MOON_PHASES.forEach((_, i) => {
       const btn = document.getElementById(`btn-phase-${i}`);
@@ -334,6 +341,11 @@ export class Scene {
       state.savePref();
       this._refreshUI();
     });
+    document.getElementById('btn-bonfire')?.addEventListener('click', () => {
+      state.specialEvent = state.specialEvent === 'bonfire' ? null : 'bonfire';
+      state.savePref();
+      this._refreshUI();
+    });
 
     MOON_PHASES.forEach((_, i) => {
       document.getElementById(`btn-phase-${i}`)?.addEventListener('click', () => {
@@ -356,7 +368,10 @@ export class Scene {
         !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
     }
-    if (state.specialEvent === 'christmas' && state.season !== 'winter') {
+    else if (state.specialEvent === 'christmas' && state.season !== 'winter') {
+      state.specialEvent = null;
+    }
+    else if (state.specialEvent === 'bonfire' && !(state.season === 'autumn' && state.timeOfDay === 'night')) {
       state.specialEvent = null;
     }
   }
