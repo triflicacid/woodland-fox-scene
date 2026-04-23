@@ -1,6 +1,7 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {PROBABILITY} from '@/config';
 import {clamp, eo, lerp, prob} from '@/utils';
+import {Events} from "@/core/Events";
 
 const PHASES = {
   off: null,
@@ -59,6 +60,7 @@ export class GuyFawkesComponent extends DrawComponent {
         this._phase = 'watching';
         this._phaseT = 0;
         setStatus('The figure stares into the flames...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'watch.start'));
       }
 
     } else if (this._phase === 'watching') {
@@ -68,6 +70,7 @@ export class GuyFawkesComponent extends DrawComponent {
         this._phase = 'salute';
         this._phaseT = 0;
         setStatus('Remember, remember...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'salute'));
       }
 
     } else if (this._phase === 'salute') {
@@ -76,6 +79,7 @@ export class GuyFawkesComponent extends DrawComponent {
         this._phase = 'leaving';
         this._phaseT = 0;
         setStatus('The figure slips back into the dark...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'watch.end'));
       }
 
     } else if (this._phase === 'leaving') {
@@ -85,6 +89,7 @@ export class GuyFawkesComponent extends DrawComponent {
         this._phaseT = 0;
         this._cooldown = 1800;
         setStatus('Curled up, fast asleep...');
+        this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'exit'));
       }
     }
   }
@@ -105,6 +110,7 @@ export class GuyFawkesComponent extends DrawComponent {
     this._phase = 'entering';
     this._phaseT = 0;
     this._cooldown = 2400;
+    this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'enter'));
   }
 
   /**

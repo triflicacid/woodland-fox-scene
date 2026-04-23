@@ -1,7 +1,7 @@
 import {prob, rnd, rndf} from '@/utils';
 import {PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 
 /**
  * render lightning bolts during a storm

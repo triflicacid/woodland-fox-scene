@@ -88,6 +88,6 @@ export class EventBus {
         ...this._special
     ]
         .filter(s => event.alertOriginator || s.subscriber !== event.originator)
-        .forEach(s => s.trigger(event.payload));
+        .forEach(s => s.trigger(event.originator, event.payload));
   }
 }

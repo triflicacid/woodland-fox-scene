@@ -1,6 +1,6 @@
 import {rnd, rndf} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
-import {Events} from "@/event/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render floating ghosts during Halloween
@@ -10,7 +10,7 @@ export class GhostsComponent extends DrawComponent {
   ghosts;
 
   initialise(state) {
-    this.eventBus.subscribe(Events.weatherChangeSubscription("DrawAirborne", this._onWeatherChange.bind(this)));
+    this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onWeatherChange.bind(this)));
 
     this._generateGhosts(state);
   }
@@ -23,7 +23,9 @@ export class GhostsComponent extends DrawComponent {
    * @param {ValueChange<string>} update
    */
   _onWeatherChange(update) {
-    this._generateGhosts(update.state);
+    if (update.previous === 'storm' || update.updated === 'storm') { // regenerate only if would change
+      this._generateGhosts(update.state);
+    }
   }
 
   /**

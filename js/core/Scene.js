@@ -7,7 +7,7 @@ import {FoxComponent} from '@/components/animals/FoxComponent';
 import {BunnyComponent} from '@/components/animals/BunnyComponent';
 import {HedgehogComponent} from '@/components/animals/HedgehogComponent';
 import {DeerComponent} from '@/components/animals/DeerComponent';
-import {Events} from "@/event/Events";
+import {Events} from "@/core/Events";
 import {GhostsComponent} from "@/components/halloween/GhostsComponent";
 import {ComponentGroup} from "./ComponentGroup";
 import {TimeOfDayComponent} from "@/components/TimeOfDayComponent";
@@ -33,6 +33,7 @@ import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
 import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
+import {EventListenerComponent} from "@/components/EventListenerComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -66,6 +67,7 @@ export class Scene {
 
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, [
+      new EventListenerComponent(this.eventBus),
       new TimeOfDayComponent(this.eventBus),
       new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
@@ -274,6 +276,7 @@ export class Scene {
 
     // visitor button (bunny)
     document.getElementById('btn-bunny')?.addEventListener('click', () => {
+      // TODO move into BunnyComponent
       const {fox, bunny} = state;
       fox.phase = 'idle';
       fox.phaseT = 0;
@@ -408,21 +411,25 @@ export class Scene {
    * trigger the fox grumble animation.
    */
   _triggerGrumble() {
+    // TODO move into fox
     const {fox} = this.state;
     fox.grumbleT = 0;
     fox.earTwitchT = 0;
     fox.earTwitchSide = 1;
     this.statusEl.textContent = 'The fox grumbles sleepily...';
+    this.eventBus.receive(Events.characterAction('Scene', 'fox', 'grumble'));
   }
 
   /**
    * trigger the fox yawn animation if idle.
    */
   _triggerYawn() {
+    // TODO move into fox
     const {fox} = this.state;
     if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
       fox.yawnT = 0;
       this.statusEl.textContent = 'The fox has a big yawn...';
+      this.eventBus.receive(Events.characterAction('Scene', 'fox', 'yawn'));
     }
   }
 
@@ -430,9 +437,11 @@ export class Scene {
    * trigger the fox ear-twitch animation.
    */
   _triggerEarTwitch() {
+    // TODO move into fox
     const {fox} = this.state;
     fox.earTwitchT = 0;
     fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
     this.statusEl.textContent = "The fox's ear twitches...";
+    this.eventBus.receive(Events.characterAction('Scene', 'fox', 'ear_twitch'));
   }
 }

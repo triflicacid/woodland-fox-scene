@@ -1,6 +1,5 @@
-import {Event} from "./event";
-import {ValueChange} from "./ValueChange";
-import {Subscription} from "./Subscription";
+import {Event} from "@/event/Event";
+import {ValueChange} from "@/event/ValueChange";
 import {SceneState} from "@/core/SceneState";
 
 /**
@@ -13,6 +12,7 @@ export class Events {
   static EVENT_MOON_PHASE_CHANGE = "MoonPhaseChange";
   static EVENT_FIREWORK_BANG = 'FireworkBang';
   static EVENT_LIGHTNING_STRIKE = 'LightningStrike';
+  static EVENT_CHARACTER_ACTION = 'CharacterAction';
 
   /**
    * register all events we support onto the given bus
@@ -25,18 +25,7 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_MOON_PHASE_CHANGE);
     eventBus.registerEvent(Events.EVENT_FIREWORK_BANG);
     eventBus.registerEvent(Events.EVENT_LIGHTNING_STRIKE);
-  }
-
-  /**
-   * create a new subscription to capture all events.
-   * if this captures any events which do not hold state, ignore.
-   * @param {string} subscriber
-   * @param {function(SceneState): void} onChange
-   * @returns {Subscription<SceneState>}
-   */
-  static captureAllSubscription(subscriber, onChange) {
-    // payload is a ValueChange
-    return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => update instanceof SceneState && onChange(update.state));
+    eventBus.registerEvent(Events.EVENT_CHARACTER_ACTION);
   }
 
   /**
@@ -50,16 +39,6 @@ export class Events {
   }
 
   /**
-   * create a new subscription for a season change
-   * @param {string} subscriber
-   * @param {function(ValueChange<string>): void} onChange
-   * @returns {Subscription<ValueChange<string>>}
-   */
-  static seasonChangeSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_SEASON_CHANGE, subscriber, onChange);
-  }
-
-  /**
    * create a weather change event
    * @param {string} originator name of event originator
    * @param {string} oldWeather
@@ -67,16 +46,6 @@ export class Events {
    */
   static weatherChange(originator, oldWeather, state) {
     return new Event(Events.EVENT_WEATHER_CHANGE, originator, new ValueChange(oldWeather, state.weather, state));
-  }
-
-  /**
-   * create a new subscription for weather change
-   * @param {string} subscriber
-   * @param {function(ValueChange<string>): void} onChange
-   * @returns {Subscription<ValueChange<string>>}
-   */
-  static weatherChangeSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_WEATHER_CHANGE, subscriber, onChange);
   }
 
   /**
@@ -90,16 +59,6 @@ export class Events {
   }
 
   /**
-   * create a new subscription for a time of day change
-   * @param {string} subscriber
-   * @param {function(ValueChange<string>): void} onChange
-   * @returns {Subscription<ValueChange<string>>}
-   */
-  static todChangeSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_TOD_CHANGE, subscriber, onChange);
-  }
-
-  /**
    * create a moon phase change event
    * @param {string} originator name of event originator
    * @param {number} oldMoonPhase
@@ -107,16 +66,6 @@ export class Events {
    */
   static moonPhaseChange(originator, oldMoonPhase, state) {
     return new Event(Events.EVENT_MOON_PHASE_CHANGE, originator, new ValueChange(oldMoonPhase, state.moonPhase, state));
-  }
-
-  /**
-   * create a new subscription for a moon phase change
-   * @param {string} subscriber
-   * @param {function(ValueChange<number>): void} onChange
-   * @returns {Subscription<ValueChange<number>>}
-   */
-  static moonPhaseChangeSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_MOON_PHASE_CHANGE, subscriber, onChange);
   }
 
   /**
@@ -129,16 +78,6 @@ export class Events {
   }
 
   /**
-   * create a new subscription for a firework bang event
-   * @param {string} subscriber
-   * @param {function({loud:boolean}): void} onChange taking whether the firework was loud or not
-   * @returns {Subscription<{loud:boolean}>}
-   */
-  static fireworkBangSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_FIREWORK_BANG, subscriber, onChange);
-  }
-
-  /**
    * create a lightning strike event
    * @param {string} originator name of event originator
    * @param {boolean} superBolt was the bolt a super bolt?
@@ -148,12 +87,13 @@ export class Events {
   }
 
   /**
-   * create a new subscription for a lightning strike event
-   * @param {string} subscriber
-   * @param {function({superBolt:boolean}): void} onChange taking whether the bolt was a super bolt or not
-   * @returns {Subscription<{superBolt:boolean}>}
+   * create a character action event
+   * @param {string} originator name of event originator
+   * @param {string} character name of the character performing the action
+   * @param {string} action the action being performed e.g. 'enter', 'exit', 'sniff', 'nuzzle'
+   * @returns {Event}
    */
-  static lightningStrikeSubscription(subscriber, onChange) {
-    return new Subscription(Events.EVENT_LIGHTNING_STRIKE, subscriber, onChange);
+  static characterAction(originator, character, action) {
+    return new Event(Events.EVENT_CHARACTER_ACTION, originator, { character, action });
   }
 }

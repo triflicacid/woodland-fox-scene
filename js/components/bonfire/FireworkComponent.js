@@ -1,7 +1,7 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {PROBABILITY} from '@/config';
 import {prob, rnd, rndf} from '@/utils';
-import {Events} from '@/event/Events';
+import {Events} from '@/core/Events';
 
 /**
  * fireworks with coloured burst explosions.

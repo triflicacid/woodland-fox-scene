@@ -1,6 +1,7 @@
 import {PROBABILITY} from "@/config";
 import {clamp, eo, lerp, prob} from "@/utils";
 import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/core/Events";
 
 /**
  * render a deer which sometimes walks into frame
@@ -29,6 +30,7 @@ export class DeerComponent extends DrawComponent {
         deer.phaseT = 0;
         deer.x = this.W + 80;
         deer.cooldown = 2400;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'deer', 'enter'));
       }
     }
     if (deer.phase === 'off') return;
@@ -41,6 +43,7 @@ export class DeerComponent extends DrawComponent {
       if (deer.phaseT >= 150) {
         deer.phase = 'grazing';
         deer.phaseT = 0;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'deer', 'graze.start'));
       }
 
     } else if (deer.phase === 'grazing') {
@@ -48,6 +51,7 @@ export class DeerComponent extends DrawComponent {
       if (deer.phaseT > 300) {
         deer.phase = 'leaving';
         deer.phaseT = 0;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'deer', 'graze.end'));
       }
 
     } else if (deer.phase === 'leaving') {
@@ -55,6 +59,7 @@ export class DeerComponent extends DrawComponent {
       if (deer.phaseT >= 120) {
         deer.phase = 'off';
         deer.x = this.W + 80;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'deer', 'exit'));
       }
     }
   }
