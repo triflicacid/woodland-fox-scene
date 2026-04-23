@@ -379,8 +379,10 @@ export class Scene {
 
     document.getElementById('btn-wake-fox').addEventListener('click', () => {
       const {fox} = state;
-      fox.asleep = !fox.asleep;
-      this._refreshUI();
+      if (fox.phase === 'idle') {
+        fox.asleep = !fox.asleep;
+        this._refreshUI();
+      }
     });
   }
 
