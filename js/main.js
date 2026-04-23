@@ -1,4 +1,5 @@
 import {Scene} from './core/Scene.js';
+import {PROBABILITY} from "@/config";
 
 const canvas = document.getElementById('c');
 const statusEl = document.getElementById('status');
@@ -10,3 +11,4 @@ scene.start();
 
 // FOR DEBUGGING
 globalThis.scene = scene;
+globalThis.probs = PROBABILITY;

@@ -53,6 +53,8 @@ export class SceneState {
       earTwitchSide: 0,
       snowLevel: 0,
       shiverT: 0,
+      asleep: true, // used for Zs and default eye state (open/closed)
+      eyeTransitionT: -1,
     };
 
     // bunny state
