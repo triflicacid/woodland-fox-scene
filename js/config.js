@@ -117,8 +117,3 @@ export const TREE_DEFS = [
  * @type {string[]}
  */
 export const MOON_PHASES = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
-
-export const BONFIRE = {
-  X: 220,
-  Y_FRACTION: 0.62,
-};

@@ -1,11 +1,12 @@
 import {DrawComponent} from '@/core/DrawComponent';
-import {BONFIRE} from '@/config';
 import {rnd, rndf} from '@/utils';
 
 /**
  * draws an animated bonfire with flickering flames and heavy smoke
  */
 export class BonfireComponent extends DrawComponent {
+  x = 220;
+  y_fraction = 0.72;
   /** @type {Array<Object>} */
   smoke = [];
 
@@ -16,7 +17,7 @@ export class BonfireComponent extends DrawComponent {
   }
 
   tick(state, setStatus, enableButtons) {
-    this.smoke.forEach((s, i) => {
+    this.smoke.forEach(s => {
       s.x += s.vx + (state.weather === 'wind' ? 2.5 : 0);
       s.y += s.vy;
       s.life++;
@@ -29,48 +30,19 @@ export class BonfireComponent extends DrawComponent {
   }
 
   draw(state) {
-    const x = BONFIRE.X;
-    const y = state.H * BONFIRE.Y_FRACTION;
-    const {frame} = state;
+    const x = this.x;
+    const y = state.H * this.y_fraction;
 
+    this._drawGlow(x, y, state.frame);
     this._drawLogs(x, y);
-    this._drawGlow(x, y, frame);
-    this._drawFlames(x, y, frame);
+    this._drawStones(x, y);
+    this._drawBackFlames(x, y, state.frame);
+    this._drawForeFlames(x, y, state.frame);
     this._drawSmoke();
   }
 
   /**
-   * draw the crossed logs at the base.
-   * @param {number} x
-   * @param {number} y
-   */
-  _drawLogs(x, y) {
-    const {ctx} = this;
-    ctx.strokeStyle = '#3a1a08';
-    ctx.lineWidth = 6;
-    ctx.lineCap = 'round';
-    // crossed logs
-    ctx.beginPath();
-    ctx.moveTo(x - 22, y);
-    ctx.lineTo(x + 18, y - 10);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x + 22, y);
-    ctx.lineTo(x - 18, y - 10);
-    ctx.stroke();
-    // embers
-    ctx.fillStyle = '#ff4400';
-    ctx.beginPath();
-    ctx.ellipse(x, y - 4, 18, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ff8800';
-    ctx.beginPath();
-    ctx.ellipse(x, y - 4, 10, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  /**
-   * draw the warm ground glow beneath the fire.
+   * draw a large warm ground glow beneath the fire.
    * @param {number} x
    * @param {number} y
    * @param {number} frame
@@ -78,48 +50,246 @@ export class BonfireComponent extends DrawComponent {
   _drawGlow(x, y, frame) {
     const {ctx} = this;
     const flicker = 0.85 + Math.sin(frame * 0.18) * 0.15;
-    const glow = ctx.createRadialGradient(x, y, 0, x, y, 80 * flicker);
-    glow.addColorStop(0, 'rgba(255,120,20,0.25)');
-    glow.addColorStop(0.5, 'rgba(255,80,10,0.10)');
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, 160 * flicker);
+    glow.addColorStop(0, 'rgba(255,120,20,0.35)');
+    glow.addColorStop(0.4, 'rgba(255,80,10,0.15)');
     glow.addColorStop(1, 'rgba(255,60,0,0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.ellipse(x, y, 80 * flicker, 30 * flicker, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y, 160 * flicker, 60 * flicker, 0, 0, Math.PI * 2);
     ctx.fill();
   }
 
   /**
-   * draw layered animated flame arcs.
+   * render stones around the campfire base in a circular arrangement
+   * @param {number} x
+   * @param {number} y
+   */
+  _drawStones(x, y) {
+    const {ctx} = this;
+
+    const stoneAngles = [
+      -1.2, -0.85, -0.5, -0.2, 0.0, 0.2, 0.5, 0.85, 1.2,
+      -1.5, 1.5, Math.PI,
+    ];
+    stoneAngles.forEach((a, i) => {
+      const radius = 42 + (i % 3) * 5;
+      const sx = x + Math.sin(a) * radius;
+      const sy = y + 12 + Math.abs(Math.cos(a)) * 8;
+      const rw = 6 + (i % 3) * 2;
+      const rh = rw * 0.55;
+      ctx.fillStyle = '#4a4a5a';
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, rw, rh, a * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#6a6a7a';
+      ctx.beginPath();
+      ctx.ellipse(sx - 1, sy - 1, rw * 0.55, rh * 0.5, a * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  /**
+   * render logs to form the bonfire's base
+   * @param {number} x
+   * @param {number} y
+   */
+  _drawLogs(x, y) {
+    const {ctx} = this;
+
+    // more logs, ends lower, tips higher to expose more log length
+    const logs = [
+      [-1.1, 52, 8, '#b86820'],  // far far left
+      [-0.75, 58, 9, '#c8782a'],  // far left
+      [-0.42, 62, 10, '#d4883a'],  // left
+      [-0.15, 60, 10, '#c87828'],  // centre-left
+      [0.15, 60, 10, '#d08030'],  // centre-right
+      [0.42, 62, 10, '#c87828'],  // right
+      [0.75, 58, 9, '#c8782a'],  // far right
+      [1.1, 52, 8, '#b86820'],  // far far right
+    ];
+
+    logs.forEach(([angle, len, thickness, col]) => {
+      // tips higher (0.5 up instead of 0.35), ends lower (+10 instead of +4)
+      const tipX = x + Math.sin(angle) * len * 0.35;
+      const tipY = y - Math.cos(angle) * len * 0.5 - 8;
+      const endX = x + Math.sin(angle) * len;
+      const endY = y + 10;
+
+      // shadow side
+      ctx.strokeStyle = '#5a2a08';
+      ctx.lineWidth = thickness + 2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      // main log body
+      ctx.strokeStyle = col;
+      ctx.lineWidth = thickness;
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      // highlight stripe
+      ctx.strokeStyle = 'hsl(30, 70%, 65%)';
+      ctx.lineWidth = thickness * 0.3;
+      ctx.beginPath();
+      ctx.moveTo(tipX - Math.cos(angle), tipY - Math.sin(angle));
+      ctx.lineTo(endX - Math.cos(angle), endY - Math.sin(angle));
+      ctx.stroke();
+
+      // end circle with grain
+      ctx.fillStyle = '#8a4818';
+      ctx.beginPath();
+      ctx.arc(endX, endY, thickness * 0.55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#6a3010';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(endX, endY, thickness * 0.35, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#5a2808';
+      ctx.beginPath();
+      ctx.arc(endX, endY, thickness * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      // fire glow tint on upper portion of each log
+      ctx.strokeStyle = 'rgba(255,120,0,0.25)';
+      ctx.lineWidth = thickness * 0.6;
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(tipX + (endX - tipX) * 0.4, tipY + (endY - tipY) * 0.4);
+      ctx.stroke();
+    });
+  }
+
+  /**
+   * draw layered animated flame arcs, twice the original size.
    * @param {number} x
    * @param {number} y
    * @param {number} frame
    */
-  _drawFlames(x, y, frame) {
+  _drawBackFlames(x, y, frame) {
     const {ctx} = this;
+
+    const baseY = y - 4;
+    const baseW = 32; // matches log tip spread
+
+    // draw back flames first (darker, taller), then front (brighter, shorter)
     const layers = [
-      {h: 48, w: 18, col: '#ff2200', alpha: 0.9},
-      {h: 38, w: 14, col: '#ff6600', alpha: 0.85},
-      {h: 28, w: 10, col: '#ffaa00', alpha: 0.8},
-      {h: 16, w: 6, col: '#ffee44', alpha: 0.75},
+      // [xOffset, baseWidth, height, colour, alpha]
+      // back tall flames
+      [0, baseW, 96, '#aa1500', 0.85],
+      [-10, baseW * 0.7, 88, '#cc2200', 0.80],
+      [10, baseW * 0.7, 80, '#cc2200', 0.80],
+      // mid flames
+      [0, baseW * 0.9, 72, '#ee4400', 0.88],
+      [-8, baseW * 0.6, 60, '#ff5500', 0.85],
+      [8, baseW * 0.6, 58, '#ff5500', 0.85],
+      // front bright flames
+      [0, baseW * 0.7, 50, '#ff8800', 0.90],
+      [-6, baseW * 0.5, 42, '#ffaa00', 0.88],
+      [6, baseW * 0.5, 40, '#ffaa00', 0.88],
+      // hot core
+      [0, baseW * 0.4, 28, '#ffcc22', 0.92],
+      [0, baseW * 0.2, 14, '#ffee88', 0.95],
     ];
 
-    layers.forEach((l, i) => {
-      const flicker = Math.sin(frame * 0.22 + i * 1.1) * 4;
-      const sway = Math.sin(frame * 0.15 + i * 0.7) * 3;
+    layers.forEach(([ox, bw, h, col, alpha], i) => {
+      const flicker = Math.sin(frame * 0.22 + i * 1.1) * 6;
+      const sway = Math.sin(frame * 0.13 + i * 0.8) * 4;
+
       ctx.save();
-      ctx.globalAlpha = l.alpha;
-      ctx.fillStyle = l.col;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = col;
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = col;
+
+      // each flame is a bezier teardrop - wide at base, pointed at top
       ctx.beginPath();
-      ctx.moveTo(x - l.w + sway, y - 4);
+      ctx.moveTo(x + ox - bw + sway, baseY);
       ctx.bezierCurveTo(
-          x - l.w * 0.5 + sway, y - l.h * 0.5 + flicker,
-          x + l.w * 0.5 + sway, y - l.h * 0.5 + flicker,
-          x + sway, y - l.h + flicker
+          x + ox - bw * 0.8 + sway, baseY - h * 0.4 + flicker,
+          x + ox - bw * 0.2 + sway, baseY - h * 0.85 + flicker,
+          x + ox + sway, baseY - h + flicker
       );
       ctx.bezierCurveTo(
-          x + l.w * 0.5 + sway, y - l.h * 0.5 + flicker,
-          x + l.w + sway, y - l.h * 0.5 + flicker,
-          x + l.w + sway, y - 4
+          x + ox + bw * 0.2 + sway, baseY - h * 0.85 + flicker,
+          x + ox + bw * 0.8 + sway, baseY - h * 0.4 + flicker,
+          x + ox + bw + sway, baseY
+      );
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // sparks
+    if (Math.random() < 0.3) {
+      for (let i = 0; i < 3; i++) {
+        const sx = x + rndf(baseW);
+        const sy = baseY - 20 - rnd(60);
+        ctx.save();
+        ctx.globalAlpha = 0.6 + rnd(0.4);
+        ctx.fillStyle = Math.random() < 0.5 ? '#ffee44' : '#ffaa00';
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = '#ffaa00';
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1 + rnd(1.5), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
+
+  /**
+   * draw smaller flames emanating through the gaps between logs.
+   * these sit in front of the logs, appearing to burst through them.
+   * @param {number} x
+   * @param {number} y
+   * @param {number} frame
+   */
+  _drawForeFlames(x, y, frame) {
+    const {ctx} = this;
+    const baseY = y - 3;
+
+    // smaller flame tongues poking through log gaps
+    // positioned to align with the spaces between the radiating logs
+    const tongues = [
+      // [xOffset, width, height, colour, alpha]
+      [-18, 8, 28, '#ff6600', 0.85],
+      [-8, 7, 24, '#ff8800', 0.88],
+      [0, 9, 32, '#ffaa00', 0.90], // centre gap - brightest
+      [8, 7, 24, '#ff8800', 0.88],
+      [18, 8, 28, '#ff6600', 0.85],
+      // hot spots - very small, bright
+      [-4, 4, 14, '#ffdd44', 0.92],
+      [4, 4, 14, '#ffdd44', 0.92],
+    ];
+
+    tongues.forEach(([ox, bw, h, col, alpha], i) => {
+      const flicker = Math.sin(frame * 0.28 + i * 1.4) * 4;
+      const sway = Math.sin(frame * 0.18 + i * 0.9) * 2;
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = col;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = col;
+
+      ctx.beginPath();
+      ctx.moveTo(x + ox - bw + sway, baseY);
+      ctx.bezierCurveTo(
+          x + ox - bw * 0.5 + sway, baseY - h * 0.5 + flicker,
+          x + ox + bw * 0.5 + sway, baseY - h * 0.5 + flicker,
+          x + ox + sway, baseY - h + flicker
+      );
+      ctx.bezierCurveTo(
+          x + ox + bw * 0.5 + sway, baseY - h * 0.5 + flicker,
+          x + ox + bw + sway, baseY - h * 0.5 + flicker,
+          x + ox + bw + sway, baseY
       );
       ctx.closePath();
       ctx.fill();
@@ -152,12 +322,12 @@ export class BonfireComponent extends DrawComponent {
   _makeSmoke(state, life = 0) {
     const grey = 40 + Math.floor(rnd(40));
     return {
-      x: BONFIRE.X + rndf(4),
-      y: state.H * BONFIRE.Y_FRACTION - 20,
+      x: this.x + rndf(4),
+      y: state.H * this.y_fraction - 40,
       vx: rndf(0.6) + 0.3,
-      vy: -(0.8 + rnd(0.6)),
-      size: 6 + rnd(4),
-      alpha: 0.45 + rnd(0.2),
+      vy: -(0.8 + rnd(0.8)),
+      size: 8 + rnd(6),
+      alpha: 0.55 + rnd(0.2),
       col: `rgb(${grey},${grey},${grey})`,
       life,
     };
