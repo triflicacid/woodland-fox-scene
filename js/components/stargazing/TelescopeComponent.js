@@ -16,6 +16,7 @@ export class TelescopeComponent extends DrawComponent {
   _panX = 0;
   _panXTarget = 0;
   _panXTimer = 0;
+  tripodFeet = [[-22, 28], [0, 32], [22, 28]];
 
   isEnabled() {
     return this.scene.stargazing;
@@ -63,26 +64,77 @@ export class TelescopeComponent extends DrawComponent {
    */
   _drawTelescope(tubeAngle) {
     const {ctx} = this;
+    const {season} = this.scene;
 
     // tripod legs
     ctx.strokeStyle = '#a0a8b0';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     // three legs spreading from mount base
-    [[-22, 28], [0, 32], [22, 28]].forEach(([lx, ly]) => {
+    this.tripodFeet.forEach(([lx, ly]) => {
       ctx.beginPath();
       ctx.moveTo(0, -8);
       ctx.lineTo(lx, ly);
       ctx.stroke();
     });
-    // feet
+    // feet with furrows in ground
     ctx.strokeStyle = '#808890';
     ctx.lineWidth = 2;
-    [[-22, 28], [0, 32], [22, 28]].forEach(([lx, ly]) => {
+    this.tripodFeet.forEach(([lx, ly]) => {
+      ctx.save();
+      ctx.translate(lx, ly);
+
       ctx.beginPath();
-      ctx.moveTo(lx - 5, ly);
-      ctx.lineTo(lx + 5, ly);
+      ctx.moveTo(-5, 0);
+      ctx.lineTo(5, 0);
       ctx.stroke();
+
+      if (season === 'winter') {
+        // small snow furrow pushed up around each foot
+        ctx.fillStyle = 'rgba(225,238,252,0.9)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 7, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.beginPath();
+        ctx.ellipse(-1, -1, 4, 1.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+      } else if (season === 'spring' || season === 'summer') {
+        // small indent/furrow where the foot has pressed into the ground
+        // main indent shadow
+        ctx.fillStyle = season === 'spring' ? 'rgba(30,80,20,0.5)' : 'rgba(20,70,15,0.45)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 6, 2.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // darker centre crease
+        ctx.fillStyle = season === 'spring' ? 'rgba(15,50,10,0.6)' : 'rgba(10,45,8,0.6)';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 3, 1, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // slight raised edge highlight
+        ctx.strokeStyle = season === 'spring' ? 'rgba(60,120,30,0.4)' : 'rgba(40,110,20,0.4)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 6, 2.5, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (season === 'autumn') {
+        // small fallen leaves scattered around foot
+        [-5, 0, 4].forEach((ox, i) => {
+          const hue = [18, 28, 38][i];
+          ctx.save();
+          ctx.translate(ox, (i % 2) * 2);
+          ctx.rotate(i * 0.6);
+          ctx.fillStyle = `hsl(${hue}, 72%, 44%)`;
+          ctx.globalAlpha = 0.85;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 4, 2.5, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      }
+
+      ctx.restore();
     });
     // cross brace
     ctx.strokeStyle = '#9098a0';
@@ -102,7 +154,7 @@ export class TelescopeComponent extends DrawComponent {
     ctx.arc(-1, -9, 5, 0, Math.PI * 2);
     ctx.fill();
 
-    // rube assembly (this rotates around mount)
+    // tube assembly (this rotates around mount)
     const tubeLen = 62;
     const tubeR = 9;
     ctx.save();
@@ -207,6 +259,9 @@ export class TelescopeComponent extends DrawComponent {
     ctx.beginPath();
     ctx.arc(15, -1, tubeR * 0.18, 0, Math.PI * 2); // reflection
     ctx.fill();
+
+    // ground detail at tripod feet - varies by season
+
 
     ctx.restore(); // tube rotation
   }
