@@ -71,9 +71,6 @@ export class SceneState {
     // birds/owl state
     this.owlForced = false;
 
-    // active lightning bolts
-    this.bolts = [];
-
     this.puddleLevel = 0;
 
     // ground decoration
