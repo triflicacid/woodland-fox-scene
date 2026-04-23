@@ -23,9 +23,6 @@ export class BirdsComponent extends DrawComponent {
     this.windStartledBirds = [];
     this._generateFlyingBirds(state.weather);
 
-    this.eventBus.subscribe(Events.captureAllSubscription(this.getName(), state => {
-      this._generateFlyingBirds(state.weather);
-    }));
     this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), this._onWeatherChange.bind(this)));
   }
 
@@ -46,39 +43,20 @@ export class BirdsComponent extends DrawComponent {
     }));
   }
 
-  tick(state, setStatus, enableButtons) {
-    // wind-startled birds
-    this.windStartledBirds = this.windStartledBirds.filter(b => {
-      b.x += b.vx;
-      b.y += b.vy;
-      b.vy += 0.05;
-      b.flapT += b.flapSpeed;
-      b.life++;
-      return !(b.life > 200 || b.x < -50 || b.x > this.W + 50 || b.y < -50);
-    });
-
-    if (this._areBirdsActive(state)) {
-      // flock birds flying across the sky
-      this.flyingBirds.forEach(b => {
-        b.x += b.vx;
-        b.flapT += b.flapSpeed;
-        b.y += Math.sin(b.flapT * 0.2) * 0.3;
-        if (b.x > this.W + 30) {
-          b.x = -30;
-          b.y = 20 + rnd(this.H * 0.22);
-        }
-      });
-    }
-  }
-
   /**
    * called on a weather change event
    * @param {ValueChange<string>} update
    */
   _onWeatherChange(update) {
+    const {weather, season, frame, specialEvent, trees} = update.state;
+
+    // regenerate birds if count changes
+    if (weather === 'wind' || update.previous === 'wind') {
+      this._generateFlyingBirds(weather);
+    }
+
     // if we transitioned into wind, startle the perched birds
-    if (update.updated === 'wind') {
-      const {weather, season, frame, specialEvent, trees} = update.state;
+    if (weather === 'wind') {
       this.perchedBirds.forEach(pb => {
         const tr = trees[pb.treeIdx];
         const top = getTreeTopPos(tr, weather, season, specialEvent, frame, this.H);
@@ -92,6 +70,32 @@ export class BirdsComponent extends DrawComponent {
           scale: 0.8 + rnd(0.3),
           life: 0,
         });
+      });
+    }
+  }
+
+  tick(state, setStatus, enableButtons) {
+    // wind-startled birds
+    this.windStartledBirds = this.windStartledBirds.filter(b => {
+      b.x += b.vx;
+      b.y += b.vy;
+      b.vy += 0.05;
+      b.flapT += b.flapSpeed;
+      b.life++;
+      return !(b.life > 200 || b.x < -50 || b.x > this.W + 50 || b.y < -50);
+    });
+
+    if (this._areBirdsActive(state)) {
+      const M = state.weather === 'wind' ? 4.5 : 1;
+      // flock birds flying across the sky
+      this.flyingBirds.forEach(b => {
+        b.x += b.vx * M;
+        b.flapT += b.flapSpeed;
+        b.y += Math.sin(b.flapT * 0.2) * 0.3;
+        if (b.x > this.W + 30) {
+          b.x = -30;
+          b.y = 20 + rnd(this.H * 0.22);
+        }
       });
     }
   }
@@ -137,7 +141,7 @@ export class BirdsComponent extends DrawComponent {
     const {season, todBlend, weather} = state;
     if (season === 'winter') return false;
     if (todBlend <= 0.4) return false;
-    if (weather === 'storm' || weather === 'wind') return false;
+    if (weather === 'storm') return false;
     return true;
   }
 
