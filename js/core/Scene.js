@@ -42,6 +42,8 @@ import {PresentsComponent} from "@/components/PresentsComponent";
 import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
 import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
 import {ChicksComponent} from "@/components/animals/ChicksComponent";
+import {PlanetsComponent} from "@/components/stargazing/PlanetsComponent";
+import {ConstellationsComponent} from "@/components/stargazing/ConstellationsComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -79,6 +81,9 @@ export class Scene {
       new TimeOfDayComponent(this.eventBus, this.state),
       new SkyBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
+
+      new PlanetsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new ConstellationsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
@@ -245,6 +250,22 @@ export class Scene {
     const easterBtn = document.getElementById('btn-easter');
     easterBtn.disabled = !(state.season === 'spring' && state.timeOfDay === 'day');
     easterBtn.classList.toggle('btn-active', state.specialEvent === 'easter');
+
+    const stargazeBtn = document.getElementById('btn-stargaze');
+    if (stargazeBtn) {
+      const canStargaze = state.timeOfDay === 'night'
+          && (state.weather === 'clear' || state.weather === 'wind')
+          && !this._aurora.on;
+      stargazeBtn.disabled = !canStargaze;
+      stargazeBtn.classList.toggle('btn-active', state.stargazing);
+    }
+
+    document.getElementById('btn-aurora')?.addEventListener('click', () => {
+      if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
+      this._aurora.toggle();
+      if (this._aurora.on) state.stargazing = false; // aurora suppresses stargazing
+      this._refreshUI();
+    });
   }
 
   /**
@@ -358,6 +379,12 @@ export class Scene {
     document.getElementById('btn-aurora')?.addEventListener('click', () => {
       if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
       this._aurora.toggle();
+      this._refreshUI();
+    });
+    // stargazing toggle
+    document.getElementById('btn-stargaze')?.addEventListener('click', () => {
+      state.stargazing = !state.stargazing;
+      state.savePref();
       this._refreshUI();
     });
 

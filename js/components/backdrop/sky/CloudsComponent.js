@@ -9,6 +9,10 @@ export class CloudsComponent extends DrawComponent {
     return CloudsComponent.COMPONENT_NAME;
   }
 
+  isEnabled() {
+    return !this.scene.stargazing;
+  }
+
   draw() {
     const {ctx} = this;
     const {weather, season, frame} = this.scene;
