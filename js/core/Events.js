@@ -14,6 +14,7 @@ export class Events {
   static EVENT_LIGHTNING_STRIKE = 'LightningStrike';
   static EVENT_CHARACTER_ACTION = 'CharacterAction';
   static EVENT_STATUS_TEXT = 'StatusText';
+  static EVENT_SPECIAL_EVENT = 'SpecialEvent';
   /**
    * used for bunny/fox only
    * @deprecated
@@ -33,6 +34,7 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_LIGHTNING_STRIKE);
     eventBus.registerEvent(Events.EVENT_CHARACTER_ACTION);
     eventBus.registerEvent(Events.EVENT_STATUS_TEXT);
+    eventBus.registerEvent(Events.EVENT_SPECIAL_EVENT);
     eventBus.registerEvent(Events.EVENT_MAIN_BUTTONS);
   }
 
@@ -92,6 +94,16 @@ export class Events {
    */
   static lightningStrike(originator, superBolt) {
     return new Event(Events.EVENT_LIGHTNING_STRIKE, originator, { superBolt });
+  }
+
+  /**
+   * create a special event change event
+   * @param {string} originator name of event originator
+   * @param {string | null} oldSpecialEvent
+   * @param {SceneState} state
+   */
+  static specialEventChange(originator, oldSpecialEvent, state) {
+    return new Event(Events.EVENT_SPECIAL_EVENT, originator, new ValueChange(oldSpecialEvent, state.specialEvent, state));
   }
 
   /**

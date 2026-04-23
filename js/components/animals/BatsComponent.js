@@ -20,7 +20,8 @@ export class BatsComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return this.scene.owlForced || (this.scene.season === 'autumn' && this.scene.specialEvent !== 'bonfire' && this.scene.todBlend < 0.4)
+    // nigh-time and no special event (only events in autumn are loud)
+    return this.scene.owlForced|| (this.scene.season === 'autumn' && this.scene.todBlend < 0.4 && this.scene.specialEvent === null)
   }
 
   tick() {

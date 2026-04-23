@@ -24,6 +24,7 @@ export class SceneState {
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
     this.specialEvent = localStorage.getItem('special_event') || null;
+    if (this.specialEvent === 'null') this.specialEvent = null;
     /** @type{number} */
     this.moonPhase = parseInt(localStorage.getItem('moon_phase') ?? '4'); // default full
 
@@ -57,6 +58,7 @@ export class SceneState {
       shiverT: 0,
       asleep: true, // used for Zs and default eye state (open/closed)
       eyeTransitionT: -1,
+      singingMouthT: 0,
     };
 
     // bunny state
@@ -115,7 +117,7 @@ export class SceneState {
    * @returns {Object}
    */
   pal() {
-     return PALETTES[this.season];
+    return PALETTES[this.season];
   }
 
   /**
@@ -183,11 +185,9 @@ export class SceneState {
     if (this.specialEvent === 'halloween' &&
         !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
-    }
-    else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
+    } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
       this.specialEvent = null;
-    }
-    else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+    } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     }
   }

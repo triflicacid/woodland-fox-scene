@@ -72,6 +72,16 @@ export class Subscriptions {
   }
 
   /**
+   * create a new subscription for a special event change
+   * @param {string} subscriber
+   * @param {function(ValueChange<string | null>): void} onChange
+   * @returns {Subscription<ValueChange<string | null>>}
+   */
+  static onSpecialEventChange(subscriber, onChange) {
+    return new Subscription(Events.EVENT_SPECIAL_EVENT, subscriber, onChange);
+  }
+
+  /**
    * create a new subscription for a firework bang event
    * @param {string} subscriber
    * @param {function({loud:boolean}): void} onChange taking whether the firework was loud or not
