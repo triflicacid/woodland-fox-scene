@@ -14,7 +14,9 @@ export class FireworksComponent extends DrawComponent {
   bursts = [];
 
   isEnabled() {
-    return this.scene.specialEvent === 'bonfire' && this.scene.weather !== 'storm';
+    return this.scene.weather !== 'storm'
+        && this.scene.timeOfDay === 'night'
+        && (this.scene.specialEvent === 'bonfire' || this.scene.specialEvent === 'birthday');
   }
 
   tick() {

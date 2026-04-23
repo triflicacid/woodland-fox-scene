@@ -15,7 +15,6 @@ import {GroundBackdropComponents, SkyBackdropComponents} from "@/components/back
 import {GravestoneComponent} from "@/components/halloween/GravestoneComponent";
 import {ScarecrowComponent} from "@/components/halloween/ScarecrowComponent";
 import {SnowmenComponent} from "@/components/christmas/SnowmenComponent";
-import {PresentsComponent} from "@/components/christmas/PresentsComponent";
 import {SmokeComponent} from "@/components/particles/SmokeComponent";
 import {FirefliesComponent} from "@/components/particles/FirefliesComponent";
 import {HeartsComponent} from "@/components/particles/HeartsComponent";
@@ -36,6 +35,11 @@ import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 import {EventListenerComponent} from "@/components/EventListenerComponent";
 import {requireNonNull} from "@/utils";
 import {Subscriptions} from "@/core/Subscriptions";
+import {BalloonsComponent} from "@/components/birthday/BalloonsComponent";
+import {BuntingComponent} from "@/components/birthday/BuntingComponent";
+import {BirthdayBannerComponent} from "@/components/birthday/BirthdayBannerComponent";
+import {PresentsComponent} from "@/components/PresentsComponent";
+import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -74,9 +78,12 @@ export class Scene {
 
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
+      new LightningComponent(this.eventBus, this.state, this.ctx, W, H),
       new SmokeComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new ForegroundTreesComponent(this.eventBus, this.state, this.ctx),
+
+      new FireworksComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new GravestoneComponent(this.eventBus, this.state, this.ctx, W, H),
       new ScarecrowComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -84,7 +91,9 @@ export class Scene {
       new SnowmenComponent(this.eventBus, this.state, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new FireworksComponent(this.eventBus, this.state, this.ctx, W, H),
+      new BalloonsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new BirthdayBannerComponent(this.eventBus, this.state, this.ctx, W, H),
+      new BuntingComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new FirefliesComponent(this.eventBus, this.state, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -93,7 +102,6 @@ export class Scene {
       new SeasonTransitionLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
       new AutumnBlowingLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new LightningComponent(this.eventBus, this.state, this.ctx, W, H),
       new RainComponent(this.eventBus, this.state, this.ctx, W, H),
       new SnowflakesComponent(this.eventBus, this.state, this.ctx, W, H),
       new WindComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -109,6 +117,7 @@ export class Scene {
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H),
+      new MusicalNotesComponent(this.eventBus, this.state, this.ctx, W, H),
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
     this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));
@@ -219,6 +228,10 @@ export class Scene {
     const wakeBtn = document.getElementById('btn-wake-fox');
     wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
     wakeBtn.classList.toggle('btn-active', !state.fox.asleep);
+
+    const birthdayBtn = document.getElementById('btn-birthday');
+    birthdayBtn.disabled = !!state.specialEvent && state.specialEvent !== 'birthday';
+    birthdayBtn.classList.toggle('btn-active', state.specialEvent === 'birthday');
   }
 
   /**
@@ -386,6 +399,17 @@ export class Scene {
         fox.asleep = !fox.asleep;
         this._refreshUI();
       }
+    });
+
+    document.getElementById('btn-birthday')?.addEventListener('click', () => {
+      if (state.specialEvent === 'birthday') {
+        state.specialEvent = null;
+        //this._birthday.onSpecialEventCleared();
+      } else {
+        state.specialEvent = 'birthday';
+      }
+      state.savePref();
+      this._refreshUI();
     });
   }
 }

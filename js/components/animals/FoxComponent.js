@@ -32,6 +32,7 @@ export const FOX_PHASES = {
   wander_out: {f: 120},
   wander_sniff: {f: 80},
   wander_in: {f: 120},
+  singing: {f: Infinity}, // till cancel
 };
 
 /**
@@ -73,6 +74,24 @@ export class FoxComponent extends DrawComponent {
   tick() {
     const {fox} = this.scene;
 
+    // birthday management
+    if (this.scene.specialEvent === 'birthday') {
+      if (fox.phase === 'idle') {
+        // skip the wake sequence entirely - go straight to singing
+        fox.phase = 'singing';
+        fox.poseBlend = 1;
+        fox.asleep = false;
+        fox.singingMouthT = this.scene.frame;
+      } else if (fox.phase === 'singing') {
+        fox.singingMouthT = this.scene.frame;
+      }
+    } else if (fox.phase === 'singing') {
+      fox.phase = 'curling';
+      fox.phaseT = 0;
+      fox.asleep = true;
+      fox.singingMouthT = undefined;
+    }
+
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
       if (fox.asleep && fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
@@ -104,13 +123,14 @@ export class FoxComponent extends DrawComponent {
       if (fox.grumbleT >= 40) fox.grumbleT = -1;
     }
 
-    // countdown the eye open animation
+    // countdown the eye transition animation
     if (fox.eyeTransitionT >= 0) {
       fox.eyeTransitionT++;
       if (fox.eyeTransitionT >= 50) fox.eyeTransitionT = -1;
     }
 
-    if (fox.phase === 'idle') return;
+    // early return (after this line we process event sequences)
+    if (fox.phase === 'idle' || fox.phase === 'singing') return;
 
     fox.phaseT++;
     const cfg = FOX_PHASES[fox.phase];
@@ -156,11 +176,18 @@ export class FoxComponent extends DrawComponent {
     } else if (fox.phase === 'curling') {
       fox.poseBlend = 1 - eio(t);
       if (fox.phaseT >= cfg.f) {
-        fox.phase = 'idle';
-        fox.poseBlend = 0;
-        this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
-        this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
-        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sleep'));
+        if (this.scene.specialEvent === 'birthday') {
+          // skip idle, go straight to singing
+          fox.phase = 'singing';
+          fox.poseBlend = 1;
+          fox.asleep = false;
+        } else {
+          fox.phase = 'idle';
+          fox.poseBlend = 0;
+          this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
+          this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
+          this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sleep'));
+        }
       }
 
     } else if (fox.phase === 'bunny_standup') {
@@ -197,7 +224,7 @@ export class FoxComponent extends DrawComponent {
         fox.phase = 'curling';
         fox.phaseT = 0;
         fox.wanderX = fox.x;
-        this.eventBus.dispatch(Events.statusText(this.getName(), 'Back home curling up...'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'Back home, curling up...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wander.end'));
       }
     }
@@ -520,6 +547,13 @@ export class FoxComponent extends DrawComponent {
     ctx.save();
     if (!facingLeft) ctx.scale(-1, 1);
 
+    // birthday sway - whole body rocks side to side
+    if (fox.singingMouthT !== undefined) {
+      const sway = Math.sin(fox.singingMouthT * 0.07) * 6;
+      ctx.translate(sway, 0);
+      ctx.rotate(sway * 0.012);
+    }
+
     // shadow
     blob(ctx, () => ctx.ellipse(0, 5, 44, 8, 0, 0, Math.PI * 2), 'rgba(0,0,0,0.18)');
 
@@ -651,6 +685,21 @@ export class FoxComponent extends DrawComponent {
     ctx.beginPath();
     ctx.arc(-9.5, hy - 2.5, 0.7, 0, Math.PI * 2);
     ctx.fill();
+
+    // birthday singing mouth
+    if (fox.singingMouthT !== undefined) {
+      const mouthOpen = Math.abs(Math.sin(fox.singingMouthT * 0.12)) * 6;
+      ctx.fillStyle = '#5a0800';
+      ctx.beginPath();
+      ctx.ellipse(-28, hy + 4, 5, mouthOpen * 0.6 + 1, -0.1, 0, Math.PI * 2);
+      ctx.fill();
+      if (mouthOpen > 3) {
+        ctx.fillStyle = '#cc4444';
+        ctx.beginPath();
+        ctx.ellipse(-28, hy + 4 + mouthOpen * 0.3, 3, 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
 
     ctx.restore();
   }
