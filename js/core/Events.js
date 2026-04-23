@@ -121,7 +121,7 @@ export class Events {
    * @param {boolean} enabled whether to enable (or disable) the main buttons
    * @returns {Event}
    */
-  static mainButtonsEnabled(originator, enabled) {
+  static setMainButtons(originator, enabled) {
     return new Event(Events.EVENT_MAIN_BUTTONS, originator, {enabled});
   }
 }

@@ -136,7 +136,7 @@ export class FoxComponent extends DrawComponent {
         fox.phase = 'idle';
         fox.poseBlend = 0;
         this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
-        this.eventBus.receive(Events.mainButtonsEnabled(this.getName(), true));
+        this.eventBus.receive(Events.setMainButtons(this.getName(), true));
         this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'sleep'));
       }
 

@@ -76,7 +76,7 @@ export class BunnyComponent extends DrawComponent {
       if (this.scene.tickHop()) {
         bunny.phase = 'done';
         this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
-        this.eventBus.receive(Events.mainButtonsEnabled(this.getName(), true));
+        this.eventBus.receive(Events.setMainButtons(this.getName(), true));
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'exit'));
       }
     }
