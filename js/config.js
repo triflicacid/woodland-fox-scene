@@ -46,7 +46,7 @@ export const PROBABILITY = {
   DEER: 0.008,
   OWL_BLINK: 0.15,
   COMET: 0.0002,
-  FIREWORK_LAUNCH: 0.08,
+  FIREWORK_LAUNCH: 0.025,
   LOUD_FIREWORK: 0.3,
   FIREWORK_BANG_REACTION: 0.6, // react to a loud firework
 };
