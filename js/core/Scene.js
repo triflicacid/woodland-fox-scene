@@ -40,6 +40,8 @@ import {BuntingComponent} from "@/components/birthday/BuntingComponent";
 import {BirthdayBannerComponent} from "@/components/birthday/BirthdayBannerComponent";
 import {PresentsComponent} from "@/components/PresentsComponent";
 import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
+import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
+import {ChicksComponent} from "@/components/animals/ChicksComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -117,8 +119,10 @@ export class Scene {
       new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
@@ -227,6 +231,9 @@ export class Scene {
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
 
+    const chicksBtn = document.getElementById('btn-chicks');
+    chicksBtn.classList.toggle('btn-active', this._chicks.forced);
+
     const wakeBtn = document.getElementById('btn-wake-fox');
     wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
     wakeBtn.classList.toggle('btn-active', !state.fox.asleep);
@@ -234,6 +241,10 @@ export class Scene {
     const birthdayBtn = document.getElementById('btn-birthday');
     birthdayBtn.disabled = !!state.specialEvent && state.specialEvent !== 'birthday';
     birthdayBtn.classList.toggle('btn-active', state.specialEvent === 'birthday');
+
+    const easterBtn = document.getElementById('btn-easter');
+    easterBtn.disabled = !(state.season === 'spring' && state.timeOfDay === 'day');
+    easterBtn.classList.toggle('btn-active', state.specialEvent === 'easter');
   }
 
   /**
@@ -360,6 +371,10 @@ export class Scene {
     document.getElementById('btn-yawn')?.addEventListener('click', () => this._fox.triggerYawn());
     document.getElementById('btn-ear')?.addEventListener('click', () => this._fox.triggerEarTwitch());
     document.getElementById('btn-grumble')?.addEventListener('click', () => this._fox.triggerGrumble());
+    document.getElementById('btn-chicks')?.addEventListener('click', e => {
+      this._chicks.forced = !this._chicks.forced;
+      e.target.classList.toggle('btn-active', this._chicks.forced);
+    });
 
     document.getElementById('btn-halloween')?.addEventListener('click', () => {
       const old = state.specialEvent;
@@ -387,6 +402,14 @@ export class Scene {
       state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      this._refreshUI();
+    });
+    document.getElementById('btn-easter')?.addEventListener('click', () => {
+      const old = state.specialEvent;
+      state.specialEvent = state.specialEvent === 'easter' ? null : 'easter';
+      state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      this.eventBus.dispatch(Events.statusText('Scene', 'Happy Easter!'));
       this._refreshUI();
     });
 

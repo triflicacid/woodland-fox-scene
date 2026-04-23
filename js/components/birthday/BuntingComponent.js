@@ -14,7 +14,8 @@ const FLAG_H = 18;
  */
 export class BuntingComponent extends DrawComponent {
   isEnabled() {
-    return this.scene.specialEvent === 'birthday';
+    const {specialEvent} = this.scene;
+    return specialEvent === 'birthday' || specialEvent === 'easter';
   }
 
   draw() {
