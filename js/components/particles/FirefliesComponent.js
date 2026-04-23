@@ -1,16 +1,43 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {clamp, rnd} from "@/utils";
+import {Events} from "@/event/Events";
 
 /**
  * render fireflies during nighttime
  */
 export class FirefliesComponent extends DrawComponent {
   /** @type{Array<Object>} */
-  fireflies;
+  fireflies = [];
 
   initialise(state) {
+    this._generateFireflies(state.moonPhase);
+
+    this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), update => this._onEvent(update.state)));
+    this.eventBus.subscribe(Events.todChangeSubscription(this.getName(), update => this._onEvent(update.state)));
+    this.eventBus.subscribe(Events.seasonChangeSubscription(this.getName(), update => this._onEvent(update.state)));
+    this.eventBus.subscribe(Events.moonPhaseChangeSubscription(this.getName(), update => this._onEvent(update.state)));
+  }
+
+  /**
+   * @param {SceneState} state
+   */
+  _onEvent(state) {
+    if (this.isEnabled(state)) {
+      this._generateFireflies(state.moonPhase);
+    }
+  }
+
+  /**
+   * generate fireflies
+   * @param {number} moonPhase
+   */
+  _generateFireflies(moonPhase) {
     const {W, H} = this;
-    this.fireflies = Array.from({length: 48}, () => ({
+    const max = 48, min = 8;
+    const t = Math.abs(moonPhase - 4) / 4; // 0 at full, 1 at new
+    const length = Math.round(min + (max - min) * t * t);
+
+    this.fireflies = Array.from({length}, () => ({
       x: 80 + rnd(W - 160),
       y: H * 0.35 + rnd(H * 0.3),
       speed: 0.3 + rnd(0.4),
