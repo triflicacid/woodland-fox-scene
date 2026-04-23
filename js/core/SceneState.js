@@ -170,4 +170,20 @@ export class SceneState {
     this.bunny.x = lerp(hop.from, hop.to, eo(p));
     return p >= 1;
   }
+
+  /**
+   * clears out specialEvent if now invalid
+   */
+  clearInvalidSpecialEvent() {
+    if (this.specialEvent === 'halloween' &&
+        !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+      this.specialEvent = null;
+    }
+    else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
+      this.specialEvent = null;
+    }
+    else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+      this.specialEvent = null;
+    }
+  }
 }
