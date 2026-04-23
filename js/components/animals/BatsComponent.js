@@ -20,7 +20,7 @@ export class BatsComponent extends DrawComponent {
   }
 
   isEnabled(state) {
-    return state.owlForced || (state.season === 'autumn' && state.todBlend < 0.4)
+    return state.owlForced || (state.season === 'autumn' && state.specialEvent !== 'bonfire' && state.todBlend < 0.4)
   }
 
   tick(state, setStatus, enableButtons) {
