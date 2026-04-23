@@ -12,6 +12,7 @@ export class Events {
   static EVENT_TOD_CHANGE = "TODChange";
   static EVENT_MOON_PHASE_CHANGE = "MoonPhaseChange";
   static EVENT_FIREWORK_BANG = 'FireworkBang';
+  static EVENT_LIGHTNING_STRIKE = 'LightningStrike';
 
   /**
    * register all events we support onto the given bus
@@ -23,6 +24,7 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_TOD_CHANGE);
     eventBus.registerEvent(Events.EVENT_MOON_PHASE_CHANGE);
     eventBus.registerEvent(Events.EVENT_FIREWORK_BANG);
+    eventBus.registerEvent(Events.EVENT_LIGHTNING_STRIKE);
   }
 
   /**
@@ -134,5 +136,24 @@ export class Events {
    */
   static fireworkBangSubscription(subscriber, onChange) {
     return new Subscription(Events.EVENT_FIREWORK_BANG, subscriber, onChange);
+  }
+
+  /**
+   * create a lightning strike event
+   * @param {string} originator name of event originator
+   * @param {boolean} superBolt was the bolt a super bolt?
+   */
+  static lightningStrike(originator, superBolt) {
+    return new Event(Events.EVENT_LIGHTNING_STRIKE, originator, { superBolt });
+  }
+
+  /**
+   * create a new subscription for a lightning strike event
+   * @param {string} subscriber
+   * @param {function({superBolt:boolean}): void} onChange taking whether the bolt was a super bolt or not
+   * @returns {Subscription<{superBolt:boolean}>}
+   */
+  static lightningStrikeSubscription(subscriber, onChange) {
+    return new Subscription(Events.EVENT_LIGHTNING_STRIKE, subscriber, onChange);
   }
 }

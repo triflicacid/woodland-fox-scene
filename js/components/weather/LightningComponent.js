@@ -1,6 +1,7 @@
 import {prob, rnd, rndf} from '@/utils';
 import {PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
+import {Events} from "@/event/Events";
 
 /**
  * render lightning bolts during a storm
@@ -59,6 +60,7 @@ export class LightningComponent extends DrawComponent {
         ly += 20 + rnd(20);
       }
       state.bolts.push({path, t: 0, superBolt});
+      this.eventBus.receive(Events.lightningStrike(this.getName(), superBolt));
     }
 
     // advance all bolts, remove expired ones
