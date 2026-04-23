@@ -33,6 +33,7 @@ import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
 import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
+import {EventListenerComponent} from "@/components/EventListenerComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -66,6 +67,7 @@ export class Scene {
 
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, [
+      new EventListenerComponent(this.eventBus),
       new TimeOfDayComponent(this.eventBus),
       new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
