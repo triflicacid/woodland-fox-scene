@@ -5,8 +5,7 @@ import {rnd, rndf} from '@/utils';
  * draws an animated bonfire with flickering flames and heavy smoke
  */
 export class BonfireComponent extends DrawComponent {
-  x = 220;
-  y_fraction = 0.72;
+
   /** @type {Array<Object>} */
   smoke = [];
 
@@ -31,8 +30,8 @@ export class BonfireComponent extends DrawComponent {
 
   draw(state) {
     const {frame} = state;
-    const x = this.x;
-    const y = this.H * this.y_fraction;
+    const x = state.bonfire.x;
+    const y = this.H * state.bonfire.y_fraction;
 
     const flameScale = this._getFlameScale(state);
 
@@ -350,8 +349,8 @@ export class BonfireComponent extends DrawComponent {
   _makeSmoke(state, life = 0) {
     const grey = 40 + Math.floor(rnd(40));
     return {
-      x: this.x + rndf(4),
-      y: state.H * this.y_fraction - 40,
+      x: state.bonfire.x + rndf(4),
+      y: state.H * state.bonfire.y_fraction - 40,
       vx: rndf(0.6) + 0.3,
       vy: -(0.8 + rnd(0.8)),
       size: 8 + rnd(6),

@@ -83,6 +83,12 @@ export class SceneState {
       rx: 0, maxRx: 20 + rnd(25),
       ry: 0, maxRy: 5 + rnd(4),
     }));
+
+    // the bonfire
+    this.bonfire = {
+      x: 220,
+      y_fraction: 0.72,
+    };
   }
 
   /**

@@ -80,7 +80,7 @@ export class Scene {
       new SnowmenComponent(this.eventBus, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.ctx, W, H),
 
-      new BonfireNightComponent(this.eventBus, this.ctx, W, H),
+      this._bonfireNight = new BonfireNightComponent(this.eventBus, this.ctx, W, H),
 
       new FirefliesComponent(this.eventBus, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.ctx, W, H),
@@ -206,6 +206,9 @@ export class Scene {
       btn.classList.toggle('btn-active', state.moonPhase === i);
       btn.disabled = state.timeOfDay !== 'night';
     });
+
+    const guyBtn = document.getElementById('btn-guy-fawkes');
+    guyBtn.disabled = state.specialEvent !== 'bonfire';
   }
 
   /**
@@ -355,6 +358,10 @@ export class Scene {
         this.eventBus.receive(Events.moonPhaseChange("Scene", oldMoonPhase, state));
         this._refreshUI();
       });
+    });
+
+    document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
+      this._bonfireNight.summonGuyFawkes();
     });
   }
 

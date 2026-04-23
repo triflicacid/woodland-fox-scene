@@ -49,6 +49,7 @@ export const PROBABILITY = {
   FIREWORK_LAUNCH: 0.025,
   LOUD_FIREWORK: 0.3,
   FIREWORK_BANG_REACTION: 0.6, // react to a loud firework
+  GUY_FAWKES: 0.0003
 };
 
 /**
