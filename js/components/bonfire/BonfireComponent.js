@@ -30,15 +30,37 @@ export class BonfireComponent extends DrawComponent {
   }
 
   draw(state) {
+    const {frame} = state;
     const x = this.x;
-    const y = state.H * this.y_fraction;
+    const y = this.H * this.y_fraction;
 
-    this._drawGlow(x, y, state.frame);
+    const flameScale = this._getFlameScale(state);
+
+    this._drawGlow(x, y, frame, flameScale);
     this._drawLogs(x, y);
     this._drawStones(x, y);
-    this._drawBackFlames(x, y, state.frame);
-    this._drawForeFlames(x, y, state.frame);
-    this._drawSmoke();
+    if (flameScale > 0) {
+      this._drawBackFlames(x, y, frame, flameScale);
+      this._drawForeFlames(x, y, frame, flameScale);
+    } else if (state.weather !== 'storm') {
+      this._drawSmoulder(x, y, frame);
+    }
+
+    if (state.weather !== 'storm') {
+      this._drawSmoke();
+    }
+  }
+
+  /**
+   * return a flame scale factor based on weather.
+   * rain suppresses flames, wind fans them.
+   * @param {SceneState} state
+   * @returns {number} 0 = no flames, 1 = normal, >1 = enhanced
+   */
+  _getFlameScale(state) {
+    if (state.weather === 'rain' || state.weather === 'storm') return 0;
+    if (state.weather === 'wind') return 1.6;
+    return 1;
   }
 
   /**
@@ -46,17 +68,19 @@ export class BonfireComponent extends DrawComponent {
    * @param {number} x
    * @param {number} y
    * @param {number} frame
+   * @param {number} flameScale
    */
-  _drawGlow(x, y, frame) {
+  _drawGlow(x, y, frame, flameScale = 1) {
     const {ctx} = this;
     const flicker = 0.85 + Math.sin(frame * 0.18) * 0.15;
-    const glow = ctx.createRadialGradient(x, y, 0, x, y, 160 * flicker);
-    glow.addColorStop(0, 'rgba(255,120,20,0.35)');
-    glow.addColorStop(0.4, 'rgba(255,80,10,0.15)');
+    const radius = 160 * flicker * Math.max(0.3, flameScale); // dim glow when smouldering
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    glow.addColorStop(0, `rgba(255,120,20,${0.35 * Math.max(0.2, flameScale)})`);
+    glow.addColorStop(0.5, `rgba(255,80,10,${0.15 * Math.max(0.2, flameScale)})`);
     glow.addColorStop(1, 'rgba(255,60,0,0)');
     ctx.fillStyle = glow;
     ctx.beginPath();
-    ctx.ellipse(x, y, 160 * flicker, 60 * flicker, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y, radius, radius * 0.38, 0, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -171,8 +195,9 @@ export class BonfireComponent extends DrawComponent {
    * @param {number} x
    * @param {number} y
    * @param {number} frame
+   * @param {number} flameScale
    */
-  _drawBackFlames(x, y, frame) {
+  _drawBackFlames(x, y, frame, flameScale = 1) {
     const {ctx} = this;
 
     const baseY = y - 4;
@@ -199,6 +224,7 @@ export class BonfireComponent extends DrawComponent {
     ];
 
     layers.forEach(([ox, bw, h, col, alpha], i) => {
+      h *= flameScale;
       const flicker = Math.sin(frame * 0.22 + i * 1.1) * 6;
       const sway = Math.sin(frame * 0.13 + i * 0.8) * 4;
 
@@ -250,8 +276,9 @@ export class BonfireComponent extends DrawComponent {
    * @param {number} x
    * @param {number} y
    * @param {number} frame
+   * @param {number} flameScale
    */
-  _drawForeFlames(x, y, frame) {
+  _drawForeFlames(x, y, frame, flameScale = 1) {
     const {ctx} = this;
     const baseY = y - 3;
 
@@ -270,6 +297,7 @@ export class BonfireComponent extends DrawComponent {
     ];
 
     tongues.forEach(([ox, bw, h, col, alpha], i) => {
+      h *= flameScale;
       const flicker = Math.sin(frame * 0.28 + i * 1.4) * 4;
       const sway = Math.sin(frame * 0.18 + i * 0.9) * 2;
 
@@ -331,5 +359,41 @@ export class BonfireComponent extends DrawComponent {
       col: `rgb(${grey},${grey},${grey})`,
       life,
     };
+  }
+
+  /**
+   * draw glowing embers when the fire is rain-suppressed.
+   * @param {number} x
+   * @param {number} y
+   * @param {number} frame
+   */
+  _drawSmoulder(x, y, frame) {
+    const {ctx} = this;
+
+    // dim ember bed
+    const pulse = 0.4 + Math.sin(frame * 0.06) * 0.15;
+    const grad = ctx.createRadialGradient(x, y - 4, 0, x, y - 4, 22);
+    grad.addColorStop(0, `rgba(255,80,0,${pulse})`);
+    grad.addColorStop(0.5, `rgba(180,30,0,${pulse * 0.6})`);
+    grad.addColorStop(1, 'rgba(100,10,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.ellipse(x, y - 4, 22, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // occasional small ember flicker
+    if (Math.random() < 0.08) {
+      const ex = x + (Math.random() - 0.5) * 28;
+      const ey = y - 4 - Math.random() * 6;
+      ctx.save();
+      ctx.globalAlpha = 0.5 + Math.random() * 0.4;
+      ctx.fillStyle = Math.random() < 0.5 ? '#ff4400' : '#ff8800';
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = '#ff4400';
+      ctx.beginPath();
+      ctx.arc(ex, ey, 1 + Math.random() * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
   }
 }
