@@ -122,7 +122,7 @@ export class Scene {
       new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
-      new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
@@ -230,6 +230,9 @@ export class Scene {
 
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
+
+    const chicksBtn = document.getElementById('btn-chicks');
+    chicksBtn.classList.toggle('btn-active', this._chicks.forced);
 
     const wakeBtn = document.getElementById('btn-wake-fox');
     wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
@@ -368,6 +371,10 @@ export class Scene {
     document.getElementById('btn-yawn')?.addEventListener('click', () => this._fox.triggerYawn());
     document.getElementById('btn-ear')?.addEventListener('click', () => this._fox.triggerEarTwitch());
     document.getElementById('btn-grumble')?.addEventListener('click', () => this._fox.triggerGrumble());
+    document.getElementById('btn-chicks')?.addEventListener('click', e => {
+      this._chicks.forced = !this._chicks.forced;
+      e.target.classList.toggle('btn-active', this._chicks.forced);
+    });
 
     document.getElementById('btn-halloween')?.addEventListener('click', () => {
       const old = state.specialEvent;

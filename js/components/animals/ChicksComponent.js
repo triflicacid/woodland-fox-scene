@@ -28,9 +28,10 @@ export class ChicksComponent extends DrawComponent {
   _wanderers = [];
   /** @type {Array<Object>} pecking chicks */
   _peckers = [];
+  forced = false;
 
   isEnabled() {
-    return this.scene.specialEvent === 'easter';
+    return this.forced || this.scene.specialEvent === 'easter';
   }
 
   initialise() {
