@@ -93,7 +93,6 @@ export class Scene {
 
       new SnowmenComponent(this.eventBus, this.state, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.state, this.ctx, W, H),
-      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BalloonsComponent(this.eventBus, this.state, this.ctx, W, H),
       new BirthdayBannerComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -123,6 +122,7 @@ export class Scene {
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
+      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
     this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));
   }
