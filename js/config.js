@@ -42,7 +42,8 @@ export const PROBABILITY = {
   SUPER_BOLT: 0.15, // super-bolt once lightning has spawned
   SUPER_BOLT_REACTION: 0.5, // react to super-bolt
   FOX_YAWN: 0.0008,
-  EAR_TWITCH: 0.002,
+  EAR_TWITCH: 0.002, // random ear twitch (not related to twitches due to events)
+  STARTLE_OPENS_EYE: 0.4, // open fox's eye when he is started?
   HEDGEHOG: 0.004,
   DEER: 0.008,
   OWL_BLINK: 0.15,

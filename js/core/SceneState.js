@@ -53,6 +53,7 @@ export class SceneState {
       earTwitchSide: 0,
       snowLevel: 0,
       shiverT: 0,
+      eyeOpenT: -1,
     };
 
     // bunny state

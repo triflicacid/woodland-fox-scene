@@ -13,12 +13,18 @@ export class FoxComponent extends DrawComponent {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
+          this._triggerEyeOpen(state);
+        }
       }
     }));
     this.eventBus.subscribe(Events.lightningStrikeSubscription(this.getName(), ({superBolt}) => {
       if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        if (prob(PROBABILITY.STARTLE_OPENS_EYE)) {
+          this._triggerEyeOpen(state);
+        }
       }
     }));
   }
@@ -47,6 +53,12 @@ export class FoxComponent extends DrawComponent {
     if (fox.grumbleT >= 0) {
       fox.grumbleT++;
       if (fox.grumbleT >= 40) fox.grumbleT = -1;
+    }
+
+    // countdown the eye open animation
+    if (fox.eyeOpenT >= 0) {
+      fox.eyeOpenT++;
+      if (fox.eyeOpenT >= 50) fox.eyeOpenT = -1;
     }
 
     if (fox.phase === 'idle') return;
@@ -328,12 +340,48 @@ export class FoxComponent extends DrawComponent {
     ctx.arc(-44.5, -17 + hb, 1, 0, Math.PI * 2);
     ctx.fill();
 
-    // eye (closed sleeping arc)
+    // near eye, opens briefly on startle
+    const eyeOpen = fox.eyeOpenT >= 0
+        ? Math.sin(clamp(fox.eyeOpenT / 50, 0, 1) * Math.PI) // bell curve open/close
+        : 0;
     ctx.strokeStyle = '#4a1804';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.arc(-22, -26 + hb, 4, Math.PI * 0.1, Math.PI * 0.9);
-    ctx.stroke();
+    ctx.lineWidth   = 1.5;
+    if (eyeOpen > 0.1) {
+      ctx.save();
+      // sclera
+      blob(ctx, () => ctx.arc(-22, -26 + hb, 4, 0, Math.PI * 2),
+          rg(ctx, -22, -26 + hb, 0, 4, [0, 'rgba(255,245,220,0.6)'], [1, 'rgba(255,245,220,0)']));
+      // iris, scaled vertically by openness
+      ctx.save();
+      ctx.translate(-22, -26 + hb);
+      ctx.scale(1, eyeOpen);
+      ctx.fillStyle = '#c06010';
+      ctx.beginPath();
+      ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      // slit pupil
+      ctx.fillStyle = '#0a0402';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 1, 2.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // catchlight
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.arc(1, -1, 1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      ctx.restore();
+    } else if (fox.yawnT >= 0 && fox.yawnT < 80) {
+      // squinting during yawn
+      ctx.beginPath();
+      ctx.arc(-22, -26 + hb, 4, Math.PI * 0.1, Math.PI * 0.65);
+      ctx.stroke();
+    } else {
+      // normal closed eye arc
+      ctx.beginPath();
+      ctx.arc(-22, -26 + hb, 4, Math.PI * 0.18, Math.PI * 0.82);
+      ctx.stroke();
+    }
 
     // yawn: squinting eye, open mouth, and rising 'a' bubble
     ctx.strokeStyle = '#4a1804';
@@ -341,10 +389,7 @@ export class FoxComponent extends DrawComponent {
     if (fox.yawnT >= 0 && fox.yawnT < 80) {
       const yt = fox.yawnT / 80;
       const mo = Math.sin(yt * Math.PI) * 7; // mouth open amount
-      // squinting eye during yawn
-      ctx.beginPath();
-      ctx.arc(-22, -26 + hb, 4, Math.PI * 0.1, Math.PI * 0.65);
-      ctx.stroke();
+      // squinting eye during yawn (done in eyeOpen if-else)
       // open mouth cavity
       ctx.fillStyle = '#5a0800';
       ctx.beginPath();
@@ -361,11 +406,6 @@ export class FoxComponent extends DrawComponent {
       ctx.font = `bold ${8 + yt * 5}px serif`;
       ctx.fillText('a', -25 - yt * 2, -50 + hb - yt * 8 + 4);
       ctx.restore();
-    } else {
-      // normal closed eye
-      ctx.beginPath();
-      ctx.arc(-22, -26 + hb, 4, Math.PI * 0.18, Math.PI * 0.82);
-      ctx.stroke();
     }
 
     // grumble exclamation
@@ -565,5 +605,15 @@ export class FoxComponent extends DrawComponent {
     ctx.fill();
 
     ctx.restore();
+  }
+
+  /**
+   * trigger the eye-open startle animation.
+   * @param {SceneState} state
+   */
+  _triggerEyeOpen(state) {
+    if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05 && state.fox.eyeOpenT <= 0) {
+      state.fox.eyeOpenT = 0;
+    }
   }
 }

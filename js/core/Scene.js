@@ -368,6 +368,10 @@ export class Scene {
     document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
       this._guyFawkes.summon();
     });
+
+    document.getElementById('btn-eye').addEventListener('click', () => {
+      state.fox.eyeOpenT = 0;
+    });
   }
 
   /**
