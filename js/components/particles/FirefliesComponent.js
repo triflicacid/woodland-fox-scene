@@ -39,14 +39,6 @@ export class FirefliesComponent extends DrawComponent {
     }));
   }
 
-  /**
-   * firefly count increases during a new moon
-   * @param {number} moonPhase
-   */
-  _getFireflies(moonPhase) {
-    return moonPhase === 0 ? this.fireflies : this.fireflies.slice(0, 18);
-  }
-
   isEnabled(state) {
     return state.todBlend < 0.5 && !(state.weather === 'rain' || state.weather === 'storm');
   }
@@ -54,7 +46,7 @@ export class FirefliesComponent extends DrawComponent {
   tick(state, setStatus, enableButtons) {
     const {W, H} = this;
 
-    this._getFireflies(state.moonPhase).forEach(f => {
+    this.fireflies.forEach(f => {
       f.angle += (Math.random() - 0.5) * 0.08;
       f.x += Math.cos(f.angle) * f.speed;
       f.y += Math.sin(f.angle) * f.speed * 0.5;
@@ -68,7 +60,7 @@ export class FirefliesComponent extends DrawComponent {
     const {todBlend, frame} = state;
 
     const alpha = clamp(1 - todBlend * 2, 0, 1);
-    this._getFireflies(state.moonPhase).forEach(f => {
+    this.fireflies.forEach(f => {
       const g = 0.4 + 0.6 * Math.sin(frame * 0.05 + f.phase);
       ctx.save();
       ctx.globalAlpha = g * 0.85 * alpha;
