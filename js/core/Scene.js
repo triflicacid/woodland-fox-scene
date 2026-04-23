@@ -1,4 +1,4 @@
-import {CANVAS, MOON_PHASES, TREE_DEFS} from '@/config';
+import {CANVAS, MOON_PHASES} from '@/config';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
@@ -57,8 +57,6 @@ export class Scene {
 
     // central mutable state
     this.state = new SceneState(W, H);
-    // give state a reference to tree defs so canopy leaves can use it
-    this.state.trees = TREE_DEFS;
 
     // store the handle for the drawing loop
     /** @type {number | undefined} */
@@ -248,7 +246,7 @@ export class Scene {
       }
 
       // click on a tree top to startle a bird
-      TREE_DEFS.forEach(tr => {
+      state.trees.forEach(tr => {
         if (Math.abs(cx - tr.x) < tr.r && cy < H * 0.62 && cy > H * 0.62 - tr.h * 0.7) {
           this._birds.spawnStartledBird(tr);
         }

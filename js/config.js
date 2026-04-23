@@ -4,36 +4,6 @@ export const CANVAS = {
 };
 
 /**
- * fox appearance and position config.
- */
-export const FOX = {
-  /** default x position on canvas */
-  X: 350,
-  /** y position (fraction of canvas height) */
-  Y_FRACTION: 0.64,
-  /** fox curled body half-width for click detection */
-  CLICK_RADIUS_X: 46,
-  /** fox curled body half-height for click detection */
-  CLICK_RADIUS_Y: 32,
-};
-
-/**
- * phase durations in frames.
- */
-export const FOX_PHASES = {
-  standup: {f: 80},
-  stretch: {f: 80},
-  shake: {f: 90},
-  spin: {f: 110},
-  curling: {f: 80},
-  bunny_standup: {f: 70},
-  bunny_curling: {f: 85},
-  wander_out: {f: 120},
-  wander_sniff: {f: 80},
-  wander_in: {f: 120},
-};
-
-/**
  * random event probability thresholds (per frame).
  * @type {Object<string, number>}
  */
@@ -94,26 +64,6 @@ export const PALETTES = {
     gH: 210, gSat: 15, gL: 70,
   },
 };
-
-/**
- * tree definitions. each tree has position, size, sway params, and type.
- * background:true means the tree is rendered in the foreground pass (in front of animals).
- * @type {Array<Object>}
- */
-export const TREE_DEFS = [
-  {x: 25, h: 140, r: 32, sway: 0.016, ph: 1.7, layers: 2, dark: true, type: 'pine', background: true, xmasLights: true},
-  {x: 50, h: 220, r: 50, sway: 0.012, ph: 0.0, layers: 3, dark: false, type: 'oak', background: false, xmasLights: false},
-  {x: 100, h: 270, r: 58, sway: 0.008, ph: 3.1, layers: 4, dark: false, type: 'oak', background: false, xmasLights: true},
-  {x: 148, h: 170, r: 40, sway: 0.009, ph: 1.1, layers: 3, dark: true, type: 'birch', background: true, xmasLights: false},
-  {x: 200, h: 130, r: 28, sway: 0.014, ph: 0.8, layers: 2, dark: true, type: 'birch', background: true, xmasLights: false},
-  {x: 260, h: 100, r: 22, sway: 0.018, ph: 1.4, layers: 2, dark: true, type: 'pine', background: true, xmasLights: true},
-  {x: 440, h: 110, r: 24, sway: 0.016, ph: 3.5, layers: 2, dark: false, type: 'pine', background: true, xmasLights: true},
-  {x: 480, h: 120, r: 26, sway: 0.011, ph: 2.5, layers: 2, dark: false, type: 'birch', background: true, xmasLights: false},
-  {x: 555, h: 230, r: 52, sway: 0.011, ph: 0.7, layers: 3, dark: false, type: 'oak', background: false, xmasLights: true},
-  {x: 598, h: 260, r: 54, sway: 0.010, ph: 2.0, layers: 4, dark: true, type: 'oak', background: false, xmasLights: false},
-  {x: 625, h: 180, r: 44, sway: 0.013, ph: 2.3, layers: 3, dark: true, type: 'birch', background: true, xmasLights: false},
-  {x: 678, h: 150, r: 34, sway: 0.014, ph: 0.5, layers: 2, dark: false, type: 'pine', background: true, xmasLights: true},
-];
 
 /**
  * phases of the moon.

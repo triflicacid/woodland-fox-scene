@@ -1,25 +1,38 @@
 import {blob, clamp, eio, eo, lerp, lg, prob, rg} from '@/utils';
-import {FOX_PHASES, PROBABILITY} from '@/config';
+import {PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {Subscriptions} from "@/core/Subscriptions";
 
 /**
- * return the current eye openness from 0 (closed) to 1 (open).
- * handles transitions in both directions.
- * @param {Object} fox
- * @returns {number}
+ * fox appearance and position config.
  */
-function eyeOpenAmount(fox) {
-  if (fox.eyeTransitionT < 0) {
-    return fox.asleep ? 0 : 1;
-  }
-  const t = clamp(fox.eyeTransitionT / 50, 0, 1);
-  const curve = Math.sin(t * Math.PI); // bell curve - peaks at 0.5
-  return fox.asleep
-      ? curve          // asleep: transitions open then back closed
-      : 1 - curve;     // awake: transitions closed then back open (blink)
-}
+export const FOX = {
+  /** default x position on canvas */
+  X: 350,
+  /** y position (fraction of canvas height) */
+  Y_FRACTION: 0.64,
+  /** fox curled body half-width for click detection */
+  CLICK_RADIUS_X: 46,
+  /** fox curled body half-height for click detection */
+  CLICK_RADIUS_Y: 32,
+};
+
+/**
+ * phase durations in frames.
+ */
+export const FOX_PHASES = {
+  standup: {f: 80},
+  stretch: {f: 80},
+  shake: {f: 90},
+  spin: {f: 110},
+  curling: {f: 80},
+  bunny_standup: {f: 70},
+  bunny_curling: {f: 85},
+  wander_out: {f: 120},
+  wander_sniff: {f: 80},
+  wander_in: {f: 120},
+};
 
 /**
  * FoxComponent manages fox animation state ticking and all fox drawing.
@@ -368,7 +381,7 @@ export class FoxComponent extends DrawComponent {
     ctx.fill();
 
     // near eye, open or closed
-    const eyeOpen = eyeOpenAmount(fox);
+    const eyeOpen = this._eyeOpenAmount();
     ctx.strokeStyle = '#4a1804';
     ctx.lineWidth   = 1.5;
     if (eyeOpen > 0.1) {
@@ -633,6 +646,23 @@ export class FoxComponent extends DrawComponent {
   }
 
   /**
+   * return the current eye openness from 0 (closed) to 1 (open).
+   * handles transitions in both directions.
+   * @returns {number}
+   */
+  _eyeOpenAmount() {
+    const {fox} = this.scene;
+    if (fox.eyeTransitionT < 0) {
+      return fox.asleep ? 0 : 1;
+    }
+    const t = clamp(fox.eyeTransitionT / 50, 0, 1);
+    const curve = Math.sin(t * Math.PI); // bell curve - peaks at 0.5
+    return fox.asleep
+        ? curve          // asleep: transitions open then back closed
+        : 1 - curve;     // awake: transitions closed then back open (blink)
+  }
+
+  /**
    * trigger an eye transition (either opening or closing)
    */
   _triggerEyeTransition() {
@@ -650,8 +680,8 @@ export class FoxComponent extends DrawComponent {
     fox.grumbleT = 0;
     fox.earTwitchT = 0;
     fox.earTwitchSide = 1;
-    this.eventBus.receive(Events.statusText(this.getName(), 'The fox grumbles sleeply...'));
-    this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'grumble'));
+    this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox grumbles sleeply...'));
+    this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'grumble'));
   }
 
   /**
@@ -661,8 +691,8 @@ export class FoxComponent extends DrawComponent {
     const {fox} = this.scene;
     if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
       fox.yawnT = 0;
-      this.eventBus.receive(Events.statusText(this.getName(), 'The fox has a big yawn...'));
-      this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'yawn'));
+      this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox has a big yawn...'));
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'yawn'));
     }
   }
 
@@ -673,7 +703,7 @@ export class FoxComponent extends DrawComponent {
     const {fox} = this.scene;
     fox.earTwitchT = 0;
     fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
-    this.eventBus.receive(Events.statusText(this.getName(), 'The fox\'s ear twitches...'));
-    this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
+    this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox\'s ear twitches...'));
+    this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
   }
 }

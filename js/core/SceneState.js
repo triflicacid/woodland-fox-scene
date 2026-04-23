@@ -1,5 +1,7 @@
-import {FOX, PALETTES} from '@/config';
+import {PALETTES} from '@/config';
 import {clamp, eo, lerp, rnd} from '@/utils';
+import {FOX} from "@/components/animals/FoxComponent";
+import {TREE_DEFS} from "@/components/TreeComponent";
 
 /**
  * manages the shared state of the scene.
@@ -74,6 +76,9 @@ export class SceneState {
     this.owlForced = false;
 
     this.puddleLevel = 0;
+
+    // tree definitions
+    this.trees = TREE_DEFS;
 
     // ground decoration
     this.puddles = Array.from({length: 5}, (_, i) => ({
