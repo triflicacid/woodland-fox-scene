@@ -45,8 +45,8 @@ export const PROBABILITY = {
   EAR_TWITCH: 0.002, // random ear twitch (not related to twitches due to events)
   STARTLE_TRIGGERS_EYE: 0.4, // open/close eye when startled?
   FOX_BLINK: 0.005, // when awake, probability to blink
-  HEDGEHOG: 0.004,
-  DEER: 0.008,
+  HEDGEHOG: 0.0004,
+  DEER: 0.0012,
   OWL_BLINK: 0.15,
   COMET: 0.0002,
   FIREWORK_LAUNCH: 0.025,
