@@ -42,9 +42,12 @@ export class FireworksComponent extends DrawComponent {
       r.x += r.vx;
       r.y += r.vy;
       r.vy *= 0.98; // slight deceleration
+      if (state.weather === 'wind' || state.weather === 'storm') {
+        r.vx += 0.04; // wind movement
+      }
 
       if (r.y <= r.targetY) {
-        this._explode(r);
+        this._explode(r, state.weather);
         return false;
       }
       return true;
@@ -55,6 +58,9 @@ export class FireworksComponent extends DrawComponent {
       p.x += p.vx;
       p.y += p.vy;
       p.vy += 0.09; // gravity
+      if (state.weather === 'wind' || state.weather === 'storm') {
+        p.vx += 0.12; // wind blows particles rightward
+      }
       p.life++;
       p.alpha = Math.max(0, 1 - p.life / p.maxLife);
       return p.alpha > 0;
@@ -97,13 +103,15 @@ export class FireworksComponent extends DrawComponent {
   /**
    * explode a rocket into a burst of particles.
    * @param {Object} rocket
+   * @param {string} weather
    */
-  _explode(rocket) {
+  _explode(rocket, weather) {
     const count = rocket.loud ? 80 + Math.floor(rnd(40)) : 30 + Math.floor(rnd(20));
     const speed = rocket.loud ? 4 + rnd(2) : 2 + rnd(1.5);
     const maxLife = rocket.loud ? 70 + Math.floor(rnd(20)) : 40 + Math.floor(rnd(15));
     const glow = rocket.loud ? 12 : 6;
     const size = rocket.loud ? 2.5 + rnd(1.5) : 1.5 + rnd(1);
+    const windBias = (weather === 'wind' || weather === 'storm') ? 1.9 : 0;
 
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + rndf(0.2);
@@ -113,7 +121,7 @@ export class FireworksComponent extends DrawComponent {
       this.bursts.push({
         x: rocket.x,
         y: rocket.y,
-        vx: Math.cos(angle) * s,
+        vx: Math.cos(angle) * s + windBias,
         vy: Math.sin(angle) * s,
         col: `hsl(${hue}, 90%, 65%)`,
         alpha: 1,
