@@ -182,12 +182,13 @@ export class SceneState {
    * clears out specialEvent if now invalid
    */
   clearInvalidSpecialEvent() {
-    if (this.specialEvent === 'halloween' &&
-        !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+    if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
       this.specialEvent = null;
     } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+      this.specialEvent = null;
+    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'day')) {
       this.specialEvent = null;
     }
   }
