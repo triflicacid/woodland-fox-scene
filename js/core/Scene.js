@@ -45,6 +45,7 @@ import {ChicksComponent} from "@/components/animals/ChicksComponent";
 import {PlanetsComponent} from "@/components/stargazing/PlanetsComponent";
 import {ConstellationsComponent} from "@/components/stargazing/ConstellationsComponent";
 import {NorthStarComponent} from "@/components/stargazing/NorthStarComponent";
+import {TelescopeComponent} from "@/components/stargazing/TelescopeComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -130,6 +131,7 @@ export class Scene {
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
+      new TelescopeComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
@@ -382,7 +384,7 @@ export class Scene {
       }
       this._refreshUI();
     });
-    // stargazing toggle
+    // stargazing toggle1
     document.getElementById('btn-stargaze')?.addEventListener('click', () => {
       state.stargazing = !state.stargazing;
       state.savePref();
