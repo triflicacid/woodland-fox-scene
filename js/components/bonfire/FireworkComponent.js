@@ -13,6 +13,10 @@ export class FireworksComponent extends DrawComponent {
   /** @type {Array<Object>} active burst particles */
   bursts = [];
 
+  isEnabled(state) {
+    return state.weather !== 'storm';
+  }
+
   tick(state, setStatus, enableButtons) {
     const {H} = this;
 
