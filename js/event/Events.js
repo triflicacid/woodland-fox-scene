@@ -8,6 +8,8 @@ import {Subscription} from "./Subscription";
 export class Events {
   static EVENT_SEASON_CHANGE = "SeasonChange";
   static EVENT_WEATHER_CHANGE = "WeatherChange";
+  static EVENT_TOD_CHANGE = "TODChange";
+  static EVENT_MOON_PHASE_CHANGE = "MoonPhaseChange";
 
   /**
    * register all events we support onto the given bus
@@ -16,6 +18,19 @@ export class Events {
   static registerAll(eventBus) {
     eventBus.registerEvent(Events.EVENT_SEASON_CHANGE);
     eventBus.registerEvent(Events.EVENT_WEATHER_CHANGE);
+    eventBus.registerEvent(Events.EVENT_TOD_CHANGE);
+    eventBus.registerEvent(Events.EVENT_MOON_PHASE_CHANGE);
+  }
+
+  /**
+   * create a new subscription to capture all events
+   * @param {string} subscriber
+   * @param {function(SceneState): void} onChange
+   * @returns {Subscription<SceneState>}
+   */
+  static captureAllSubscription(subscriber, onChange) {
+    // payload is a ValueChange
+    return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => onChange(update.state));
   }
 
   /**
@@ -56,5 +71,45 @@ export class Events {
    */
   static weatherChangeSubscription(subscriber, onChange) {
     return new Subscription(Events.EVENT_WEATHER_CHANGE, subscriber, onChange);
+  }
+
+  /**
+   * create a time of day change event
+   * @param {string} originator name of event originator
+   * @param {string} oldTimeOfDay
+   * @param {SceneState} state
+   */
+  static todChange(originator, oldTimeOfDay, state) {
+    return new Event(Events.EVENT_TOD_CHANGE, originator, new ValueChange(oldTimeOfDay, state.timeOfDay, state));
+  }
+
+  /**
+   * create a new subscription for a time of day change
+   * @param {string} subscriber
+   * @param {function(ValueChange<string>): void} onChange
+   * @returns {Subscription<ValueChange<string>>}
+   */
+  static todChangeSubscription(subscriber, onChange) {
+    return new Subscription(Events.EVENT_TOD_CHANGE, subscriber, onChange);
+  }
+
+  /**
+   * create a moon phase change event
+   * @param {string} originator name of event originator
+   * @param {number} oldMoonPhase
+   * @param {SceneState} state
+   */
+  static moonPhaseChange(originator, oldMoonPhase, state) {
+    return new Event(Events.EVENT_MOON_PHASE_CHANGE, originator, new ValueChange(oldMoonPhase, state.moonPhase, state));
+  }
+
+  /**
+   * create a new subscription for a moon phase change
+   * @param {string} subscriber
+   * @param {function(ValueChange<number>): void} onChange
+   * @returns {Subscription<ValueChange<number>>}
+   */
+  static moonPhaseChangeSubscription(subscriber, onChange) {
+    return new Subscription(Events.EVENT_MOON_PHASE_CHANGE, subscriber, onChange);
   }
 }

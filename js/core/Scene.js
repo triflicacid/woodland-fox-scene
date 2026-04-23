@@ -337,8 +337,10 @@ export class Scene {
 
     MOON_PHASES.forEach((_, i) => {
       document.getElementById(`btn-phase-${i}`)?.addEventListener('click', () => {
+        const oldMoonPhase = state.moonPhase;
         state.moonPhase = i;
         state.savePref();
+        this.eventBus.receive(Events.moonPhaseChange("Scene", oldMoonPhase, state));
         this._refreshUI();
       });
     });

@@ -9,6 +9,9 @@ export class EventBus {
     // hold subscriptions for each event
     /** @type{Map<string, Array<Subscription>>} */
     this._subscriptions = new Map();
+    // hold all special subscriptions (ALL)
+    /** @type{Array<Subscription>} */
+    this._special = [];
   }
 
   /**
@@ -32,6 +35,11 @@ export class EventBus {
    * @param {Subscription} subscription
    */
   subscribe(subscription) {
+    if (subscription.eventName === Subscription.CAPTURE_ALL) {
+      this._special.push(subscription);
+      return;
+    }
+
     if (!this._subscriptions.has(subscription.eventName)) {
       throw new Error(`Unknown subscription event: ${subscription.eventName}`);
     }
@@ -44,6 +52,13 @@ export class EventBus {
    * @param {Subscription} subscription
    */
   unsubscribe(subscription) {
+    if (subscription.eventName === Subscription.CAPTURE_ALL) {
+      let i = this._special.indexOf(subscription);
+      if (i === -1) {
+        this._special.splice(i, 1);
+      }
+      return;
+    }
     if (!this._subscriptions.has(subscription.eventName)) {
       return;
     }
@@ -68,8 +83,10 @@ export class EventBus {
       throw new Error(`Unknown subscription event: ${event.eventName}`);
     }
 
-    this._subscriptions.get(event.eventName)
-        .filter(s => s.eventName === s.eventName) // not needed, but eh
+    [
+        ...this._subscriptions.get(event.eventName),
+        ...this._special
+    ]
         .filter(s => event.alertOriginator || s.subscriber !== event.originator)
         .forEach(s => s.trigger(event.payload));
   }

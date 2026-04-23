@@ -1,6 +1,7 @@
 import {DrawComponent} from "@/core/DrawComponent";
 import {getTreeTopPos} from "@/components/TreeComponent";
 import {prob, rnd} from "@/utils";
+import {Events} from "@/event/Events";
 
 /**
  * render flying birds, perched birds, and startled birds.
@@ -12,8 +13,6 @@ export class BirdsComponent extends DrawComponent {
   windStartledBirds;
   /** @type{Array<Object>} */
   flyingBirds;
-  windWasOn = false;
-
 
   initialise(state) {
     this.perchedBirds = Array.from({length: 5}, (_, i) => ({
@@ -22,7 +21,18 @@ export class BirdsComponent extends DrawComponent {
       side: [1, -1, 1, -1, 1][i],
     }));
     this.windStartledBirds = [];
-    this.flyingBirds = Array.from({length: 12}, () => ({
+    this._generateFlyingBirds(state.weather);
+
+    this.eventBus.subscribe(Events.weatherChangeSubscription(this.getName(), this._onWeatherChange.bind(this)));
+  }
+
+  /**
+   * generate flying birds
+   * @param {string} weather
+   */
+  _generateFlyingBirds(weather) {
+    const length = weather === 'wind' ? 3 : 12;
+    this.flyingBirds = Array.from({length}, () => ({
       x: rnd(this.W),
       y: 20 + rnd(this.H * 0.25),
       vx: 0.4 + rnd(0.5),
@@ -33,13 +43,22 @@ export class BirdsComponent extends DrawComponent {
     }));
   }
 
-  tick(state, setStatus, enableButtons) {
-    const {weather, season, frame, specialEvent} = state;
+  /**
+   * called on a weather change event
+   * @param {ValueChange<string>} update
+   */
+  _onWeatherChange(update) {
+    const {weather, season, frame, specialEvent, trees} = update.state;
 
-    // trigger wind-startled birds when wind begins
-    if (weather === 'wind' && !this.windWasOn) {
+    // regenerate birds if count changes
+    if (weather === 'wind' || update.previous === 'wind') {
+      this._generateFlyingBirds(weather);
+    }
+
+    // if we transitioned into wind, startle the perched birds
+    if (weather === 'wind') {
       this.perchedBirds.forEach(pb => {
-        const tr = state.trees[pb.treeIdx];
+        const tr = trees[pb.treeIdx];
         const top = getTreeTopPos(tr, weather, season, specialEvent, frame, this.H);
         this.windStartledBirds.push({
           x: top.x + pb.offset * tr.r * 0.5,
@@ -52,10 +71,10 @@ export class BirdsComponent extends DrawComponent {
           life: 0,
         });
       });
-      this.windWasOn = true;
     }
-    if (weather !== 'wind' && weather !== 'storm') this.windWasOn = false;
+  }
 
+  tick(state, setStatus, enableButtons) {
     // wind-startled birds
     this.windStartledBirds = this.windStartledBirds.filter(b => {
       b.x += b.vx;
@@ -67,9 +86,10 @@ export class BirdsComponent extends DrawComponent {
     });
 
     if (this._areBirdsActive(state)) {
+      const M = state.weather === 'wind' ? 4.5 : 1;
       // flock birds flying across the sky
-      this._getFlyingBirds(weather).forEach(b => {
-        b.x += b.vx;
+      this.flyingBirds.forEach(b => {
+        b.x += b.vx * M;
         b.flapT += b.flapSpeed;
         b.y += Math.sin(b.flapT * 0.2) * 0.3;
         if (b.x > this.W + 30) {
@@ -108,7 +128,7 @@ export class BirdsComponent extends DrawComponent {
       });
 
       // flock birds flying across the sky
-      this._getFlyingBirds(weather).forEach(b => this._drawFlyingBird(b.x, b.y, b.flapT, b.scale));
+      this.flyingBirds.forEach(b => this._drawFlyingBird(b.x, b.y, b.flapT, b.scale));
     }
   }
 
@@ -121,17 +141,8 @@ export class BirdsComponent extends DrawComponent {
     const {season, todBlend, weather} = state;
     if (season === 'winter') return false;
     if (todBlend <= 0.4) return false;
-    if (weather === 'storm' || weather === 'wind') return false;
+    if (weather === 'storm') return false;
     return true;
-  }
-
-  /**
-   * return array of birds to draw flying
-   * @param {string} weather
-   * @returns {Array<Object>}
-   */
-  _getFlyingBirds(weather) {
-    return weather === 'wind' ? this.flyingBirds.slice(0, 3) : this.flyingBirds;
   }
 
   /**
