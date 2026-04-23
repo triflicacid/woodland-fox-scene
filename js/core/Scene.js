@@ -1,4 +1,4 @@
-import {CANVAS, TREE_DEFS} from '@/config';
+import {CANVAS, MOON_PHASES, TREE_DEFS} from '@/config';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
@@ -193,6 +193,12 @@ export class Scene {
     const christmasBtn = document.getElementById('btn-christmas');
       christmasBtn.disabled = state.season !== 'winter';
       christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
+
+    MOON_PHASES.forEach((_, i) => {
+      const btn = document.getElementById(`btn-phase-${i}`);
+      btn.classList.toggle('btn-active', state.moonPhase === i);
+      btn.disabled = state.timeOfDay !== 'night';
+    });
   }
 
   /**
@@ -327,6 +333,14 @@ export class Scene {
       state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
       state.savePref();
       this._refreshUI();
+    });
+
+    MOON_PHASES.forEach((_, i) => {
+      document.getElementById(`btn-phase-${i}`)?.addEventListener('click', () => {
+        state.moonPhase = i;
+        state.savePref();
+        this._refreshUI();
+      });
     });
   }
 
