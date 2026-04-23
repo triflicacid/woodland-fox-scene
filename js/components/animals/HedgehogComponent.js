@@ -9,13 +9,52 @@ import {Events} from "@/core/Events";
 export class HedgehogComponent extends DrawComponent {
   hog = {
     x: -60,
+    y_fraction: 0.62,
     phase: 'off',
     phaseT: 0,
   };
+  /** @type{MusicalNotesComponent} */
+  _notes;
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {MusicalNotesComponent} notes
+   */
+  constructor(eventBus, scene, ctx, W, H, notes) {
+    super(eventBus, scene, ctx, W, H);
+    this._notes = notes;
+  }
 
   tick() {
     const {hog} = this;
     const {fox, bunny, season, frame} = this.scene;
+
+    if (this.scene.specialEvent === 'birthday') {
+      if (hog.phase === 'off') {
+        hog.phase = 'in';
+        hog.phaseT = 0;
+        hog.x = -60;
+      } else if (hog.phase === 'in') {
+        const targetX = this.scene.fox.x - 190;
+        hog.x = lerp(-60, targetX, eo(clamp(hog.phaseT / 300, 0, 1)));
+        hog.phaseT++;
+        if (hog.phaseT >= 300) {
+          hog.phase = 'birthday_bob';
+          hog.phaseT = 0;
+        }
+      }
+      if (hog.phase === 'birthday_bob' && prob(PROBABILITY.HEDGEHOG_SPAWN_NOTE)) {
+        this._notes.spawnNote(hog.x + 38, this.H * hog.y_fraction - 30);
+      }
+      return; // early return
+    } else if (hog.phase === 'birthday_bob') {
+      hog.phase = 'out';
+      hog.phaseT = 0;
+    }
 
     // spontaneous arrival in autumn
     if (hog.phase === 'off' && prob(PROBABILITY.HEDGEHOG) && bunny.phase === 'off' && season === 'autumn') {
@@ -57,11 +96,13 @@ export class HedgehogComponent extends DrawComponent {
     if (hog.phase === 'off') {
       return;
     }
+    const isBirthday = this.scene.specialEvent === 'birthday';
 
     const {frame} = this.scene;
+    const bob = isBirthday ? Math.sin(this.scene.frame * 0.1 + 0.5) * 3 : 0;
     const x = hog.x;
-    const y = this.H * 0.62 - 5;
-    const facingRight = hog.phase === 'in' || hog.phase === 'out';
+    const y = this.H * hog.y_fraction - 5 + bob;
+    const facingRight = hog.phase === 'in' || isBirthday || hog.phase === 'out';
     const waddle = Math.sin(frame * 0.14) * 2.5;
 
     ctx.save();

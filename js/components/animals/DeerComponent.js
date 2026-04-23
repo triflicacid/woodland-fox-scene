@@ -9,10 +9,26 @@ import {Events} from "@/core/Events";
 export class DeerComponent extends DrawComponent {
   /** @type{Object} */
   deer;
+  /** @type{MusicalNotesComponent} */
+  _notes;
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {MusicalNotesComponent} notes
+   */
+  constructor(eventBus, scene, ctx, W, H, notes) {
+    super(eventBus, scene, ctx, W, H);
+    this._notes = notes;
+  }
 
   initialise() {
     this.deer = {
       x: this.W + 80,
+      y_fraction: 0.62,
       phase: 'off',
       phaseT: 0,
       cooldown: 0,
@@ -22,6 +38,30 @@ export class DeerComponent extends DrawComponent {
   tick() {
     const {deer} = this;
     deer.cooldown--;
+
+    if (this.scene.specialEvent === 'birthday') {
+      if (deer.phase === 'off') {
+        deer.phase = 'entering';
+        deer.phaseT = 0;
+        deer.x = this.W + 80;
+        deer.cooldown = 0;
+      } else if (deer.phase === 'entering') {
+        const targetX = this.W * 0.78;
+        deer.x = lerp(this.W + 80, targetX, eo(clamp(deer.phaseT / 150, 0, 1)));
+        deer.phaseT++;
+        if (deer.phaseT >= 150) {
+          deer.phase = 'birthday_bob';
+          deer.phaseT = 0;
+        }
+      }
+      if (deer.phase === 'birthday_bob' && prob(PROBABILITY.DEER_SPAWN_NOTE)) {
+        this._notes.spawnNote(deer.x - 50, this.H * deer.y_fraction - 84);
+      }
+      return;
+    } else if (deer.phase === 'birthday_bob') {
+      deer.phase = 'leaving';
+      deer.phaseT = 0;
+    }
 
     if (deer.phase === 'off') {
       const atTransition = Math.abs(this.scene.todBlend - 0.5) < 0.15;
@@ -72,7 +112,8 @@ export class DeerComponent extends DrawComponent {
 
     const {frame} = this.scene;
     const x = deer.x;
-    const y = this.H * 0.62 - 28;
+    const bob = deer.phase === 'birthday_bob' ? Math.sin(this.scene.frame * 0.1) * 4 : 0;
+    const y = this.H * deer.y_fraction - 28 + bob;
     const grazing = deer.phase === 'grazing';
     const facingRight = deer.phase === 'leaving';
     const graze = grazing ? Math.sin(frame * 0.04) * 0.18 : 0;

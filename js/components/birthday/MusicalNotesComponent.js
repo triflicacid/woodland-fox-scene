@@ -1,6 +1,5 @@
 import {DrawComponent} from '@/core/DrawComponent';
-import {prob, rnd, rndf} from '@/utils';
-import {PROBABILITY} from "@/config";
+import {rnd, rndf} from '@/utils';
 
 const NOTES = ['♪', '♫', '♩'];
 
@@ -12,23 +11,6 @@ export class MusicalNotesComponent extends DrawComponent {
   _notes = [];
 
   tick() {
-    const {fox, specialEvent, weather} = this.scene;
-    const singing = specialEvent === 'birthday' && fox.poseBlend > 0.95;
-    const multiplier = weather === 'rain' || weather === 'wind' ? 1.5 : weather === 'storm' ? 2.1 : 1;
-
-    if (singing && prob(PROBABILITY.SPAWN_SINGING_NOTE * multiplier)) {
-      this._notes.push({
-        x: fox.x - 30 + rndf(20),
-        y: fox.y - 70,
-        vx: rndf(0.6),
-        vy: -(0.8 + rnd(0.5)),
-        alpha: 1,
-        size: 10 + rnd(6),
-        note: NOTES[Math.floor(rnd(NOTES.length))],
-        col: `hsl(${Math.floor(rnd(360))}, 80%, 65%)`,
-      });
-    }
-
     this._notes = this._notes.filter(n => {
       n.x += n.vx;
       n.y += n.vy;
@@ -50,6 +32,24 @@ export class MusicalNotesComponent extends DrawComponent {
       ctx.textAlign = 'center';
       ctx.fillText(n.note, n.x, n.y);
       ctx.restore();
+    });
+  }
+
+  /**
+   * spawn a single note at the given position.
+   * @param {number} x
+   * @param {number} y
+   */
+  spawnNote(x, y) {
+    this._notes.push({
+      x: x + rndf(10),
+      y: y + rndf(10),
+      vx: rndf(0.6),
+      vy: -(0.8 + rnd(0.5)),
+      alpha: 1,
+      size: 10 + rnd(6),
+      note: NOTES[Math.floor(rnd(NOTES.length))],
+      col: `hsl(${Math.floor(rnd(360))}, 80%, 65%)`,
     });
   }
 }

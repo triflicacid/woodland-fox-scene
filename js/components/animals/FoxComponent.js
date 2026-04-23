@@ -40,6 +40,22 @@ export const FOX_PHASES = {
  * it also handles the bunny interaction sequence.
  */
 export class FoxComponent extends DrawComponent {
+  /** @type{MusicalNotesComponent} */
+  _notes;
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {MusicalNotesComponent} notes
+   */
+  constructor(eventBus, scene, ctx, W, H, notes) {
+    super(eventBus, scene, ctx, W, H);
+    this._notes = notes;
+  }
+
   initialise() {
     this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
@@ -84,6 +100,10 @@ export class FoxComponent extends DrawComponent {
         fox.singingMouthT = this.scene.frame;
       } else if (fox.phase === 'singing') {
         fox.singingMouthT = this.scene.frame;
+
+        if (prob(PROBABILITY.FOX_SPAWN_NOTE)) {
+          this._notes.spawnNote(fox.x - 35, fox.y - 95);
+        }
       }
     } else if (fox.phase === 'singing') {
       fox.phase = 'curling';

@@ -69,6 +69,8 @@ export class Scene {
     // store the event bus for this scene
     this.eventBus = new EventBus();
 
+    this._musicalNotes = new MusicalNotesComponent(this.eventBus, this.state, this.ctx, W, H);
+
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, this.state, [
       new EventListenerComponent(this.eventBus, this.state),
@@ -111,13 +113,13 @@ export class Scene {
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
-      this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H),
-      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
-      this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
 
-      this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H),
-      new MusicalNotesComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
     this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));

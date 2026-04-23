@@ -1,19 +1,64 @@
-import {rnd} from '@/utils';
+import {prob, rnd} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
+import {PROBABILITY} from "@/config";
 
 /**
  * render bunny which hops to greet the fox
  */
 export class BunnyComponent extends DrawComponent {
+  /** @type {MusicalNotesComponent} */
+  _notes;
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {MusicalNotesComponent} notes
+   */
+  constructor(eventBus, scene, ctx, W, H, notes) {
+    super(eventBus, scene, ctx, W, H);
+    this._notes = notes;
+  }
+
   isEnabled() {
+    if (this.scene.specialEvent === 'birthday') return true;
     const phase = this.scene.bunny.phase;
     return !(phase === 'off' || phase === 'done');
   }
 
   tick() {
-    const {bunny, fox} = this.scene;
+    const {bunny, fox, specialEvent} = this.scene;
     bunny.phaseT++;
+
+    // birthday - bunny hops in and bobs along
+    if (this.scene.specialEvent === 'birthday') {
+      if (bunny.phase === 'off' || bunny.phase === 'done') {
+        bunny.phase  = 'hopping_in';
+        bunny.phaseT = 0;
+        bunny.x      = -80;
+        bunny.hop.arc = 0;
+        this.scene.startHop(-80, this.scene.fox.x - 100, 135);
+      } else if (bunny.phase === 'hopping_in' || bunny.phase === 'birthday_bob') {
+        // once arrived, lock into birthday bob
+        if (bunny.phase === 'hopping_in' && this.scene.tickHop()) {
+          bunny.phase  = 'birthday_bob';
+          bunny.phaseT = 0;
+        }
+      }
+      // spawn notes occasionally while bobbing
+      if (bunny.phase === 'birthday_bob' && prob(PROBABILITY.BUNNY_SPAWN_NOTE)) {
+        this._notes.spawnNote(bunny.x + 40, bunny.y - 35);
+      }
+      return; // skip normal bunny tick during birthday
+    } else if (bunny.phase === 'birthday_bob') {
+      // birthday ended - hop off
+      bunny.phase  = 'hopping_out';
+      bunny.phaseT = 0;
+      this.scene.startHop(bunny.x, this.W + 90, 130);
+    }
 
     if (bunny.phase === 'hopping_in') {
       if (this.scene.tickHop()) {
@@ -84,7 +129,14 @@ export class BunnyComponent extends DrawComponent {
 
   draw() {
     const {ctx} = this;
-    const {bunny, fox} = this.scene;
+    const {bunny, fox, frame} = this.scene;
+
+    // birthday bob
+    if (bunny.phase === 'birthday_bob') {
+      const bob = Math.sin(frame * 0.1 + 1.0) * 4;
+      this._drawBunny(bunny.x, bunny.y + bob, 0);
+      return; // early return
+    }
 
     this._drawBunny(bunny.x, bunny.y, bunny.hop.arc);
 
