@@ -52,7 +52,10 @@ export class FoxComponent extends DrawComponent {
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
-      if (fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) fox.yawnT = 0;
+      if (fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
+        fox.yawnT = 0;
+        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'yawn'));
+      }
       if (fox.yawnT >= 0) {
         fox.yawnT++;
         if (fox.yawnT >= 80) fox.yawnT = -1;
