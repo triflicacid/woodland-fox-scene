@@ -45,6 +45,7 @@ export class HedgehogComponent extends DrawComponent {
         if (hog.phaseT >= 300) {
           hog.phase = 'birthday_bob';
           hog.phaseT = 0;
+          this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sing.start'));
         }
       }
       if (hog.phase === 'birthday_bob' && prob(PROBABILITY.HEDGEHOG_SPAWN_NOTE)) {
@@ -54,6 +55,7 @@ export class HedgehogComponent extends DrawComponent {
     } else if (hog.phase === 'birthday_bob') {
       hog.phase = 'out';
       hog.phaseT = 0;
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sing.end'));
     }
 
     // spontaneous arrival in autumn

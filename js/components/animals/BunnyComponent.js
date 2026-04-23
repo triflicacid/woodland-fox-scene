@@ -46,6 +46,7 @@ export class BunnyComponent extends DrawComponent {
         if (bunny.phase === 'hopping_in' && this.scene.tickHop()) {
           bunny.phase  = 'birthday_bob';
           bunny.phaseT = 0;
+          this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.start'));
         }
       }
       // spawn notes occasionally while bobbing
@@ -58,6 +59,7 @@ export class BunnyComponent extends DrawComponent {
       bunny.phase  = 'hopping_out';
       bunny.phaseT = 0;
       this.scene.startHop(bunny.x, this.W + 90, 130);
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.end'));
     }
 
     if (bunny.phase === 'hopping_in') {

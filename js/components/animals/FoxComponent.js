@@ -98,6 +98,7 @@ export class FoxComponent extends DrawComponent {
         fox.poseBlend = 1;
         fox.asleep = false;
         fox.singingMouthT = this.scene.frame;
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sing.start'));
       } else if (fox.phase === 'singing') {
         fox.singingMouthT = this.scene.frame;
 
@@ -110,6 +111,7 @@ export class FoxComponent extends DrawComponent {
       fox.phaseT = 0;
       fox.asleep = true;
       fox.singingMouthT = undefined;
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sing.end'));
     }
 
     // passive idle behaviours

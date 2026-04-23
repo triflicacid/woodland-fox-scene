@@ -52,6 +52,7 @@ export class DeerComponent extends DrawComponent {
         if (deer.phaseT >= 150) {
           deer.phase = 'birthday_bob';
           deer.phaseT = 0;
+          this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'sing.start'));
         }
       }
       if (deer.phase === 'birthday_bob' && prob(PROBABILITY.DEER_SPAWN_NOTE)) {
@@ -61,6 +62,7 @@ export class DeerComponent extends DrawComponent {
     } else if (deer.phase === 'birthday_bob') {
       deer.phase = 'leaving';
       deer.phaseT = 0;
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'sing.end'));
     }
 
     if (deer.phase === 'off') {
