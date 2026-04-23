@@ -9,8 +9,14 @@ import {Events} from "@/event/Events";
  */
 export class FoxComponent extends DrawComponent {
   initialise(state) {
-    this.eventBus.subscribe(Events.fireworkBangSubscription('FoxComponent', ({loud}) => {
+    this.eventBus.subscribe(Events.fireworkBangSubscription(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
+        state.fox.earTwitchT = 0;
+        state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+      }
+    }));
+    this.eventBus.subscribe(Events.lightningStrikeSubscription(this.getName(), ({superBolt}) => {
+      if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
         state.fox.earTwitchT = 0;
         state.fox.earTwitchSide = prob(0.5) ? 1 : -1;
       }
@@ -18,7 +24,7 @@ export class FoxComponent extends DrawComponent {
   }
 
   tick(state, setStatus, enableButtons) {
-    const {weather, fox} = state;
+    const {fox} = state;
 
     // passive idle behaviours
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
@@ -34,11 +40,6 @@ export class FoxComponent extends DrawComponent {
       if (fox.earTwitchT >= 0) {
         fox.earTwitchT++;
         if (fox.earTwitchT >= 20) fox.earTwitchT = -1;
-      }
-      // lightning makes the fox flinch
-      if (weather === 'storm' && state.bolts.some(b => b.t === 1)) {
-        fox.earTwitchT = 0;
-        fox.earTwitchSide = 1;
       }
     }
 
