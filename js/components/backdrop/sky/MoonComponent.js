@@ -6,18 +6,17 @@ import {clamp} from "@/utils";
  * depending on season etc, it may move, or be a pumpkin moon.
  */
 export class MoonComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.isNight();
+  isEnabled() {
+    return this.scene.isNight();
   }
 
-  draw(state) {
-    const td = state.todBlend;
-    const {frame, weather, specialEvent, moonPhase} = state;
+  draw() {
+    const {frame, weather, specialEvent, moonPhase, todBlend} = this.scene;
 
     if (specialEvent === 'halloween') {
       this._drawPumpkinMoon(frame);
     } else if (weather !== 'storm' && weather !== 'rain') {
-      this._drawMoon(td, frame, moonPhase);
+      this._drawMoon(todBlend, frame, moonPhase);
     }
   }
 

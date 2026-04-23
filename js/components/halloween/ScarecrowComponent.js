@@ -4,13 +4,13 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render scarecrows during Halloween
  */
 export class ScarecrowComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.specialEvent === 'halloween';
+  isEnabled() {
+    return this.scene.specialEvent === 'halloween';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, H} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
 
     const SCARECROWS = [{x: 200}, {x: 490}];
     SCARECROWS.forEach((sc, i) => {

@@ -34,6 +34,7 @@ import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
 import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 import {EventListenerComponent} from "@/components/EventListenerComponent";
+import {requireNonNull} from "@/utils";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -66,52 +67,52 @@ export class Scene {
     this.eventBus = new EventBus();
 
     /** @type {ComponentGroup} */
-    this._components = new ComponentGroup(this.eventBus, [
-      new EventListenerComponent(this.eventBus),
-      new TimeOfDayComponent(this.eventBus),
-      new SkyBackdropComponents(this.eventBus, this.ctx, W, H),
-      new GroundBackdropComponents(this.eventBus, this.ctx, W, H),
+    this._components = new ComponentGroup(this.eventBus, this.state, [
+      new EventListenerComponent(this.eventBus, this.state),
+      new TimeOfDayComponent(this.eventBus, this.state),
+      new SkyBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
+      new GroundBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
 
-      new BackgroundTreesComponent(this.eventBus, this.ctx),
+      new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
-      new SmokeComponent(this.eventBus, this.ctx, W, H),
+      new SmokeComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new ForegroundTreesComponent(this.eventBus, this.ctx),
+      new ForegroundTreesComponent(this.eventBus, this.state, this.ctx),
 
-      new GravestoneComponent(this.eventBus, this.ctx, W, H),
-      new ScarecrowComponent(this.eventBus, this.ctx, W, H),
+      new GravestoneComponent(this.eventBus, this.state, this.ctx, W, H),
+      new ScarecrowComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new SnowmenComponent(this.eventBus, this.ctx, W, H),
-      new PresentsComponent(this.eventBus, this.ctx, W, H),
+      new SnowmenComponent(this.eventBus, this.state, this.ctx, W, H),
+      new PresentsComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new FireworksComponent(this.eventBus, this.ctx, W, H),
+      new FireworksComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new FirefliesComponent(this.eventBus, this.ctx, W, H),
-      new ButterfliesComponent(this.eventBus, this.ctx, W, H),
-      new HeartsComponent(this.eventBus, this.ctx, W, H),
+      new FirefliesComponent(this.eventBus, this.state, this.ctx, W, H),
+      new ButterfliesComponent(this.eventBus, this.state, this.ctx, W, H),
+      new HeartsComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new SeasonTransitionLeavesComponent(this.eventBus, this.ctx, W, H),
-      new AutumnBlowingLeavesComponent(this.eventBus, this.ctx, W, H),
+      new SeasonTransitionLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
+      new AutumnBlowingLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new LightningComponent(this.eventBus, this.ctx, W, H),
-      new RainComponent(this.eventBus, this.ctx, W, H),
-      new SnowflakesComponent(this.eventBus, this.ctx, W, H),
-      new WindComponent(this.eventBus, this.ctx, W, H),
-      new FogOverlayComponent(this.eventBus, this.ctx, W, H),
+      new LightningComponent(this.eventBus, this.state, this.ctx, W, H),
+      new RainComponent(this.eventBus, this.state, this.ctx, W, H),
+      new SnowflakesComponent(this.eventBus, this.state, this.ctx, W, H),
+      new WindComponent(this.eventBus, this.state, this.ctx, W, H),
+      new FogOverlayComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new BatsComponent(this.eventBus, this.ctx, W, H),
-      this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
-      new OwlComponent(this.eventBus, this.ctx, W, H),
-      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.ctx, W, H),
-      new FoxComponent(this.eventBus, this.ctx, W, H),
-      new BunnyComponent(this.eventBus, this.ctx, W, H),
-      new GhostsComponent(this.eventBus, this.ctx, W, H),
-      this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
+      new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
+      new FoxComponent(this.eventBus, this.state, this.ctx, W, H),
+      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H),
+      new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
-      new BonfireComponent(this.eventBus, this.ctx, W, H),
+      this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H),
+      new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
-    this._aurora = this._components.getComponent("AuroraComponent");
+    this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));
   }
 
   /**
@@ -161,8 +162,8 @@ export class Scene {
       this._setButtonsDisabled(false);
     };
 
-    this._components.tick(state, setStatus, enableButtons);
-    this._components.draw(state);
+    this._components.tick(setStatus, enableButtons);
+    this._components.draw();
 
     requestAnimationFrame(this._loop);
   }
@@ -249,7 +250,7 @@ export class Scene {
       // click on a tree top to startle a bird
       TREE_DEFS.forEach(tr => {
         if (Math.abs(cx - tr.x) < tr.r && cy < H * 0.62 && cy > H * 0.62 - tr.h * 0.7) {
-          this._birds.spawnStartledBird(state, tr);
+          this._birds.spawnStartledBird(tr);
         }
       });
     });

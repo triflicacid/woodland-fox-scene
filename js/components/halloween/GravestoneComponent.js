@@ -4,11 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render gravestone in the Halloween event
  */
 export class GravestoneComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.specialEvent === 'halloween';
+  isEnabled() {
+    return this.scene.specialEvent === 'halloween';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, H} = this;
     const gy = H * 0.62;
 

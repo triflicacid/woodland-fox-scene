@@ -5,15 +5,14 @@ import {clamp} from "@/utils";
  * render heart particles when hare and fox are kissing
  */
 export class HeartsComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.hearts.length > 0;
+  isEnabled() {
+    return this.scene.hearts.length > 0;
   }
 
-  draw(state) {
-    const {ctx} = this;
-    state.hearts.forEach(h => {
+  draw() {
+    this.scene.hearts.forEach(h => {
       const a = clamp(1 - h.life / 60, 0, 1);
-      drawHeart(ctx, h.x, h.y, 6 + h.life * 0.09, a);
+      drawHeart(this.ctx, h.x, h.y, 6 + h.life * 0.09, a);
     });
   }
 }

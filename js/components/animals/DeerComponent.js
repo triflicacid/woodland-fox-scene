@@ -10,7 +10,7 @@ export class DeerComponent extends DrawComponent {
   /** @type{Object} */
   deer;
 
-  initialise(state) {
+  initialise() {
     this.deer = {
       x: this.W + 80,
       phase: 'off',
@@ -19,13 +19,13 @@ export class DeerComponent extends DrawComponent {
     };
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {deer} = this;
     deer.cooldown--;
 
     if (deer.phase === 'off') {
-      const atTransition = Math.abs(state.todBlend - 0.5) < 0.15;
-      if (atTransition && deer.cooldown <= 0 && prob(PROBABILITY.DEER) && state.bunny.phase === 'off') {
+      const atTransition = Math.abs(this.scene.todBlend - 0.5) < 0.15;
+      if (atTransition && deer.cooldown <= 0 && prob(PROBABILITY.DEER) && this.scene.bunny.phase === 'off') {
         deer.phase = 'entering';
         deer.phaseT = 0;
         deer.x = this.W + 80;
@@ -47,7 +47,7 @@ export class DeerComponent extends DrawComponent {
       }
 
     } else if (deer.phase === 'grazing') {
-      deer.x = gx + Math.sin(state.frame * 0.008) * 8;
+      deer.x = gx + Math.sin(this.scene.frame * 0.008) * 8;
       if (deer.phaseT > 300) {
         deer.phase = 'leaving';
         deer.phaseT = 0;
@@ -64,13 +64,13 @@ export class DeerComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     const {ctx, deer} = this;
     if (deer.phase === 'off') {
       return;
     }
 
-    const {frame} = state;
+    const {frame} = this.scene;
     const x = deer.x;
     const y = this.H * 0.62 - 28;
     const grazing = deer.phase === 'grazing';

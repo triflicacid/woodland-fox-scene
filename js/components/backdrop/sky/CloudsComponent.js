@@ -4,9 +4,9 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render clouds (differ on weather)
  */
 export class CloudsComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {weather, season, frame} = state;
+    const {weather, season, frame} = this.scene;
     const isRainy = weather === 'rain' || weather === 'storm';
     const windM = weather === 'wind' || weather === 'storm' ? 2.2 : 1;
     const seeds = [[100, 80, 0.7], [280, 60, 0.5], [450, 90, 0.6], [600, 70, 0.45]];

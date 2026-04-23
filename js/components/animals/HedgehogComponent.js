@@ -13,9 +13,9 @@ export class HedgehogComponent extends DrawComponent {
     phaseT: 0,
   };
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {hog} = this;
-    const {fox, bunny, season} = state;
+    const {fox, bunny, season, frame} = this.scene;
 
     // spontaneous arrival in autumn
     if (hog.phase === 'off' && prob(PROBABILITY.HEDGEHOG) && bunny.phase === 'off' && season === 'autumn') {
@@ -36,7 +36,7 @@ export class HedgehogComponent extends DrawComponent {
       }
 
     } else if (hog.phase === 'sniff') {
-      hog.x = fox.x - 90 + Math.sin(state.frame * 0.04) * 8;
+      hog.x = fox.x - 90 + Math.sin(frame * 0.04) * 8;
       if (hog.phaseT > 180) {
         hog.phase = 'out';
         hog.phaseT = 0;
@@ -52,16 +52,17 @@ export class HedgehogComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     const {ctx, hog} = this;
     if (hog.phase === 'off') {
       return;
     }
 
+    const {frame} = this.scene;
     const x = hog.x;
     const y = this.H * 0.62 - 5;
     const facingRight = hog.phase === 'in' || hog.phase === 'out';
-    const waddle = Math.sin(state.frame * 0.14) * 2.5;
+    const waddle = Math.sin(frame * 0.14) * 2.5;
 
     ctx.save();
     ctx.translate(x, y);

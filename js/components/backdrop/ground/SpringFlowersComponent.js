@@ -4,13 +4,13 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render some springtime flowers
  */
 export class SpringFlowersComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.season === 'spring';
+  isEnabled() {
+    return this.scene.season === 'spring';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, H} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
     [
       {x: 220, c: '#ff88cc'}, {x: 250, c: '#ffdd44'}, {x: 310, c: '#ff99dd'},
       {x: 380, c: '#ffffaa'}, {x: 420, c: '#ff88bb'}, {x: 475, c: '#ddffaa'},

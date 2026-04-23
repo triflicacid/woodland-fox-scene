@@ -4,12 +4,12 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render grass blades in foreground
  */
 export class GrassComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const {season, weather, frame} = state;
+    const {season, weather, frame} = this.scene;
 
     if (season !== 'winter') {
-      const p = state.pal();
+      const p = this.scene.pal();
       const wsh = weather === 'wind' ? Math.sin(frame * 0.04) * 10
           : weather === 'storm' ? Math.sin(frame * 0.06) * 14 : 0;
       for (let gx = 10; gx < W; gx += 18) {

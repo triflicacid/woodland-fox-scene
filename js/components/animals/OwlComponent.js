@@ -15,12 +15,12 @@ export class OwlComponent extends DrawComponent {
     treeIdx: 2,
   };
 
-  isEnabled(state) {
-    const {season, weather} = state;
-    return state.owlForced || (state.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
+  isEnabled() {
+    const {season, weather} = this.scene;
+    return this.scene.owlForced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {owl} = this;
 
     owl.headTimer++;
@@ -36,11 +36,11 @@ export class OwlComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     const {ctx, owl} = this;
-    const {season, weather, frame, specialEvent} = state;
+    const {season, weather, frame, specialEvent} = this.scene;
 
-    const tr = state.trees[owl.treeIdx];
+    const tr = this.scene.trees[owl.treeIdx]; // TODO
     let {x, y} = getTreeTopPos(tr, weather, season, specialEvent, frame, this.H);
     y -= 15;
     x -= 5;

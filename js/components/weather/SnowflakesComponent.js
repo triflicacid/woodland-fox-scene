@@ -22,17 +22,17 @@ export class SnowflakesComponent extends DrawComponent {
     };
   }
 
-  initialise(state) {
+  initialise() {
     this.snowflakes = Array.from({length: 120}, () => this._makeSnowflake());
   }
 
-  isEnabled(state) {
-    return state.weather === 'snow';
+  isEnabled() {
+    return this.scene.weather === 'snow';
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {H} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
     this.snowflakes.forEach(sf => {
       sf.y += sf.speed;
       sf.x += Math.sin(frame * 0.02 + sf.phase) * 0.5;
@@ -40,7 +40,7 @@ export class SnowflakesComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
     this.snowflakes.forEach(sf => {
       ctx.save();

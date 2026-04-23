@@ -5,14 +5,14 @@ import {clamp} from "@/utils";
  * render the sun on clear days
  */
 export class SunComponent extends DrawComponent {
-  isEnabled(state) {
-    const {weather} = state;
-    return state.isDay() && weather !== 'fog' && weather !== 'rain' && weather !== 'storm';
+  isEnabled() {
+    const {weather} = this.scene;
+    return this.scene.isDay() && weather !== 'fog' && weather !== 'rain' && weather !== 'storm';
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {season, weather, frame, todBlend: td} = state;
+    const {season, weather, frame, todBlend: td} = this.scene;
     const sa = clamp((td - 0.2) / 0.6, 0, 1);
     const sunX = season === 'autumn' ? 120 : season === 'winter' ? 160 : 550;
     const sunY = season === 'winter' ? 90 : 65;

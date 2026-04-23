@@ -10,7 +10,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   seasonLeaves;
 
-  initialise(state) {
+  initialise() {
     this.seasonLeaves = Array.from({length: 40}, () => ({
       x: rnd(this.W),
       y: -rnd(200),
@@ -42,14 +42,14 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
     }
   }
 
-  isEnabled(state) {
+  isEnabled() {
     return this.seasonLeafActive;
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     let allDone = true;
     this.seasonLeaves.forEach(l => {
-      if (l.y < state.H * 0.62) {
+      if (l.y < this.H * 0.62) {
         allDone = false;
         l.x += l.vx;
         l.y += l.vy;
@@ -62,7 +62,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
 
   draw(state) {
     const {ctx} = this;
-    const {season} = state;
+    const {season} = this.scene;
 
     this.seasonLeaves.forEach(l => {
       ctx.save();

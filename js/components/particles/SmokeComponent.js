@@ -8,7 +8,7 @@ export class SmokeComponent extends DrawComponent {
   /** @type{Array<Object>} */
   particles;
 
-  initialise(state) {
+  initialise() {
     this.particles = Array.from({length: 12}, (_, i) => this._makeSmoke(i))
   }
 
@@ -29,12 +29,13 @@ export class SmokeComponent extends DrawComponent {
     };
   }
 
-  isEnabled(state) {
-    return !(state.weather === 'rain' || state.weather === 'storm' || state.season === 'summer');
+  isEnabled() {
+    const {weather, season} = this.scene;
+    return !(weather === 'rain' || weather === 'storm' || season === 'summer');
   }
 
-  tick(state, setStatus, enableButtons) {
-    const {weather} = state;
+  tick(setStatus, enableButtons) {
+    const {weather} = this.scene;
 
     this.particles.forEach((p, i) => {
       p.x += p.vx + (weather === 'wind' ? 1.5 : 0);
@@ -46,9 +47,9 @@ export class SmokeComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {season} = state;
+    const {season} = this.scene;
 
     this.particles.forEach(p => {
       ctx.save();

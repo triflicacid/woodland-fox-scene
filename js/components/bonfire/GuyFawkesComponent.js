@@ -31,12 +31,12 @@ export class GuyFawkesComponent extends DrawComponent {
     this._start();
   }
 
-  isEnabled(state) {
+  isEnabled() {
     // check phase to allow for manual overriding
-    return state.specialEvent === 'bonfire' || this._phase !== 'off';
+    return this.scene.specialEvent === 'bonfire' || this._phase !== 'off';
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     this._cooldown--;
 
     if (this._phase === 'off') {
@@ -50,9 +50,9 @@ export class GuyFawkesComponent extends DrawComponent {
     this._phaseT++;
     const cfg = PHASES[this._phase];
     const t = clamp(this._phaseT / cfg.f, 0, 1);
-    const targetX = state.bonfire.x + (this._fromRight ? 90 : -90);
-    const startX = this._fromRight ? state.W + 40 : -40;
-    const exitX = this._fromRight ? -40 : state.W + 40;
+    const targetX = this.scene.bonfire.x + (this._fromRight ? 90 : -90);
+    const startX = this._fromRight ? this.W + 40 : -40;
+    const exitX = this._fromRight ? -40 : this.W + 40;
 
     if (this._phase === 'entering') {
       this._x = lerp(startX, targetX, eo(t));
@@ -94,12 +94,12 @@ export class GuyFawkesComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     if (this._phase === 'off') return;
-    const y = state.H * 0.62;
+    const y = this.H * 0.62;
     const saluting = this._phase === 'salute';
     const facingRight = !this._fromRight; // faces toward bonfire
-    this._drawGuyFawkes(this._x, y, facingRight, saluting, state.frame);
+    this._drawGuyFawkes(this._x, y, facingRight, saluting, this.scene.frame);
   }
 
   /**

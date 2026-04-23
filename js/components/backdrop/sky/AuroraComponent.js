@@ -10,7 +10,7 @@ export class AuroraComponent extends DrawComponent {
   auroraBands;
   on = false;
 
-  initialise(state) {
+  initialise() {
     const {H} = this;
     this.auroraBands = Array.from({length: 6}, (_, i) => ({
       phase: i * Math.PI * 0.35,
@@ -25,21 +25,18 @@ export class AuroraComponent extends DrawComponent {
     this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._onSeasonChange.bind(this)));
   }
 
-  /**
-   * @param {ValueChange<string>} update
-   */
-  _onSeasonChange(update) {
-    if (this.on && (update.updated !== 'winter' || update.state.timeOfDay !== 'night')) this.on = false;
+  _onSeasonChange() {
+    if (this.on && (this.scene.season !== 'winter' || this.scene.timeOfDay !== 'night')) this.on = false;
   }
 
-  isEnabled(state) {
+  isEnabled() {
     // winter night only
-    return this.on && state.season === 'winter' && state.todBlend < 0.35;
+    return this.on && this.scene.season === 'winter' && this.scene.todBlend < 0.35;
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const {frame} = state;
+    const {frame} = this.scene;
 
     ctx.save();
     this.auroraBands.forEach(b => {

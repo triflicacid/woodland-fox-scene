@@ -5,13 +5,14 @@ import {clamp} from "@/utils";
  * render the dawn/duck glow in tod transition
  */
 export class DuskGlowComponent extends DrawComponent {
-  isEnabled(state) {
-    return state.todBlend > 0.1 && state.todBlend < 0.9;
+  isEnabled() {
+    const t = this.scene.todBlend;
+    return t > 0.1 && t < 0.9;
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const td = state.todBlend;
+    const td = this.scene.todBlend;
 
     const dg = clamp(1 - Math.abs(td - 0.5) * 8, 0, 1) * 0.38;
     const hor = ctx.createLinearGradient(0, H * 0.5, 0, H * 0.72);

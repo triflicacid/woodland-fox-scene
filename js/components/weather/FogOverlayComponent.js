@@ -8,7 +8,7 @@ export class FogOverlayComponent extends DrawComponent {
   /** @type {Array<Object>} */
   fogParticles;
 
-  initialise(state) {
+  initialise() {
     const {W, H} = this;
     this.fogParticles = Array.from({length: 14}, (_, i) => ({
       x: (i / 14) * W * 1.3 - W * 0.15,
@@ -20,11 +20,11 @@ export class FogOverlayComponent extends DrawComponent {
     }));
   }
 
-  isEnabled(state) {
-    return state.weather === 'fog';
+  isEnabled() {
+    return this.scene.weather === 'fog';
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     const {W} = this;
     this.fogParticles.forEach(fp => {
       fp.x += fp.speed;
@@ -32,7 +32,7 @@ export class FogOverlayComponent extends DrawComponent {
     });
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
     this.fogParticles.forEach(fp => {
       ctx.save();

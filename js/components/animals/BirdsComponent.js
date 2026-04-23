@@ -14,24 +14,23 @@ export class BirdsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   flyingBirds;
 
-  initialise(state) {
+  initialise() {
     this.perchedBirds = Array.from({length: 5}, (_, i) => ({
       treeIdx: [0, 2, 6, 7, 1][i],
       offset: [-0.7, -0.6, -0.55, -0.65, -0.5][i],
       side: [1, -1, 1, -1, 1][i],
     }));
     this.windStartledBirds = [];
-    this._generateFlyingBirds(state.weather);
+    this._generateFlyingBirds();
 
     this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onWeatherChange.bind(this)));
   }
 
   /**
    * generate flying birds
-   * @param {string} weather
    */
-  _generateFlyingBirds(weather) {
-    const length = weather === 'wind' ? 3 : 12;
+  _generateFlyingBirds() {
+    const length = this.scene.weather === 'wind' ? 3 : 12;
     this.flyingBirds = Array.from({length}, () => ({
       x: rnd(this.W),
       y: 20 + rnd(this.H * 0.25),
@@ -74,7 +73,7 @@ export class BirdsComponent extends DrawComponent {
     }
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     // wind-startled birds
     this.windStartledBirds = this.windStartledBirds.filter(b => {
       b.x += b.vx;
@@ -85,8 +84,8 @@ export class BirdsComponent extends DrawComponent {
       return !(b.life > 200 || b.x < -50 || b.x > this.W + 50 || b.y < -50);
     });
 
-    if (this._areBirdsActive(state)) {
-      const M = state.weather === 'wind' ? 4.5 : 1;
+    if (this._areBirdsActive()) {
+      const M = this.scene.weather === 'wind' ? 4.5 : 1;
       // flock birds flying across the sky
       this.flyingBirds.forEach(b => {
         b.x += b.vx * M;
@@ -100,17 +99,17 @@ export class BirdsComponent extends DrawComponent {
     }
   }
 
-  draw(state) {
+  draw() {
     const {ctx, H} = this;
-    const {weather, season, frame, specialEvent} = state;
+    const {weather, season, frame, specialEvent, trees} = this.scene;
 
     // wind-startled birds
     this.windStartledBirds.forEach(b => this._drawFlyingBird(b.x, b.y, b.flapT, b.scale));
 
-    if (this._areBirdsActive(state)) {
+    if (this._areBirdsActive()) {
       // perched birds on tree tops
       this.perchedBirds.forEach(pb => {
-        const tr = state.trees[pb.treeIdx];
+        const tr = trees[pb.treeIdx];
         if (season === 'winter' && tr.type !== 'pine') return;
 
         const top = getTreeTopPos(tr, weather, season, specialEvent, frame, H);
@@ -134,11 +133,10 @@ export class BirdsComponent extends DrawComponent {
 
   /**
    * return true when normal daytime birds should be visible.
-   * @param {SceneState} state
    * @returns {boolean}
    */
-  _areBirdsActive(state) {
-    const {season, todBlend, weather} = state;
+  _areBirdsActive() {
+    const {season, todBlend, weather} = this.scene;
     if (season === 'winter') return false;
     if (todBlend <= 0.4) return false;
     if (weather === 'storm') return false;
@@ -230,11 +228,10 @@ export class BirdsComponent extends DrawComponent {
 
   /**
    * add a started bird to the screen at the given tree position
-   * @param {SceneState} state
    * @param {Object} tr tree object
    */
-  spawnStartledBird(state, tr) {
-    if (!this._areBirdsActive(state)) {
+  spawnStartledBird(tr) {
+    if (!this._areBirdsActive()) {
       return;
     }
     this.windStartledBirds.push({

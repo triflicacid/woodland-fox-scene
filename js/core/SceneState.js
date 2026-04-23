@@ -110,7 +110,7 @@ export class SceneState {
    * @returns {Object}
    */
   pal() {
-    return PALETTES[this.season];
+     return PALETTES[this.season];
   }
 
   /**

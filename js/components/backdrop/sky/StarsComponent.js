@@ -5,14 +5,14 @@ import {clamp} from "@/utils";
  * render the stars in the night sky on a clear day
  */
 export class StarsComponent extends DrawComponent {
-  isEnabled(state) {
-    const {weather} = state;
-    return state.isNight() && (weather === 'clear' || weather === 'wind');
+  isEnabled() {
+    const {weather} = this.scene;
+    return this.scene.isNight() && (weather === 'clear' || weather === 'wind');
   }
 
-  draw(state) {
+  draw() {
     const {ctx} = this;
-    const {todBlend: td, frame} = state;
+    const {todBlend: td, frame} = this.scene;
     const stars = [
       [80, 30], [140, 18], [220, 40], [310, 12], [410, 28], [480, 15],
       [55, 60], [165, 45], [270, 25], [340, 50], [450, 8], [520, 38],

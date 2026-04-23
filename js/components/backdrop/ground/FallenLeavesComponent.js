@@ -8,7 +8,7 @@ export class FallenLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   leaves;
 
-  initialise(state) {
+  initialise() {
     const {W, H} = this;
     this.leaves = Array.from({length: 80}, () => ({
       x: rnd(W),
@@ -19,13 +19,13 @@ export class FallenLeavesComponent extends DrawComponent {
     }));
   }
 
-  isEnabled(state) {
-    return state.season === 'autumn';
+  isEnabled() {
+    return this.scene.season === 'autumn';
   }
 
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const {frame, weather} = state;
+    const {frame, weather} = this.scene;
 
     this.leaves.forEach(l => {
       ctx.save();

@@ -6,10 +6,11 @@ import {Component} from "./Component";
 export class ComponentGroup extends Component {
   /**
    * @param {EventBus} eventBus
+   * @param {SceneState} scene
    * @param {Array<Component> | undefined} components
    */
-  constructor(eventBus, components=undefined) {
-    super(eventBus);
+  constructor(eventBus, scene, components=undefined) {
+    super(eventBus, scene);
     /** @type{Array<Component>} */
     this._components = components !== undefined ? components.slice() : [];
   }
@@ -41,23 +42,23 @@ export class ComponentGroup extends Component {
     return null;
   }
 
-  initialise(state) {
-    this._components.forEach(c => c.initialise(state));
+  initialise() {
+    this._components.forEach(c => c.initialise());
   }
 
-  isEnabled(state) {
-    return this._components.some(c => c.isEnabled(state));
+  isEnabled() {
+    return this._components.some(c => c.isEnabled());
   }
 
-  tick(state, setStatus, enableButtons) {
+  tick(setStatus, enableButtons) {
     this._components
-        .filter(c => c.isEnabled(state))
-        .forEach(c => c.tick(state, setStatus, enableButtons));
+        .filter(c => c.isEnabled())
+        .forEach(c => c.tick(setStatus, enableButtons));
   }
 
-  draw(state) {
+  draw() {
     this._components
-        .filter(c => c.isEnabled(state))
-        .forEach(c => c.draw(state));
+        .filter(c => c.isEnabled())
+        .forEach(c => c.draw());
   }
 }

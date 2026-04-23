@@ -4,10 +4,10 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render the ground
  */
 export class GroundComponent extends DrawComponent {
-  draw(state) {
+  draw() {
     const {ctx, W, H} = this;
-    const {season, weather, frame} = state;
-    const p = state.pal();
+    const {season} = this.scene;
+    const p = this.scene.pal();
 
     const gnd = ctx.createLinearGradient(0, H * 0.62, 0, H);
     gnd.addColorStop(0, p.gnd0);
