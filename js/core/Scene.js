@@ -293,6 +293,7 @@ export class Scene {
       state.startHop(-80, bunny.meetX, 135);
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Something stirs in the trees...';
+      this.eventBus.receive(Events.characterAction('Scene', 'bunny', 'enter'));
     });
 
     // season buttons

@@ -24,7 +24,7 @@ export class BunnyComponent extends DrawComponent {
         fox.phaseT = 0;
         fox.poseBlend = 0;
         setStatus('The fox stirs...');
-        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'enter'));
+        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
       }
 
     } else if (bunny.phase === 'fox_waking') {
