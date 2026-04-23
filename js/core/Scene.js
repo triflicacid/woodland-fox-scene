@@ -214,8 +214,10 @@ export class Scene {
 
     const snowBtn = document.getElementById('btn-snow');
     snowBtn.disabled = state.season !== 'winter';
+
     const auroraBtn = document.getElementById('btn-aurora');
-    auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night';
+    auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing;
+    auroraBtn.classList.toggle('btn-active', this._aurora.on);
 
     const halloweenBtn = document.getElementById('btn-halloween');
     halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
@@ -261,13 +263,6 @@ export class Scene {
       stargazeBtn.disabled = !canStargaze;
       stargazeBtn.classList.toggle('btn-active', state.stargazing);
     }
-
-    document.getElementById('btn-aurora')?.addEventListener('click', () => {
-      if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
-      this._aurora.toggle();
-      if (this._aurora.on) state.stargazing = false; // aurora suppresses stargazing
-      this._refreshUI();
-    });
   }
 
   /**
@@ -379,14 +374,21 @@ export class Scene {
 
     // aurora toggle
     document.getElementById('btn-aurora')?.addEventListener('click', () => {
-      if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
+      if (state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing) return;
       this._aurora.toggle();
+      if (this._aurora.on && state.stargazing) {
+        state.stargazing = false; // supress stargazing
+        state.savePref();
+      }
       this._refreshUI();
     });
     // stargazing toggle
     document.getElementById('btn-stargaze')?.addEventListener('click', () => {
       state.stargazing = !state.stargazing;
       state.savePref();
+      if (state.stargazing && this._aurora.on) {
+        this._aurora.on = false; // supress aurora
+      }
       this._refreshUI();
     });
 
