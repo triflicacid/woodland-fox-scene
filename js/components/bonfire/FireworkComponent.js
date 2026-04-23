@@ -135,7 +135,7 @@ export class FireworksComponent extends DrawComponent {
 
     // fire event so fox can react
     if (rocket.loud) {
-      this.eventBus.receive(Events.fireworkBang('FireworksComponent', true));
+      this.eventBus.dispatch(Events.fireworkBang('FireworksComponent', true));
     }
   }
 }

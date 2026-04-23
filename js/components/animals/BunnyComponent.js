@@ -23,8 +23,8 @@ export class BunnyComponent extends DrawComponent {
         fox.phase = 'bunny_standup';
         fox.phaseT = 0;
         fox.poseBlend = 0;
-        this.eventBus.receive(Events.statusText(this.getName(), 'The fox stirs...'));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox stirs...'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
       }
 
     } else if (bunny.phase === 'fox_waking') {
@@ -32,8 +32,8 @@ export class BunnyComponent extends DrawComponent {
         bunny.phase = 'nuzzle';
         bunny.phaseT = 0;
         this.scene.hearts = [];
-        this.eventBus.receive(Events.statusText(this.getName(), 'They touch noses...'));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'They touch noses...'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
 
     } else if (bunny.phase === 'nuzzle') {
@@ -60,8 +60,8 @@ export class BunnyComponent extends DrawComponent {
         fox.phase = 'bunny_curling';
         fox.phaseT = 0;
         this.scene.hearts = [];
-        this.eventBus.receive(Events.statusText(this.getName(), 'The fox drifts off...'));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
     } else if (bunny.phase === 'fox_sleep') {
@@ -69,15 +69,15 @@ export class BunnyComponent extends DrawComponent {
         bunny.phase = 'hopping_out';
         bunny.phaseT = 0;
         this.scene.startHop(bunny.x, this.W + 90, 130);
-        this.eventBus.receive(Events.statusText(this.getName(), 'The bunny hops off...'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The bunny hops off...'));
       }
 
     } else if (bunny.phase === 'hopping_out') {
       if (this.scene.tickHop()) {
         bunny.phase = 'done';
-        this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
-        this.eventBus.receive(Events.setMainButtons(this.getName(), true));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'exit'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
+        this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'exit'));
       }
     }
   }

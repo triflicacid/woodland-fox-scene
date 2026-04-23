@@ -78,10 +78,10 @@ export class EventBus {
   }
 
   /**
-   * receive an event
+   * dispatch an event into the event bus
    * @param {Event} event
    */
-  receive(event) {
+  dispatch(event) {
     if (!this._subscriptions.has(event.eventName)) {
       throw new Error(`Unknown subscription event: ${event.eventName}`);
     }

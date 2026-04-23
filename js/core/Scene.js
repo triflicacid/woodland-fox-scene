@@ -293,7 +293,7 @@ export class Scene {
       state.startHop(-80, bunny.meetX, 135);
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Something stirs in the trees...';
-      this.eventBus.receive(Events.characterAction('Scene', 'bunny', 'enter'));
+      this.eventBus.dispatch(Events.characterAction('Scene', 'bunny', 'enter'));
     });
 
     // season buttons
@@ -302,7 +302,7 @@ export class Scene {
           const oldSeason = state.season;
           state.changeSeason(s);
           this._clearInvalidSpecialEvent();
-          this.eventBus.receive(Events.seasonChange("Scene", oldSeason, state));
+          this.eventBus.dispatch(Events.seasonChange("Scene", oldSeason, state));
           this._refreshUI();
         }));
 
@@ -327,7 +327,7 @@ export class Scene {
           this._clearInvalidSpecialEvent();
           state.savePref();
           this._refreshUI();
-          this.eventBus.receive(Events.weatherChange("Scene", oldWeather, state));
+          this.eventBus.dispatch(Events.weatherChange("Scene", oldWeather, state));
         }));
 
     // aurora toggle
@@ -369,7 +369,7 @@ export class Scene {
         const oldMoonPhase = state.moonPhase;
         state.moonPhase = i;
         state.savePref();
-        this.eventBus.receive(Events.moonPhaseChange("Scene", oldMoonPhase, state));
+        this.eventBus.dispatch(Events.moonPhaseChange("Scene", oldMoonPhase, state));
         this._refreshUI();
       });
     });
@@ -419,7 +419,7 @@ export class Scene {
     fox.earTwitchT = 0;
     fox.earTwitchSide = 1;
     this.statusEl.textContent = 'The fox grumbles sleepily...';
-    this.eventBus.receive(Events.characterAction('Scene', 'fox', 'grumble'));
+    this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'grumble'));
   }
 
   /**
@@ -431,7 +431,7 @@ export class Scene {
     if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
       fox.yawnT = 0;
       this.statusEl.textContent = 'The fox has a big yawn...';
-      this.eventBus.receive(Events.characterAction('Scene', 'fox', 'yawn'));
+      this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'yawn'));
     }
   }
 
@@ -444,6 +444,6 @@ export class Scene {
     fox.earTwitchT = 0;
     fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
     this.statusEl.textContent = "The fox's ear twitches...";
-    this.eventBus.receive(Events.characterAction('Scene', 'fox', 'ear_twitch'));
+    this.eventBus.dispatch(Events.characterAction('Scene', 'fox', 'ear_twitch'));
   }
 }

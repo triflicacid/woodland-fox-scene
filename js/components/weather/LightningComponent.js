@@ -63,7 +63,7 @@ export class LightningComponent extends DrawComponent {
         ly += 20 + rnd(20);
       }
       this._bolts.push({path, t: 0, superBolt});
-      this.eventBus.receive(Events.lightningStrike(this.getName(), superBolt));
+      this.eventBus.dispatch(Events.lightningStrike(this.getName(), superBolt));
     }
 
     // advance all bolts, remove expired ones

@@ -54,7 +54,7 @@ export class FoxComponent extends DrawComponent {
     if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
       if (fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
         fox.yawnT = 0;
-        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'yawn'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'yawn'));
       }
       if (fox.yawnT >= 0) {
         fox.yawnT++;
@@ -100,7 +100,7 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'stretch';
         fox.phaseT = 0;
-        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wake'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wake'));
       }
 
     } else if (fox.phase === 'stretch') {
@@ -135,9 +135,9 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'idle';
         fox.poseBlend = 0;
-        this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
-        this.eventBus.receive(Events.setMainButtons(this.getName(), true));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'sleep'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
+        this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sleep'));
       }
 
     } else if (fox.phase === 'bunny_standup') {
@@ -158,7 +158,7 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'wander_sniff';
         fox.phaseT = 0;
-        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wander.start'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wander.start'));
       }
 
     } else if (fox.phase === 'wander_sniff') {
@@ -174,8 +174,8 @@ export class FoxComponent extends DrawComponent {
         fox.phase = 'curling';
         fox.phaseT = 0;
         fox.wanderX = fox.x;
-        this.eventBus.receive(Events.statusText(this.getName(), 'Back home curling up...'));
-        this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wander.end'));
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'Back home curling up...'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wander.end'));
       }
     }
   }

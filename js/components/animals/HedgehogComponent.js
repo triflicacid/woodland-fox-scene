@@ -22,7 +22,7 @@ export class HedgehogComponent extends DrawComponent {
       hog.phase = 'in';
       hog.phaseT = 0;
       hog.x = -60;
-      this.eventBus.receive(Events.characterAction(this.getName(), 'hedgehog', 'enter'));
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'enter'));
     }
     if (hog.phase === 'off') return;
 
@@ -32,7 +32,7 @@ export class HedgehogComponent extends DrawComponent {
       if (hog.phaseT >= 320) {
         hog.phase = 'sniff';
         hog.phaseT = 0;
-        this.eventBus.receive(Events.characterAction(this.getName(), 'hedgehog', 'sniff.start'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.start'));
       }
 
     } else if (hog.phase === 'sniff') {
@@ -40,14 +40,14 @@ export class HedgehogComponent extends DrawComponent {
       if (hog.phaseT > 180) {
         hog.phase = 'out';
         hog.phaseT = 0;
-        this.eventBus.receive(Events.characterAction(this.getName(), 'hedgehog', 'sniff.end'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.end'));
       }
 
     } else if (hog.phase === 'out') {
       hog.x = lerp(fox.x - 90, this.W + 80, eo(clamp(hog.phaseT / 280, 0, 1)));
       if (hog.phaseT >= 280) {
         hog.phase = 'off';
-        this.eventBus.receive(Events.characterAction(this.getName(), 'hedgehog', 'exit'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'exit'));
       }
     }
   }

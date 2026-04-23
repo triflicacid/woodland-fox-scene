@@ -16,7 +16,7 @@ export class TimeOfDayComponent extends Component {
         : prevBlend > 0.5 && this.scene.todBlend <= 0.5;
     if (justFinished) {
       // send opposite of tod
-      this.eventBus.receive(Events.todChange("TimeOfDayComponent", this.scene.timeOfDay === 'day' ? 'night' : 'day', this.scene));
+      this.eventBus.dispatch(Events.todChange("TimeOfDayComponent", this.scene.timeOfDay === 'day' ? 'night' : 'day', this.scene));
     }
   }
 }
