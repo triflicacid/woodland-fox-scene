@@ -18,7 +18,7 @@ export class BonfireComponent extends DrawComponent {
     return this.scene.specialEvent === 'bonfire';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     this.smoke.forEach(s => {
       s.x += s.vx + (this.scene.weather === 'wind' ? 2.5 : 0);
       s.y += s.vy;

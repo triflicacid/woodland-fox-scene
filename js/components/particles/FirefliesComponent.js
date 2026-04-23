@@ -44,7 +44,7 @@ export class FirefliesComponent extends DrawComponent {
     return this.scene.todBlend < 0.5 && !(this.scene.weather === 'rain' || this.scene.weather === 'storm');
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W, H} = this;
 
     this.fireflies.forEach(f => {

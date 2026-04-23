@@ -23,7 +23,7 @@ export class BatsComponent extends DrawComponent {
     return this.scene.owlForced || (this.scene.season === 'autumn' && this.scene.specialEvent !== 'bonfire' && this.scene.todBlend < 0.4)
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     this.bats.forEach(b => {
       b.x += b.vx;
       b.flapT += b.flapSpeed;

@@ -41,7 +41,7 @@ export class ButterfliesComponent extends DrawComponent {
     }));
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W} = this;
 
     this.butterflies.forEach(bf => {

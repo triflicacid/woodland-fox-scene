@@ -36,13 +36,13 @@ export class GuyFawkesComponent extends DrawComponent {
     return this.scene.specialEvent === 'bonfire' || this._phase !== 'off';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     this._cooldown--;
 
     if (this._phase === 'off') {
       if (this._cooldown <= 0 && prob(PROBABILITY.GUY_FAWKES)) {
         this._start();
-        setStatus('A mysterious cloaked figure approaches...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'A mysterious cloaked figure approaches...'));
       }
       return;
     }
@@ -59,7 +59,7 @@ export class GuyFawkesComponent extends DrawComponent {
       if (this._phaseT >= cfg.f) {
         this._phase = 'watching';
         this._phaseT = 0;
-        setStatus('The figure stares into the flames...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'The figure stares into the flames...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'watch.start'));
       }
 
@@ -69,7 +69,7 @@ export class GuyFawkesComponent extends DrawComponent {
       if (this._phaseT >= cfg.f) {
         this._phase = 'salute';
         this._phaseT = 0;
-        setStatus('Remember, remember...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'Remember, remember...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'salute'));
       }
 
@@ -78,7 +78,7 @@ export class GuyFawkesComponent extends DrawComponent {
       if (this._phaseT >= cfg.f) {
         this._phase = 'leaving';
         this._phaseT = 0;
-        setStatus('The figure slips back into the dark...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'The figure slips back into the dark...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'watch.end'));
       }
 
@@ -88,7 +88,7 @@ export class GuyFawkesComponent extends DrawComponent {
         this._phase = 'off';
         this._phaseT = 0;
         this._cooldown = 1800;
-        setStatus('Curled up, fast asleep...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'guyfawkes', 'exit'));
       }
     }

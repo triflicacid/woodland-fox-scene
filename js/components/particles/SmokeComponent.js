@@ -34,7 +34,7 @@ export class SmokeComponent extends DrawComponent {
     return !(weather === 'rain' || weather === 'storm' || season === 'summer');
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {weather} = this.scene;
 
     this.particles.forEach((p, i) => {

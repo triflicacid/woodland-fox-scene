@@ -46,7 +46,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
     return this.seasonLeafActive;
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     let allDone = true;
     this.seasonLeaves.forEach(l => {
       if (l.y < this.H * 0.62) {

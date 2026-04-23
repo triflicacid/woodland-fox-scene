@@ -47,7 +47,7 @@ export class FoxComponent extends DrawComponent {
     }));
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {fox} = this.scene;
 
     // passive idle behaviours
@@ -135,8 +135,8 @@ export class FoxComponent extends DrawComponent {
       if (fox.phaseT >= cfg.f) {
         fox.phase = 'idle';
         fox.poseBlend = 0;
-        setStatus('Curled up, fast asleep...');
-        enableButtons();
+        this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
+        this.eventBus.receive(Events.mainButtonsEnabled(this.getName(), true));
         this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'sleep'));
       }
 
@@ -174,7 +174,7 @@ export class FoxComponent extends DrawComponent {
         fox.phase = 'curling';
         fox.phaseT = 0;
         fox.wanderX = fox.x;
-        setStatus('Back home, curling up...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'Back home curling up...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'fox', 'wander.end'));
       }
     }

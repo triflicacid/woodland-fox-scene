@@ -35,6 +35,7 @@ import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 import {EventListenerComponent} from "@/components/EventListenerComponent";
 import {requireNonNull} from "@/utils";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -125,6 +126,13 @@ export class Scene {
     this._components.initialise(this.state);
 
     this._loop = this._loop.bind(this);
+
+    this.eventBus.subscribe(Subscriptions.onStatusTextChange('Scene', ({text}) => {
+      this.statusEl.textContent = text;
+    }));
+    this.eventBus.subscribe(Subscriptions.onMainButtonsStateChange('Scene', ({enabled}) => {
+      this._setButtonsDisabled(!enabled);
+    }));
   }
 
   /**
@@ -154,15 +162,7 @@ export class Scene {
     ctx.clearRect(0, 0, CANVAS.WIDTH, CANVAS.HEIGHT);
     state.frame++;
 
-    // tick entity states
-    const setStatus = msg => {
-      this.statusEl.textContent = msg;
-    };
-    const enableButtons = () => {
-      this._setButtonsDisabled(false);
-    };
-
-    this._components.tick(setStatus, enableButtons);
+    this._components.tick();
     this._components.draw();
 
     requestAnimationFrame(this._loop);

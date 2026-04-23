@@ -48,8 +48,6 @@ export class Component {
 
   /**
    * process a tick update for this component.
-   * @param {function(string): void} setStatus - callback to update the status text
-   * @param {function(): void} enableButtons - callback to re-enable UI buttons
    */
-  tick(setStatus, enableButtons) {}
+  tick() {}
 }

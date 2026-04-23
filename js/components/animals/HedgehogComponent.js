@@ -13,7 +13,7 @@ export class HedgehogComponent extends DrawComponent {
     phaseT: 0,
   };
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {hog} = this;
     const {fox, bunny, season, frame} = this.scene;
 

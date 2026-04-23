@@ -32,7 +32,7 @@ export class WindComponent extends DrawComponent {
     return this.scene.weather === 'wind';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W} = this;
     this.windDebris.forEach(wd => {
       wd.x += wd.vx;

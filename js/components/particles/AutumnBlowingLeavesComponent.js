@@ -30,7 +30,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
     };
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {H} = this;
     const {season, weather} = this.scene;
     const shouldFall = season === 'autumn' && (weather === 'wind' || weather === 'storm');

@@ -50,10 +50,10 @@ export class ComponentGroup extends Component {
     return this._components.some(c => c.isEnabled());
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     this._components
         .filter(c => c.isEnabled())
-        .forEach(c => c.tick(setStatus, enableButtons));
+        .forEach(c => c.tick());
   }
 
   draw() {

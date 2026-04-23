@@ -17,7 +17,7 @@ export class FireworksComponent extends DrawComponent {
     return this.scene.specialEvent === 'bonfire' && this.scene.weather !== 'storm';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W, H} = this;
     const {weather} = this.scene;
 

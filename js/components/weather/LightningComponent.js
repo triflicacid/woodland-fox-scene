@@ -48,7 +48,7 @@ export class LightningComponent extends DrawComponent {
     });
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {H} = this;
 
     // chance to spawn a new bolt each frame

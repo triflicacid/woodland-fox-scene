@@ -11,7 +11,7 @@ export class BunnyComponent extends DrawComponent {
     return !(phase === 'off' || phase === 'done');
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {bunny, fox} = this.scene;
     bunny.phaseT++;
 
@@ -23,7 +23,7 @@ export class BunnyComponent extends DrawComponent {
         fox.phase = 'bunny_standup';
         fox.phaseT = 0;
         fox.poseBlend = 0;
-        setStatus('The fox stirs...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'The fox stirs...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
       }
 
@@ -32,7 +32,7 @@ export class BunnyComponent extends DrawComponent {
         bunny.phase = 'nuzzle';
         bunny.phaseT = 0;
         this.scene.hearts = [];
-        setStatus('They touch noses...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'They touch noses...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
 
@@ -60,7 +60,7 @@ export class BunnyComponent extends DrawComponent {
         fox.phase = 'bunny_curling';
         fox.phaseT = 0;
         this.scene.hearts = [];
-        setStatus('The fox drifts off...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'The fox drifts off...'));
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
@@ -69,14 +69,14 @@ export class BunnyComponent extends DrawComponent {
         bunny.phase = 'hopping_out';
         bunny.phaseT = 0;
         this.scene.startHop(bunny.x, this.W + 90, 130);
-        setStatus('The bunny hops off...');
+        this.eventBus.receive(Events.statusText(this.getName(), 'The bunny hops off...'));
       }
 
     } else if (bunny.phase === 'hopping_out') {
       if (this.scene.tickHop()) {
         bunny.phase = 'done';
-        setStatus('Curled up, fast asleep...');
-        enableButtons();
+        this.eventBus.receive(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
+        this.eventBus.receive(Events.mainButtonsEnabled(this.getName(), true));
         this.eventBus.receive(Events.characterAction(this.getName(), 'bunny', 'exit'));
       }
     }

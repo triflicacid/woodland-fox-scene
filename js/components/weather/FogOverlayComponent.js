@@ -24,7 +24,7 @@ export class FogOverlayComponent extends DrawComponent {
     return this.scene.weather === 'fog';
   }
 
-  tick(setStatus, enableButtons) {
+  tick() {
     const {W} = this;
     this.fogParticles.forEach(fp => {
       fp.x += fp.speed;
