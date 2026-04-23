@@ -41,6 +41,7 @@ import {BirthdayBannerComponent} from "@/components/birthday/BirthdayBannerCompo
 import {PresentsComponent} from "@/components/PresentsComponent";
 import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
 import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
+import {ChicksComponent} from "@/components/animals/ChicksComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -118,11 +119,12 @@ export class Scene {
       new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
-      new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
     this._aurora = requireNonNull(this._components.getComponent("AuroraComponent"));
   }
