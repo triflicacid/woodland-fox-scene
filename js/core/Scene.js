@@ -193,9 +193,9 @@ export class Scene {
     document.getElementById('btn-aurora').classList.toggle('btn-active', this._aurora.on);
 
     const snowBtn = document.getElementById('btn-snow');
+    snowBtn.disabled = state.season !== 'winter';
     const auroraBtn = document.getElementById('btn-aurora');
-    if (snowBtn) snowBtn.disabled = state.season !== 'winter';
-    if (auroraBtn) auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night';
+    auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night';
 
     const halloweenBtn = document.getElementById('btn-halloween');
     halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
