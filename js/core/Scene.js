@@ -362,18 +362,31 @@ export class Scene {
     document.getElementById('btn-grumble')?.addEventListener('click', () => this._fox.triggerGrumble());
 
     document.getElementById('btn-halloween')?.addEventListener('click', () => {
+      const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
       state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-christmas')?.addEventListener('click', () => {
+      const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
       state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-bonfire')?.addEventListener('click', () => {
+      const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'bonfire' ? null : 'bonfire';
       state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      this._refreshUI();
+    });
+    document.getElementById('btn-birthday')?.addEventListener('click', () => {
+      const old = state.specialEvent;
+      state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
+      state.savePref();
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
 
@@ -401,17 +414,6 @@ export class Scene {
         fox.asleep = !fox.asleep;
         this._refreshUI();
       }
-    });
-
-    document.getElementById('btn-birthday')?.addEventListener('click', () => {
-      if (state.specialEvent === 'birthday') {
-        state.specialEvent = null;
-        //this._birthday.onSpecialEventCleared();
-      } else {
-        state.specialEvent = 'birthday';
-      }
-      state.savePref();
-      this._refreshUI();
     });
   }
 }
