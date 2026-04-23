@@ -110,7 +110,6 @@ export class SceneState {
    * @returns {Object}
    */
   pal() {
-      if (this == undefined) console.trace("Uh oh! `this` is undefined...")
      return PALETTES[this.season];
   }
 
