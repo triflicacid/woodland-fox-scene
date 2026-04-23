@@ -3,6 +3,11 @@
  */
 export class Subscription {
   /**
+   * captures any and all events
+   */
+  static CAPTURE_ALL = "*ALL*";
+
+  /**
    * @template T type of event payload
    * @param {string} eventName
    * @param {string} subscriber name of the subscriber

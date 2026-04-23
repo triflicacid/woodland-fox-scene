@@ -23,6 +23,17 @@ export class Events {
   }
 
   /**
+   * create a new subscription to capture all events
+   * @param {string} subscriber
+   * @param {function(SceneState): void} onChange
+   * @returns {Subscription<SceneState>}
+   */
+  static captureAllSubscription(subscriber, onChange) {
+    // payload is a ValueChange
+    return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => onChange(update.state));
+  }
+
+  /**
    * create a season change event
    * @param {string} originator name of event originator
    * @param {string} oldSeason
