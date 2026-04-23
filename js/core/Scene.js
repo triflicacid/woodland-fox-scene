@@ -214,6 +214,10 @@ export class Scene {
 
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
+
+    const wakeBtn = document.getElementById('btn-wake-fox');
+    wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
+    wakeBtn.classList.toggle('btn-active', !state.fox.asleep);
   }
 
   /**
@@ -371,6 +375,12 @@ export class Scene {
 
     document.getElementById('btn-eye').addEventListener('click', () => {
       state.fox.eyeTransitionT = 0;
+    });
+
+    document.getElementById('btn-wake-fox').addEventListener('click', () => {
+      const {fox} = state;
+      fox.asleep = !fox.asleep;
+      this._refreshUI();
     });
   }
 
