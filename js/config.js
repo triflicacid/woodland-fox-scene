@@ -108,3 +108,9 @@ export const TREE_DEFS = [
   {x: 678, h: 150, r: 34, sway: 0.014, ph: 0.5, layers: 2, dark: false, type: 'pine', background: true, xmasLights: true},
 ];
 
+/**
+ * phases of the moon.
+ * internally we use numbers, but emojis here makes it more obvious what they mean.
+ * @type {string[]}
+ */
+export const MOON_PHASES = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];

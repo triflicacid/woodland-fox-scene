@@ -12,37 +12,100 @@ export class MoonComponent extends DrawComponent {
 
   draw(state) {
     const td = state.todBlend;
-    const {frame, weather, specialEvent} = state;
+    const {frame, weather, specialEvent, moonPhase} = state;
 
     if (specialEvent === 'halloween') {
       this._drawPumpkinMoon(frame);
     } else if (weather !== 'storm' && weather !== 'rain') {
-      this._drawMoon(td, frame);
+      this._drawMoon(td, frame, moonPhase);
     }
   }
 
   /**
-   * draw the ordinary moon and its shadow disc.
-   * @param {number} td - time-of-day blend
+   * draw the moon at the given phase.
+   * phase 0 = new moon, 4 = full moon, 0-7 maps to the 8 standard phases.
+   * uses two-arc clipping for a geometrically correct terminator curve.
+   * @param {number} td
    * @param {number} frame
+   * @param {number} phase - integer 0-7
    */
-  _drawMoon(td, frame) {
+  _drawMoon(td, frame, phase) {
     const {ctx} = this;
     const ma = clamp(1 - td * 1.5, 0, 1);
     if (ma <= 0.02) return;
+
+    const cx = 580, cy = 55, r = 22;
+
     ctx.save();
     ctx.globalAlpha = ma;
-    ctx.shadowBlur = 40;
+
+    // new moon - just a faint dark disc
+    if (phase === 0) {
+      ctx.fillStyle = 'rgba(30,40,60,0.5)';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(100,120,160,0.3)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    // full moon
+    if (phase === 4) {
+      ctx.shadowBlur = 40;
+      ctx.shadowColor = '#fffbe0';
+      ctx.fillStyle = '#fffde8';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    // for all other phases, draw using two-arc clipping:
+    // the lit portion is a semicircle on one side, with the terminator
+    // being an ellipse whose x-radius varies from -r (full) to +r (new)
+    // and whose sign determines crescent vs gibbous.
+    const waxing = phase < 4;
+
+    // normalise to 0-1 within each half-cycle
+    const t = waxing ? (phase - 1) / 3 : (7 - phase) / 3;
+
+    // crescent: t is small (thin sliver); gibbous: t is large (mostly full)
+    const isGibbous = t > 0.5;
+    // terminator x-radius shrinks as we approach full, grows toward new
+    const terminatorX = r * (phase % 2 === 1 ? 0.6 : 0);
+
+    ctx.shadowBlur = 20;
     ctx.shadowColor = '#fffbe0';
+
+    // clip to moon disc
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.clip();
+
+    // draw dark side first (full disc)
+    ctx.fillStyle = '#1a2030';
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // draw lit side using composite of semicircle + terminator ellipse
+    ctx.save();
+    ctx.beginPath();
+    if (waxing) {
+      ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2); // right semicircle
+      ctx.ellipse(cx, cy, terminatorX, r, 0, Math.PI / 2, -Math.PI / 2, !isGibbous);
+    } else {
+      ctx.arc(cx, cy, r, Math.PI / 2, -Math.PI / 2); // left semicircle
+      ctx.ellipse(cx, cy, terminatorX, r, 0, -Math.PI / 2, Math.PI / 2, !isGibbous);
+    }
+    ctx.closePath();
     ctx.fillStyle = '#fffde8';
-    ctx.beginPath();
-    ctx.arc(580, 55, 22, 0, Math.PI * 2);
     ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(10,17,32,0.35)';
-    ctx.beginPath();
-    ctx.ellipse(577 + Math.sin(frame * 0.003) * 8, 52, 18, 10, 0.3, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.restore();
+
     ctx.restore();
   }
 

@@ -22,6 +22,8 @@ export class SceneState {
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
     this.specialEvent = localStorage.getItem('special_event') || null;
+    /** @type{number} */
+    this.moonPhase = parseInt(localStorage.getItem('moon_phase') ?? '4'); // default full
 
     // prevent invalid combos on first load
     if (this.weather === 'snow' && this.season !== 'winter') this.weather = 'clear';
@@ -114,6 +116,7 @@ export class SceneState {
     localStorage.setItem('tod', this.timeOfDay);
     localStorage.setItem('weather', this.weather);
     localStorage.setItem('special_event', this.specialEvent);
+    localStorage.setItem('moon_phase', this.moonPhase.toString());
   }
 
   /**

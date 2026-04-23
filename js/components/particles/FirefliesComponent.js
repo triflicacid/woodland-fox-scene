@@ -10,7 +10,7 @@ export class FirefliesComponent extends DrawComponent {
 
   initialise(state) {
     const {W, H} = this;
-    this.fireflies = Array.from({length: 18}, () => ({
+    this.fireflies = Array.from({length: 48}, () => ({
       x: 80 + rnd(W - 160),
       y: H * 0.35 + rnd(H * 0.3),
       speed: 0.3 + rnd(0.4),
@@ -20,6 +20,14 @@ export class FirefliesComponent extends DrawComponent {
     }));
   }
 
+  /**
+   * firefly count increases during a new moon
+   * @param {number} moonPhase
+   */
+  _getFireflies(moonPhase) {
+    return moonPhase === 0 ? this.fireflies : this.fireflies.slice(0, 18);
+  }
+
   isEnabled(state) {
     return state.todBlend < 0.5 && !(state.weather === 'rain' || state.weather === 'storm');
   }
@@ -27,7 +35,7 @@ export class FirefliesComponent extends DrawComponent {
   tick(state, setStatus, enableButtons) {
     const {W, H} = this;
 
-    this.fireflies.forEach(f => {
+    this._getFireflies(state.moonPhase).forEach(f => {
       f.angle += (Math.random() - 0.5) * 0.08;
       f.x += Math.cos(f.angle) * f.speed;
       f.y += Math.sin(f.angle) * f.speed * 0.5;
@@ -41,7 +49,7 @@ export class FirefliesComponent extends DrawComponent {
     const {todBlend, frame} = state;
 
     const alpha = clamp(1 - todBlend * 2, 0, 1);
-    this.fireflies.forEach(f => {
+    this._getFireflies(state.moonPhase).forEach(f => {
       const g = 0.4 + 0.6 * Math.sin(frame * 0.05 + f.phase);
       ctx.save();
       ctx.globalAlpha = g * 0.85 * alpha;
