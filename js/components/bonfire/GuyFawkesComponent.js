@@ -30,6 +30,11 @@ export class GuyFawkesComponent extends DrawComponent {
     this._start();
   }
 
+  isEnabled(state) {
+    // check phase to allow for manual overriding
+    return state.specialEvent === 'bonfire' || this._phase !== 'off';
+  }
+
   tick(state, setStatus, enableButtons) {
     this._cooldown--;
 

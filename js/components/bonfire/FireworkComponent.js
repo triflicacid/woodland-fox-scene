@@ -14,7 +14,7 @@ export class FireworksComponent extends DrawComponent {
   bursts = [];
 
   isEnabled(state) {
-    return state.weather !== 'storm';
+    return state.specialEvent === 'bonfire' && state.weather !== 'storm';
   }
 
   tick(state, setStatus, enableButtons) {
@@ -44,7 +44,7 @@ export class FireworksComponent extends DrawComponent {
       r.vy *= 0.98; // slight deceleration
 
       if (r.y <= r.targetY) {
-        this._explode(r, state);
+        this._explode(r);
         return false;
       }
       return true;
@@ -97,9 +97,8 @@ export class FireworksComponent extends DrawComponent {
   /**
    * explode a rocket into a burst of particles.
    * @param {Object} rocket
-   * @param {SceneState} state
    */
-  _explode(rocket, state) {
+  _explode(rocket) {
     const count = rocket.loud ? 80 + Math.floor(rnd(40)) : 30 + Math.floor(rnd(20));
     const speed = rocket.loud ? 4 + rnd(2) : 2 + rnd(1.5);
     const maxLife = rocket.loud ? 70 + Math.floor(rnd(20)) : 40 + Math.floor(rnd(15));

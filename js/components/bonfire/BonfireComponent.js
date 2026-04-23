@@ -5,7 +5,6 @@ import {rnd, rndf} from '@/utils';
  * draws an animated bonfire with flickering flames and heavy smoke
  */
 export class BonfireComponent extends DrawComponent {
-
   /** @type {Array<Object>} */
   smoke = [];
 
@@ -13,6 +12,10 @@ export class BonfireComponent extends DrawComponent {
     this.smoke = Array.from({length: 20}, (_, i) =>
         this._makeSmoke(state, i * 3)
     );
+  }
+
+  isEnabled(state) {
+    return state.specialEvent === 'bonfire';
   }
 
   tick(state, setStatus, enableButtons) {

@@ -30,7 +30,9 @@ import {BirdsComponent} from "@/components/animals/BirdsComponent";
 import {BatsComponent} from "@/components/animals/BatsComponent";
 import {OwlComponent} from "@/components/animals/OwlComponent";
 import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
-import {BonfireNightComponent} from "@/components/bonfire/BonfireNightComponent";
+import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
+import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
+import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -80,7 +82,7 @@ export class Scene {
       new SnowmenComponent(this.eventBus, this.ctx, W, H),
       new PresentsComponent(this.eventBus, this.ctx, W, H),
 
-      this._bonfireNight = new BonfireNightComponent(this.eventBus, this.ctx, W, H),
+      new FireworksComponent(this.eventBus, this.ctx, W, H),
 
       new FirefliesComponent(this.eventBus, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.ctx, W, H),
@@ -98,11 +100,14 @@ export class Scene {
       new BatsComponent(this.eventBus, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.ctx, W, H),
+      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.ctx, W, H),
       new FoxComponent(this.eventBus, this.ctx, W, H),
       new BunnyComponent(this.eventBus, this.ctx, W, H),
       new GhostsComponent(this.eventBus, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.ctx, W, H),
+
       this._hedgehog = new HedgehogComponent(this.eventBus, this.ctx, W, H),
+      new BonfireComponent(this.eventBus, this.ctx, W, H),
     ]);
     this._aurora = this._components.getComponent("AuroraComponent");
   }
@@ -361,7 +366,7 @@ export class Scene {
     });
 
     document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
-      this._bonfireNight.summonGuyFawkes();
+      this._guyFawkes.summon();
     });
   }
 
