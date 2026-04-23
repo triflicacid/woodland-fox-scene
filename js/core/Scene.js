@@ -185,12 +185,12 @@ export class Scene {
   _refreshUI() {
     const {state} = this;
     ['spring', 'summer', 'autumn', 'winter'].forEach(s =>
-        document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.season === s));
+        document.getElementById('btn-' + s).classList.toggle('btn-active', state.season === s));
     ['day', 'night'].forEach(s =>
-        document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.timeOfDay === s));
+        document.getElementById('btn-' + s).classList.toggle('btn-active', state.timeOfDay === s));
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(s =>
-        document.getElementById('btn-' + s)?.classList.toggle('btn-active', state.weather === s));
-    document.getElementById('btn-aurora')?.classList.toggle('btn-active', this._aurora.on);
+        document.getElementById('btn-' + s).classList.toggle('btn-active', state.weather === s));
+    document.getElementById('btn-aurora').classList.toggle('btn-active', this._aurora.on);
 
     const snowBtn = document.getElementById('btn-snow');
     const auroraBtn = document.getElementById('btn-aurora');
