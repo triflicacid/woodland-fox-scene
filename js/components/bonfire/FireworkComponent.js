@@ -13,6 +13,11 @@ export class FireworksComponent extends DrawComponent {
   /** @type {Array<Object>} active burst particles */
   bursts = [];
 
+  static COMPONENT_NAME = "FireworksComponent";
+  getName() {
+    return FireworksComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.weather !== 'storm'
         && this.scene.timeOfDay === 'night'

@@ -5,6 +5,11 @@ import {clamp} from "@/utils";
  * render heart particles when hare and fox are kissing
  */
 export class HeartsComponent extends DrawComponent {
+  static COMPONENT_NAME = "HeartsComponent";
+  getName() {
+    return HeartsComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.hearts.length > 0;
   }

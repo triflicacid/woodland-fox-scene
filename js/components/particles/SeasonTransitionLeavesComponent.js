@@ -10,6 +10,11 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   seasonLeaves;
 
+  static COMPONENT_NAME = "SeasonTransitionLeavesComponent";
+  getName() {
+    return SeasonTransitionLeavesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.seasonLeaves = Array.from({length: 40}, () => ({
       x: rnd(this.W),

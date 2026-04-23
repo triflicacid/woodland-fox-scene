@@ -13,6 +13,11 @@ const FLAG_H = 18;
  * flags sway in wind.
  */
 export class BuntingComponent extends DrawComponent {
+  static COMPONENT_NAME = "BuntingComponent";
+  getName() {
+    return BuntingComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {specialEvent} = this.scene;
     return specialEvent === 'birthday' || specialEvent === 'easter';

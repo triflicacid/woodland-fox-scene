@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render gravestone in the Halloween event
  */
 export class GravestoneComponent extends DrawComponent {
+  static COMPONENT_NAME = "GravestoneComponent";
+  getName() {
+    return GravestoneComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.specialEvent === 'halloween';
   }

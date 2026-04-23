@@ -6,6 +6,11 @@ import {DrawComponent} from "@/core/DrawComponent";
 export class SnowmenComponent extends DrawComponent {
   snowmen = [{x: 180}, {x: 420}, {x: 560}];
 
+  static COMPONENT_NAME = "SnowmenComponent";
+  getName() {
+    return SnowmenComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.specialEvent === 'christmas';
   }

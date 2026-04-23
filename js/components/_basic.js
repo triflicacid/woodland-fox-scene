@@ -11,5 +11,10 @@ export class BasicComponent extends Component {
   constructor(eventBus, scene) {
     super(eventBus, scene);
   }
+
+  static COMPONENT_NAME = "BasicComponent";
+  getName() {
+    return BasicComponent.COMPONENT_NAME;
+  }
 }
 

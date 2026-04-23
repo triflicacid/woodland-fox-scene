@@ -8,6 +8,11 @@ export class RainComponent extends DrawComponent {
   /** @type{Array<Object>} */
   raindrops;
 
+  static COMPONENT_NAME = "RainComponent";
+  getName() {
+    return RainComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.raindrops = Array.from({length: 250}, () => this._makeRain());
   }

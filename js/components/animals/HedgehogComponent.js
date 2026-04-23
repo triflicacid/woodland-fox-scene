@@ -29,6 +29,11 @@ export class HedgehogComponent extends DrawComponent {
     this._notes = notes;
   }
 
+  static COMPONENT_NAME = "HedgehogComponent";
+  getName() {
+    return HedgehogComponent.COMPONENT_NAME;
+  }
+
   tick() {
     const {hog} = this;
     const {fox, bunny, season, frame} = this.scene;

@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render clouds (differ on weather)
  */
 export class CloudsComponent extends DrawComponent {
+  static COMPONENT_NAME = "CloudsComponent";
+  getName() {
+    return CloudsComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx} = this;
     const {weather, season, frame} = this.scene;

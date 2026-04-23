@@ -23,7 +23,7 @@ export class Component {
    * @returns {string}
    */
   getName() {
-    return this.constructor.name;
+    throw new Error('Component does not have a name');
   }
 
   /**

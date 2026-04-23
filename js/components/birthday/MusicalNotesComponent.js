@@ -10,6 +10,11 @@ export class MusicalNotesComponent extends DrawComponent {
   /** @type {Array<Object>} */
   _notes = [];
 
+  static COMPONENT_NAME = "MusicalNotesComponent";
+  getName() {
+    return MusicalNotesComponent.COMPONENT_NAME;
+  }
+
   tick() {
     this._notes = this._notes.filter(n => {
       n.x += n.vx;

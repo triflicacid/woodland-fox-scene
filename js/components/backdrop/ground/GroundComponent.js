@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render the ground
  */
 export class GroundComponent extends DrawComponent {
+  static COMPONENT_NAME = "GroundComponent";
+  getName() {
+    return GroundComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx, W, H} = this;
     const {season} = this.scene;

@@ -5,6 +5,11 @@ import {clamp} from "@/utils";
  * render the stars in the night sky on a clear day
  */
 export class StarsComponent extends DrawComponent {
+  static COMPONENT_NAME = "StarsComponent";
+  getName() {
+    return StarsComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {weather} = this.scene;
     return this.scene.isNight() && (weather === 'clear' || weather === 'wind');

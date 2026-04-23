@@ -5,6 +5,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render assorted puddles when raining
  */
 export class PuddlesComponent extends DrawComponent {
+  static COMPONENT_NAME = "PuddlesComponent";
+  getName() {
+    return PuddlesComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx} = this;
     const {weather, todBlend, puddles} = this.scene;

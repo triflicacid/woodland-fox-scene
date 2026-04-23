@@ -10,6 +10,11 @@ export class BunnyComponent extends DrawComponent {
   /** @type {MusicalNotesComponent} */
   _notes;
 
+  static COMPONENT_NAME = "BunnyComponent";
+  getName() {
+    return BunnyComponent.COMPONENT_NAME;
+  }
+
   /**
    * @param {EventBus} eventBus
    * @param {SceneState} scene

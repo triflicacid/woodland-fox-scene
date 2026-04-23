@@ -376,6 +376,11 @@ export class BackgroundTreesComponent extends TreesComponent {
   constructor(eventBus, scene, ctx) {
     super(eventBus, scene, ctx, false);
   }
+
+  static COMPONENT_NAME = "BackgroundTreesComponent";
+  getName() {
+    return BackgroundTreesComponent.COMPONENT_NAME;
+  }
 }
 
 /**
@@ -389,5 +394,10 @@ export class ForegroundTreesComponent extends TreesComponent {
    */
   constructor(eventBus, scene, ctx) {
     super(eventBus, scene, ctx, true);
+  }
+
+  static COMPONENT_NAME = "ForegroundTreesComponent";
+  getName() {
+    return ForegroundTreesComponent.COMPONENT_NAME;
   }
 }

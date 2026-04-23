@@ -9,6 +9,11 @@ export class WindComponent extends DrawComponent {
   /** @type{Array<Object>} */
   windDebris;
 
+  static COMPONENT_NAME = "WindComponent";
+  getName() {
+    return WindComponent.COMPONENT_NAME;
+  }
+
   /**
    * create a new wind-debris particle.
    * @returns {Object}

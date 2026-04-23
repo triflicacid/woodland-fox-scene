@@ -36,6 +36,11 @@ export class EasterEggsComponent extends DrawComponent {
   /** @type {Array<Object>} */
   _eggs = [];
 
+  static COMPONENT_NAME = "EasterEggsComponent";
+  getName() {
+    return EasterEggsComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this._eggs = CLUSTERS.flatMap(([cx, cyF, count]) =>
         Array.from({length: count}, () => {

@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render scarecrows during Halloween
  */
 export class ScarecrowComponent extends DrawComponent {
+  static COMPONENT_NAME = "ScarecrowComponent";
+  getName() {
+    return ScarecrowComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.specialEvent === 'halloween';
   }

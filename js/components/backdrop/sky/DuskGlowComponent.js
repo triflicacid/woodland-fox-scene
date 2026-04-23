@@ -5,6 +5,11 @@ import {clamp} from "@/utils";
  * render the dawn/duck glow in tod transition
  */
 export class DuskGlowComponent extends DrawComponent {
+  static COMPONENT_NAME = "DuskGlowComponent";
+  getName() {
+    return DuskGlowComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const t = this.scene.todBlend;
     return t > 0.1 && t < 0.9;

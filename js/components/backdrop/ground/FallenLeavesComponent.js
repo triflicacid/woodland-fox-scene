@@ -8,6 +8,11 @@ export class FallenLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   leaves;
 
+  static COMPONENT_NAME = "FallenLeavesComponent";
+  getName() {
+    return FallenLeavesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     const {W, H} = this;
     this.leaves = Array.from({length: 80}, () => ({

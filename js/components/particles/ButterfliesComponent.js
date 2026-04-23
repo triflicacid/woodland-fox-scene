@@ -9,6 +9,11 @@ export class ButterfliesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   butterflies;
 
+  static COMPONENT_NAME = "ButterfliesComponent";
+  getName() {
+    return ButterfliesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this._generateButterflies();
 

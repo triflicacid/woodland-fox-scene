@@ -30,6 +30,11 @@ export class ChicksComponent extends DrawComponent {
   _peckers = [];
   forced = false;
 
+  static COMPONENT_NAME = "ChicksComponent";
+  getName() {
+    return ChicksComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.forced || this.scene.specialEvent === 'easter';
   }

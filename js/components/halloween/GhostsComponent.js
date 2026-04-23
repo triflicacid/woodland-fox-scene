@@ -9,6 +9,11 @@ export class GhostsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   ghosts;
 
+  static COMPONENT_NAME = "GhostsComponent";
+  getName() {
+    return GhostsComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._onWeatherChange.bind(this)));
 

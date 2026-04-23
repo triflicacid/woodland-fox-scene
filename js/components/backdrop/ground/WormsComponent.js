@@ -9,6 +9,11 @@ export class WormsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   _worms = [];
 
+  static COMPONENT_NAME = "WormsComponent";
+  getName() {
+    return WormsComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), this._generateWorms.bind(this)));
     this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), this._generateWorms.bind(this)));

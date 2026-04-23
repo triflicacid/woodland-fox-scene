@@ -8,6 +8,11 @@ export class BatsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   bats;
 
+  static COMPONENT_NAME = "BatsComponent";
+  getName() {
+    return BatsComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.bats = Array.from({length: 6}, () => ({
       x: rnd(this.W),

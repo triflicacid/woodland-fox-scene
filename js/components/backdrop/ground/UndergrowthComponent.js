@@ -4,6 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render undergrowth
  */
 export class UndergrowthComponent extends DrawComponent {
+  static COMPONENT_NAME = "UndergrowthComponent";
+  getName() {
+    return UndergrowthComponent.COMPONENT_NAME;
+  }
+
   draw() {
     const {ctx, H} = this;
     const {fox, season, weather, frame} = this.scene;

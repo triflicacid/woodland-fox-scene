@@ -25,6 +25,11 @@ const BIRTHDAY_PRESENTS = [
  * draws wrapped presents on the ground for christmas or birthday events.
  */
 export class PresentsComponent extends DrawComponent {
+  static COMPONENT_NAME = "PresentsComponent";
+  getName() {
+    return PresentsComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {specialEvent} = this.scene;
     return specialEvent === 'christmas' || specialEvent === 'birthday';

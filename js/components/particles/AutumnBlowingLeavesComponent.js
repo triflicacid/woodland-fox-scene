@@ -8,6 +8,11 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
   /** @type{Array<Object>} */
   leaves;
 
+  static COMPONENT_NAME = "AutumnBlowingLeavesComponent";
+  getName() {
+    return AutumnBlowingLeavesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     this.leaves = Array.from({length: 30}, () => this._makeCanopyLeaf());
   }
