@@ -33,7 +33,7 @@ import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
 import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 import {EventListenerComponent} from "@/components/EventListenerComponent";
-import {requireNonNull} from "@/utils";
+import {hideElement, requireNonNull} from "@/utils";
 import {Subscriptions} from "@/core/Subscriptions";
 import {BalloonsComponent} from "@/components/birthday/BalloonsComponent";
 import {BuntingComponent} from "@/components/birthday/BuntingComponent";
@@ -242,8 +242,9 @@ export class Scene {
     MOON_PHASES.forEach((_, i) => {
       const btn = document.getElementById(`btn-phase-${i}`);
       btn.classList.toggle('btn-active', state.moonPhase === i);
-      btn.disabled = state.timeOfDay !== 'night';
     });
+    // hide all moon buttons as there are a lot
+    hideElement(document.getElementById('moon-buttons'), state.timeOfDay !== 'night');
 
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
