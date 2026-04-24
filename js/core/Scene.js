@@ -518,7 +518,7 @@ export class Scene {
     document.getElementById('btn-eclipse')?.addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'eclipse' ? null : 'eclipse';
-      this.eventBus.dispatch(Events.seasonChange('Scene', old, state));
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       state.savePref();
       if (state.specialEvent === 'eclipse') {
         this.eventBus.dispatch(Events.statusText('Scene', 'The sky darkens as the moon devours the sun...'));

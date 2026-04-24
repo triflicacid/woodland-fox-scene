@@ -1,6 +1,7 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {prob, rnd, rndf} from '@/utils';
-import {drawMonster, MONSTER_TYPES, randomMonsterForm} from "@/components/eclipse/drawMonsters";
+import {drawMonster, MONSTER_TYPES, randomMonster, randomMonsterForm} from "@/components/eclipse/drawMonsters";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * drifting background monster silhouettes during solar eclipse
@@ -19,16 +20,33 @@ export class EclipseSilhouettesComponent extends DrawComponent {
   }
 
   initialise() {
-    this._silhouettes = MONSTER_TYPES.map((type, i) => ({
-      x: 60 + i * 110 + rndf(30),
-      y: this.H * 0.15 + rnd(this.H * 0.3),
-      vx: (0.15 + rnd(0.15)) * (prob(0.5) ? 1 : -1),
-      type,
-      form: randomMonsterForm(type),
-      phase: rnd(Math.PI * 2),
-      scale: 0.5 + rnd(0.3),
-      alpha: 0.5 + rnd(0.25),
+    // regenerate silhouettes when entering the eclipse
+    this.eventBus.subscribe(Subscriptions.onSpecialEventChange(this.getName(), update => {
+      if (update.previous === null && update.updated === 'eclipse') {
+        this._generateSilhouettes();
+      }
     }));
+    // but also ensure we have some generate if needed now
+    if (this.isEnabled()) {
+      this._generateSilhouettes();
+    }
+  }
+
+  _generateSilhouettes() {
+    const length = 5 + Math.floor(rnd(6));
+    this._silhouettes = Array.from({length}, (_, i) => {
+      const type = randomMonster();
+      return {
+        x: 60 + i * 110 + rndf(30),
+        y: this.H * 0.15 + rnd(this.H * 0.3),
+        vx: (0.15 + rnd(0.15)) * (prob(0.5) ? 1 : -1),
+        type,
+        form: randomMonsterForm(type),
+        phase: rnd(Math.PI * 2),
+        scale: 0.5 + rnd(0.3),
+        alpha: 0.5 + rnd(0.25),
+      };
+    });
   }
 
   tick() {
