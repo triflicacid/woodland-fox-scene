@@ -16,7 +16,7 @@ export class Subscriptions {
    */
   static onSceneStateMutation(subscriber, onChange) {
     // payload is a ValueChange
-    return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => update instanceof SceneState && onChange(update.state));
+    return new Subscription(Subscription.CAPTURE_ALL, subscriber, update => update instanceof ValueChange && onChange(update.state));
   }
 
   /**
