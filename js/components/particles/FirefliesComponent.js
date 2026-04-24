@@ -6,8 +6,8 @@ import {Subscriptions} from "@/core/Subscriptions";
  * render fireflies during nighttime
  */
 export class FirefliesComponent extends DrawComponent {
-  _min = 8;
-  _max = 48;
+  _min = 18;
+  _max = 64;
   /** @type{Array<Object>} */
   fireflies = [];
 
