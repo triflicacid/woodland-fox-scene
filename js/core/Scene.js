@@ -81,6 +81,8 @@ export class Scene {
     this._handle = undefined;
     // also store playing flag
     this._active = false;
+    /** @type{string | null} */
+    this._activeTab = null;
 
     // store the event bus for this scene
     this.eventBus = new EventBus();
@@ -164,6 +166,7 @@ export class Scene {
    */
   initialise() {
     Events.registerAll(this.eventBus);
+    this._initTabs();
     this._setupCanvasEvents();
     this._refreshUI();
     this._components.initialise(this.state);
@@ -229,6 +232,36 @@ export class Scene {
   }
 
   /**
+   * initialise tab switching and restore last active tab.
+   */
+  _initTabs() {
+    const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
+    const saved = localStorage.getItem('activeTab') ?? 'world';
+
+    tabs.forEach(tab => {
+      document.getElementById(`tab-${tab}`)?.addEventListener('click', () => {
+        this._setActiveTab(tab);
+      });
+    });
+
+    this._setActiveTab(saved);
+  }
+
+  /**
+   * switch to the given tab and persist the choice.
+   * @param {string} tab
+   */
+  _setActiveTab(tab) {
+    const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
+    tabs.forEach(t => {
+      document.getElementById(`tab-${t}`)?.classList.toggle('btn-active', t === tab);
+      document.getElementById(`tab-panel-${t}`)?.classList.toggle('tab-active', t === tab);
+    });
+    localStorage.setItem('activeTab', tab);
+    this._activeTab = tab;
+  }
+
+  /**
    * refresh active-state classes and disabled flags on all buttons.
    */
   _refreshUI() {
@@ -253,8 +286,8 @@ export class Scene {
     halloweenBtn.classList.toggle('btn-active', state.specialEvent === 'halloween');
 
     const christmasBtn = document.getElementById('btn-christmas');
-      christmasBtn.disabled = state.season !== 'winter';
-      christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
+    christmasBtn.disabled = state.season !== 'winter';
+    christmasBtn.classList.toggle('btn-active', state.specialEvent === 'christmas');
 
     const bonfireBtn = document.getElementById('btn-bonfire');
     bonfireBtn.disabled = state.season !== 'autumn' || state.timeOfDay !== 'night';
@@ -300,6 +333,8 @@ export class Scene {
     const eclipseBtn = document.getElementById('btn-eclipse');
     eclipseBtn.disabled = state.timeOfDay === 'night' || (state.specialEvent !== null && state.specialEvent !== 'eclipse');
     eclipseBtn.classList.toggle('btn-active', state.specialEvent === 'eclipse');
+
+    this._updateTabSummaries();
   }
 
   /**
@@ -440,7 +475,7 @@ export class Scene {
     // animal / reaction summon buttons
     document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon());
     document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon());
-    document.getElementById('btn-owl')?.addEventListener('click', function() {
+    document.getElementById('btn-owl')?.addEventListener('click', function () {
       state.owlForced = !state.owlForced;
       this.classList.toggle('btn-active');
     });
@@ -527,6 +562,60 @@ export class Scene {
         this.eventBus.dispatch(Events.statusText('Scene', 'The sky darkens as the moon devours the sun...'));
       }
       this._refreshUI();
+    });
+  }
+
+  /**
+   * update the summary indicator shown on each inactive tab button.
+   */
+  _updateTabSummaries() {
+    const {state} = this;
+
+    const seasonEmoji = {spring: '🌸', summer: '🌿', autumn: '🍂', winter: '❄️'};
+    const todEmoji = {day: '☀️', night: '🌙'};
+    const weatherEmoji = {clear: '✨', rain: '🌧', wind: '🍃', fog: '🌫', snow: '🌨', storm: '⛈'};
+    const moonEmoji = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+
+    const worldSummary = [
+      seasonEmoji[state.season],
+      todEmoji[state.timeOfDay],
+      state.timeOfDay === 'night' ? moonEmoji[state.moonPhase] : '',
+    ].filter(Boolean).join(' ');
+
+    const weatherSummary = [
+      weatherEmoji[state.weather] ?? '',
+      this._aurora.on ? '✦' : '',
+      state.stargazing ? '🔭' : '',
+    ].filter(Boolean).join(' ');
+
+    const eventEmoji = {
+      halloween: '🎃', christmas: '🎄', bonfire: '🎆',
+      birthday: '🎂', easter: '🐣', eclipse: '🌑',
+    };
+    const eventsSummary = state.specialEvent ? (eventEmoji[state.specialEvent] ?? '') : '';
+
+    const summaries = {
+      world: worldSummary,
+      weather: weatherSummary,
+      events: eventsSummary,
+      animals: '',
+      fox: '',
+    };
+
+    const labels = {
+      world: '🌍 World',
+      weather: '🌦 Weather',
+      events: '🎉 Events',
+      animals: '🐾 Animals',
+      fox: '🦊 Fox',
+    };
+
+    Object.entries(summaries).forEach(([tab, summary]) => {
+      const btn = document.getElementById(`tab-${tab}`);
+      if (!btn) return;
+      btn.textContent = summary
+          ? `${labels[tab]}  ${summary}`
+          : labels[tab];
     });
   }
 }

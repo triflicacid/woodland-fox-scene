@@ -289,3 +289,19 @@ button:disabled {
     text-align: center;
     margin-top: 2px;
 }
+
+#tab-content {
+    width: 740px;
+    min-height: 38px;
+}
+
+.tab-panel {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.tab-panel.tab-active {
+    display: flex;
+}

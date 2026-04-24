@@ -17,57 +17,83 @@
         <button id="btn-wander" class="btn-main">🐾 Wander</button>
         <button id="btn-bunny" class="btn-main">🐇 Visitor</button>
     </div>
-    <div class="btn-row">
-        <button id="btn-spring">🌸 Spring</button>
-        <button id="btn-summer">🌿 Summer</button>
-        <button id="btn-autumn">🍂 Autumn</button>
-        <button id="btn-winter">❄️ Winter</button>
-        <div class="row-sep"></div>
-        <button id="btn-day">☀️ Day</button>
-        <button id="btn-night">🌙 Night</button>
+
+    <div class="btn-row" id="tab-bar">
+        <button id="tab-world" class="tab-btn">🌍 World</button>
+        <button id="tab-weather" class="tab-btn">🌦 Weather</button>
+        <button id="tab-events" class="tab-btn">🎉 Events</button>
+        <button id="tab-animals" class="tab-btn">🐾 Animals</button>
+        <button id="tab-fox" class="tab-btn">🦊 Fox</button>
     </div>
-    <div class="btn-row" id="moon-buttons">
-        <button id="btn-phase-0" title="New">🌑</button>
-        <button id="btn-phase-1" title="Waxing Crescent">🌒</button>
-        <button id="btn-phase-2" title="First Quarter">🌓</button>
-        <button id="btn-phase-3" title="Waxing Gibbous">🌔</button>
-        <button id="btn-phase-4" title="Full">🌕</button>
-        <button id="btn-phase-5" title="Waning Gibbous">🌖</button>
-        <button id="btn-phase-6" title="Last Quarter">🌗</button>
-        <button id="btn-phase-7" title="Waning Crescent">🌘</button>
-    </div>
-    <div class="btn-row">
-        <button id="btn-clear">✨ Clear</button>
-        <button id="btn-rain">🌧 Rain</button>
-        <button id="btn-wind">🍃 Wind</button>
-        <button id="btn-fog">🌫 Fog</button>
-        <button id="btn-snow">🌨 Snow</button>
-        <button id="btn-storm">⛈ Storm</button>
-        <div class="row-sep"></div>
-        <button id="btn-aurora">✦ Aurora</button>
-        <button id="btn-stargaze">🔭 Stargaze</button>
-    </div>
-    <div class="btn-row">
-        <button id="btn-halloween">🎃 Halloween</button>
-        <button id="btn-christmas">🎄 Christmas</button>
-        <button id="btn-bonfire">🎆 Bonfire Night</button>
-        <button id="btn-birthday">🎂 Birthday</button>
-        <button id="btn-easter">🐣 Easter</button>
-        <button id="btn-eclipse">🌑 Solar Eclipse</button>
-    </div>
-    <div class="btn-row">
-        <button id="btn-deer">🦌 Deer</button>
-        <button id="btn-hog">🦔 Hedgehog</button>
-        <button id="btn-owl">🦉 Owl / Bats</button>
-        <button id="btn-guy-fawkes">🎭 Guy Fawkes</button>
-        <button id="btn-chicks">🐤 Chicks</button>
-        <button id="btn-mothron">🦋 Mothron</button>
-        <div class="row-sep"></div>
-        <button id="btn-yawn">😪 Yawn</button>
-        <button id="btn-ear">👂 Ear Twitch</button>
-        <button id="btn-grumble">😤 Grumble</button>
-        <button id="btn-eye">👁 Blink</button>
-        <button id="btn-wake-fox"></button>
+
+    <div id="tab-content">
+        <div id="tab-panel-world" class="tab-panel">
+            <div class="btn-row">
+                <button id="btn-spring">🌸 Spring</button>
+                <button id="btn-summer">🌿 Summer</button>
+                <button id="btn-autumn">🍂 Autumn</button>
+                <button id="btn-winter">❄️ Winter</button>
+                <div class="row-sep"></div>
+                <button id="btn-day">☀️ Day</button>
+                <button id="btn-night">🌙 Night</button>
+            </div>
+            <div class="btn-row" id="moon-buttons">
+                <button id="btn-phase-0" title="New Moon">🌑</button>
+                <button id="btn-phase-1" title="Waxing Crescent">🌒</button>
+                <button id="btn-phase-2" title="First Quarter">🌓</button>
+                <button id="btn-phase-3" title="Waxing Gibbous">🌔</button>
+                <button id="btn-phase-4" title="Full Moon">🌕</button>
+                <button id="btn-phase-5" title="Waning Gibbous">🌖</button>
+                <button id="btn-phase-6" title="Last Quarter">🌗</button>
+                <button id="btn-phase-7" title="Waning Crescent">🌘</button>
+            </div>
+        </div>
+
+        <div id="tab-panel-weather" class="tab-panel">
+            <div class="btn-row">
+                <button id="btn-clear">✨ Clear</button>
+                <button id="btn-rain">🌧 Rain</button>
+                <button id="btn-wind">🍃 Wind</button>
+                <button id="btn-fog">🌫 Fog</button>
+                <button id="btn-snow">🌨 Snow</button>
+                <button id="btn-storm">⛈ Storm</button>
+                <div class="row-sep"></div>
+                <button id="btn-aurora">✦ Aurora</button>
+                <button id="btn-stargaze">🔭 Stargaze</button>
+            </div>
+        </div>
+
+        <div id="tab-panel-events" class="tab-panel">
+            <div class="btn-row">
+                <button id="btn-halloween">🎃 Halloween</button>
+                <button id="btn-christmas">🎄 Christmas</button>
+                <button id="btn-bonfire">🎆 Bonfire Night</button>
+                <button id="btn-birthday">🎂 Birthday</button>
+                <button id="btn-easter">🐣 Easter</button>
+                <button id="btn-eclipse">🌑 Solar Eclipse</button>
+            </div>
+        </div>
+
+        <div id="tab-panel-animals" class="tab-panel">
+            <div class="btn-row">
+                <button id="btn-deer">🦌 Deer</button>
+                <button id="btn-hog">🦔 Hedgehog</button>
+                <button id="btn-owl">🦉 Owl / Bats</button>
+                <button id="btn-guy-fawkes">🎭 Guy Fawkes</button>
+                <button id="btn-chicks">🐤 Chicks</button>
+                <button id="btn-mothron">🦋 Mothron</button>
+            </div>
+        </div>
+
+        <div id="tab-panel-fox" class="tab-panel">
+            <div class="btn-row">
+                <button id="btn-yawn">😪 Yawn</button>
+                <button id="btn-ear">👂 Ear Twitch</button>
+                <button id="btn-grumble">😤 Grumble</button>
+                <button id="btn-eye">👁 Blink</button>
+                <button id="btn-wake-fox"></button>
+            </div>
+        </div>
     </div>
 </div>
 <div id="status">Curled up, fast asleep...</div>
