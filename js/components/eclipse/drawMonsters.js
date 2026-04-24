@@ -1,4 +1,4 @@
-import {rndchoice} from "@/utils";
+import {rnd, rndchoice} from "@/utils";
 
 export const MONSTER_TYPES = ['frankenstein', 'swampthing', 'reaper', 'butcher', 'deadlysphere', 'psycho'];
 
@@ -11,13 +11,28 @@ export function randomMonster() {
 }
 
 /**
+ * return a random form for a monster
+ * @param {string} type monster type
+ * @returns {number}
+ */
+export function randomMonsterForm(type) {
+  switch (type) {
+    case 'deadlysphere':
+      return Math.floor(rnd(3));
+    default:
+      return 0;
+  }
+}
+
+/**
  * shared monster drawing functions for eclipse components.
  * @param {CanvasRenderingContext2D} ctx
  * @param {string} type monster type, e.g., `swampthing` or `reaper`
+ * @param {number} form form of the monster
  * @param {number} frame current frame, used for animation
  * @param {boolean} silhouette render as a silhouette?
  */
-export function drawMonster(ctx, type, frame, silhouette) {
+export function drawMonster(ctx, type, frame, form, silhouette) {
   switch (type) {
     case 'frankenstein':
       drawFrankenstein(ctx, frame, silhouette);
@@ -32,7 +47,7 @@ export function drawMonster(ctx, type, frame, silhouette) {
       drawButcher(ctx, frame, silhouette);
       break;
     case 'deadlysphere':
-      drawDeadlySphere(ctx, frame, silhouette);
+      drawDeadlySphere(ctx, frame, form, silhouette);
       break;
     case 'psycho':
       drawPsycho(ctx, frame, silhouette);
@@ -47,6 +62,7 @@ export function drawMonster(ctx, type, frame, silhouette) {
  * @returns {string}
  */
 function c(col, silhouette) {
+  return silhouette ? '#5a3a7a' : col;
   return silhouette ? '#5a3a7a' : col;
 }
 
@@ -350,72 +366,129 @@ function drawButcher(ctx, frame, silhouette) {
  * draw the deadly sphere - floating spiky orb.
  * @param {CanvasRenderingContext2D} ctx
  * @param {number} frame
+ * @param {number} form form, 1-3
  * @param {boolean} silhouette
  */
-function drawDeadlySphere(ctx, frame, silhouette) {
-  const float = Math.sin(frame * 0.06) * 5;
-  const spin = frame * 0.04;
-  const r = 18;
+function drawDeadlySphere(ctx, frame, form, silhouette) {
+  const float  = Math.sin(frame * 0.06) * 5;
+  const spin   = frame * 0.03;
+  const r      = 14;
 
   ctx.save();
   ctx.translate(0, -40 + float);
 
-  // outer glow
   if (!silhouette) {
-    const glow = ctx.createRadialGradient(0, 0, r * 0.5, 0, 0, r * 2);
-    glow.addColorStop(0, 'rgba(180,20,20,0.3)');
-    glow.addColorStop(1, 'rgba(180,20,20,0)');
+    // outer glow colour varies by form
+    const glowCol = form === 0 ? 'rgba(255,120,20,'
+        : form === 1 ? 'rgba(40,160,255,'
+            : 'rgba(255,220,80,';
+    const glow = ctx.createRadialGradient(0, 0, r * 0.4, 0, 0, r * 2.2);
+    glow.addColorStop(0,   `${glowCol}0.3)`);
+    glow.addColorStop(1,   `${glowCol}0)`);
     ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(0, 0, r * 2, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, r * 2.2, 0, Math.PI * 2); ctx.fill();
   }
 
-  // spikes
-  const spikeCount = 10;
-  ctx.strokeStyle = c('#8a1010', silhouette);
-  ctx.lineWidth = 2.5;
-  ctx.lineCap = 'round';
-  for (let i = 0; i < spikeCount; i++) {
-    const a = spin + (i / spikeCount) * Math.PI * 2;
-    const pulsedR = r + Math.sin(frame * 0.08 + i) * 3;
+  ctx.save();
+  ctx.rotate(spin);
+
+  if (form === 0) {
+    // -- form 1: two curved blade wings, orange core --
+    ctx.strokeStyle = silhouette ? '#1a0a2a' : '#808898';
+    ctx.lineWidth   = 3.5;
+    ctx.lineCap     = 'round';
+    // left wing - curved blade
     ctx.beginPath();
-    ctx.moveTo(Math.cos(a) * r * 0.8, Math.sin(a) * r * 0.8);
-    ctx.lineTo(Math.cos(a) * (pulsedR + 8), Math.sin(a) * (pulsedR + 8));
+    ctx.moveTo(-r * 0.3,  -r * 0.8);
+    ctx.bezierCurveTo(-r * 1.4, -r * 0.6, -r * 1.4, r * 0.6, -r * 0.3, r * 0.8);
     ctx.stroke();
-  }
+    // right wing
+    ctx.beginPath();
+    ctx.moveTo(r * 0.3,  -r * 0.8);
+    ctx.bezierCurveTo(r * 1.4, -r * 0.6, r * 1.4, r * 0.6, r * 0.3, r * 0.8);
+    ctx.stroke();
+    // blade tips
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = silhouette ? '#1a0a2a' : '#a0a8b8';
+    ctx.beginPath(); ctx.moveTo(-r * 0.3, -r * 0.8); ctx.lineTo(-r * 0.6, -r * 1.2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-r * 0.3,  r * 0.8); ctx.lineTo(-r * 0.6,  r * 1.2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo( r * 0.3, -r * 0.8); ctx.lineTo( r * 0.6, -r * 1.2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo( r * 0.3,  r * 0.8); ctx.lineTo( r * 0.6,  r * 1.2); ctx.stroke();
 
-  // main orb
-  const orbGrad = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 0, 0, 0, r);
-  if (silhouette) {
-    ctx.fillStyle = '#0a0a14';
+  } else if (form === 1) {
+    // -- form 2: four diagonal spikes, cyan core --
+    ctx.strokeStyle = silhouette ? '#1a0a2a' : '#7090b0';
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * r * 0.6, Math.sin(a) * r * 0.6);
+      ctx.lineTo(Math.cos(a) * r * 1.8, Math.sin(a) * r * 1.8);
+      ctx.stroke();
+    }
+    // small crossbars on spikes
+    ctx.lineWidth = 1.2;
+    for (let i = 0; i < 4; i++) {
+      const a  = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      const px = Math.cos(a) * r * 1.3;
+      const py = Math.sin(a) * r * 1.3;
+      const nx = -Math.sin(a) * 4;
+      const ny =  Math.cos(a) * 4;
+      ctx.beginPath();
+      ctx.moveTo(px - nx, py - ny);
+      ctx.lineTo(px + nx, py + ny);
+      ctx.stroke();
+    }
+
   } else {
-    orbGrad.addColorStop(0, '#ff4040');
-    orbGrad.addColorStop(0.5, '#aa1010');
-    orbGrad.addColorStop(1, '#500808');
-    ctx.fillStyle = orbGrad;
+    // -- form 3: starburst many thin spikes --
+    const spikeCount = 12;
+    ctx.strokeStyle = silhouette ? '#1a0a2a' : '#c0c060';
+    ctx.lineWidth   = 1.2;
+    ctx.lineCap     = 'round';
+    for (let i = 0; i < spikeCount; i++) {
+      const a    = (i / spikeCount) * Math.PI * 2;
+      const len  = i % 2 === 0 ? r * 1.6 : r * 1.1; // alternating long/short
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * r * 0.5, Math.sin(a) * r * 0.5);
+      ctx.lineTo(Math.cos(a) * len,     Math.sin(a) * len);
+      ctx.stroke();
+    }
   }
-  ctx.beginPath();
-  ctx.arc(0, 0, r, 0, Math.PI * 2);
-  ctx.fill();
 
-  // eye
+  ctx.restore(); // spin
+
+  // dark sphere body
   if (!silhouette) {
-    ctx.fillStyle = '#ff8020';
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#ff4000';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 8, 10, spin, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#0a0000';
-    ctx.shadowBlur = 0;
-    ctx.beginPath();
-    ctx.ellipse(0, 0, 3, 8, spin, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.beginPath();
-    ctx.arc(-2, -3, 2, 0, Math.PI * 2);
-    ctx.fill();
+    const bodyGrad = ctx.createRadialGradient(-r * 0.2, -r * 0.2, 0, 0, 0, r);
+    bodyGrad.addColorStop(0,   '#484858');
+    bodyGrad.addColorStop(0.5, '#282838');
+    bodyGrad.addColorStop(1,   '#101018');
+    ctx.fillStyle = bodyGrad;
+  } else {
+    ctx.fillStyle = '#1a0a2a';
+  }
+  ctx.beginPath(); ctx.arc(0, 0, r * 0.7, 0, Math.PI * 2); ctx.fill();
+
+  // glowing core - colour by form
+  if (!silhouette) {
+    const coreCol = form === 0 ? ['#ff8020', '#ff4000', '#200800']
+        : form === 1 ? ['#80e0ff', '#20a0e0', '#002040']
+            : ['#ffee80', '#ffc000', '#201000'];
+    const coreGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 0.42);
+    coreGrad.addColorStop(0,   coreCol[0]);
+    coreGrad.addColorStop(0.5, coreCol[1]);
+    coreGrad.addColorStop(1,   coreCol[2]);
+    ctx.shadowBlur  = 8;
+    ctx.shadowColor = coreCol[1];
+    ctx.fillStyle   = coreGrad;
+    ctx.beginPath(); ctx.arc(0, 0, r * 0.42, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur  = 0;
+
+    // core highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.beginPath(); ctx.arc(-r * 0.1, -r * 0.15, r * 0.1, 0, Math.PI * 2); ctx.fill();
   }
 
   ctx.restore();

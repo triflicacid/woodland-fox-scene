@@ -1,6 +1,6 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {prob, rnd, rndf} from '@/utils';
-import {drawMonster, MONSTER_TYPES} from "@/components/eclipse/drawMonsters";
+import {drawMonster, MONSTER_TYPES, randomMonsterForm} from "@/components/eclipse/drawMonsters";
 
 /**
  * drifting background monster silhouettes during solar eclipse
@@ -24,6 +24,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
       y: this.H * 0.15 + rnd(this.H * 0.3),
       vx: (0.15 + rnd(0.15)) * (prob(0.5) ? 1 : -1),
       type,
+      form: randomMonsterForm(type),
       phase: rnd(Math.PI * 2),
       scale: 0.5 + rnd(0.3),
       alpha: 0.5 + rnd(0.25),
@@ -49,7 +50,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
       ctx.globalAlpha = s.alpha;
       ctx.shadowBlur = 12;
       ctx.shadowColor = '#6a2a9a';
-      drawMonster(ctx, s.type, frame + s.phase, true);
+      drawMonster(ctx, s.type, frame + s.phase, s.form, true);
       ctx.restore();
     });
   }

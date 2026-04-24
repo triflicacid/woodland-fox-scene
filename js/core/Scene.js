@@ -135,7 +135,7 @@ export class Scene {
 
       new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
-      new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._eclipseMonsters = new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
       this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),

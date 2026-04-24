@@ -1,6 +1,6 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {prob, rnd} from '@/utils';
-import {drawMonster, randomMonster} from "@/components/eclipse/drawMonsters";
+import {drawMonster, randomMonster, randomMonsterForm} from "@/components/eclipse/drawMonsters";
 import {PROBABILITY} from "@/config";
 
 /**
@@ -22,19 +22,11 @@ export class EclipseMonstersComponent extends DrawComponent {
   }
 
   tick() {
-    const {W, H} = this;
+    const {W} = this;
     this._spawnCooldown--;
 
     if (this._spawnCooldown <= 0 && prob(PROBABILITY.ECLIPSE.MONSTER_SPAWN)) {
-      const fromRight = prob(0.5);
-      this._monsters.push({
-        x: fromRight ? W + 60 : -60,
-        y: H * 0.62,
-        vx: fromRight ? -(0.6 + rnd(0.5)) : (0.6 + rnd(0.5)),
-        type: randomMonster(),
-        phase: rnd(Math.PI * 2),
-        scale: 0.9 + rnd(0.4),
-      });
+      this.summon(randomMonster());
       this._spawnCooldown = 100 + Math.floor(rnd(150));
     }
 
@@ -54,8 +46,26 @@ export class EclipseMonstersComponent extends DrawComponent {
           ctx.save();
           ctx.translate(m.x, m.y);
           ctx.scale(m.scale * (m.vx < 0 ? -1 : 1), m.scale);
-          drawMonster(ctx, m.type, frame + m.phase, false);
+          drawMonster(ctx, m.type, frame + m.phase, m.form, false);
           ctx.restore();
         });
+  }
+
+  /**
+   * summon a monster of the given type
+   * @type {string} type
+   * @type {number | undefined} form
+   */
+  summon(type, form=undefined) {
+    const fromRight = prob(0.5);
+    this._monsters.push({
+      x: fromRight ? this.W + 60 : -60,
+      y: this.H * 0.62,
+      vx: fromRight ? -(0.6 + rnd(0.5)) : (0.6 + rnd(0.5)),
+      type,
+      form: form !== undefined ? form : randomMonsterForm(type),
+      phase: rnd(Math.PI * 2),
+      scale: 0.9 + rnd(0.4),
+    });
   }
 }
