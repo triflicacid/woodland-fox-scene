@@ -6,10 +6,13 @@ import {Subscriptions} from "@/core/Subscriptions";
  * render fireflies during nighttime
  */
 export class FirefliesComponent extends DrawComponent {
+  _min = 8;
+  _max = 48;
   /** @type{Array<Object>} */
   fireflies = [];
 
   static COMPONENT_NAME = "FirefliesComponent";
+
   getName() {
     return FirefliesComponent.COMPONENT_NAME;
   }
@@ -31,9 +34,8 @@ export class FirefliesComponent extends DrawComponent {
     if (this.scene.specialEvent === 'bonfire') return; // reasoning: too loud
 
     const {W, H} = this;
-    const max = 48, min = 8;
     const t = Math.abs(this.scene.moonPhase - 4) / 4; // 0 at full, 1 at new
-    const length = Math.round(min + (max - min) * t * t);
+    const length = Math.round(this._min + (this._max - this._min) * t * t);
 
     this.fireflies = Array.from({length}, () => ({
       x: 80 + rnd(W - 160),
@@ -56,8 +58,32 @@ export class FirefliesComponent extends DrawComponent {
       f.angle += (Math.random() - 0.5) * 0.08;
       f.x += Math.cos(f.angle) * f.speed;
       f.y += Math.sin(f.angle) * f.speed * 0.5;
-      f.x = clamp(f.x, 60, W - 60);
-      f.y = clamp(f.y, H * 0.3, H * 0.65);
+
+      // bounce off edges by reflecting the angle rather than clamping position
+      const minX = 60, maxX = W - 60;
+      const minY = H * 0.3, maxY = H * 0.65;
+
+      if (f.x < minX) {
+        f.x = minX;
+        f.angle = Math.PI - f.angle;
+      }
+      if (f.x > maxX) {
+        f.x = maxX;
+        f.angle = Math.PI - f.angle;
+      }
+      if (f.y < minY) {
+        f.y = minY;
+        f.angle = -f.angle;
+      }
+      if (f.y > maxY) {
+        f.y = maxY;
+        f.angle = -f.angle;
+      }
+
+      // nudge after bounce to prevent resonance
+      if (f.x < minX || f.x > maxX || f.y < minY || f.y > maxY) {
+        f.angle += (Math.random() - 0.5) * 0.3;
+      }
     });
   }
 
