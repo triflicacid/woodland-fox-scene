@@ -134,7 +134,7 @@ export class Scene {
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new CampingTableComponent(this.eventBus, this.state, this.ctx, W, H),
-      new LaptopComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._laptop = new LaptopComponent(this.eventBus, this.state, this.ctx, W, H),
       new FoldingStoolComponent(this.eventBus, this.state, this.ctx, W, H),
       new TelescopeComponent(this.eventBus, this.state, this.ctx, W, H),
       this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -303,6 +303,12 @@ export class Scene {
           this._birds.spawnStartledBird(tr);
         }
       });
+
+      // click on laptop to cycle screen mode
+      if (this._laptop.isEnabled() && this._laptop.containsPoint(cx, cy)) {
+        this._laptop.cycleScreenMode();
+        return;
+      }
     });
 
     // main wake button

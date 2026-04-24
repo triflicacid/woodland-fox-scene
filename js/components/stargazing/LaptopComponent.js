@@ -10,8 +10,14 @@ export class LaptopComponent extends DrawComponent {
   _offsetX = 210;
   _offsetY = 30;
   _scale = 1.1;
+  // half-width of the laptop
+  _laptopW = 28;
+  // screen height of the laptop
+  _laptopH = 26;
+  // keyboard height
+  _laptopKH = 6;
 
-  /** @type {'starfield' | 'app' | 'telescope_feed' | 'orrery' | 'spectrograph' | 'light_curve' | 'chat' | 'research_paper' | 'off'} */
+  _modes = ['off', 'starfield', 'app', 'telescope_feed', 'orrery', 'spectrograph', 'light_curve', 'chat', 'research_paper'];
   _mode = 'spectrograph';
 
   static COMPONENT_NAME = 'LaptopComponent';
@@ -22,6 +28,11 @@ export class LaptopComponent extends DrawComponent {
 
   isEnabled() {
     return this.scene.stargazing;
+  }
+
+  cycleScreenMode() {
+    const idx = this._modes.indexOf(this._mode);
+    this._mode  = this._modes[(idx + 1) % this._modes.length];
   }
 
   draw() {
@@ -44,9 +55,9 @@ export class LaptopComponent extends DrawComponent {
 
   _drawLaptop() {
     const {ctx} = this;
-    const lw = 28;  // half-width
-    const kh = 6;   // keyboard depth (visible from above)
-    const sh = 26;  // screen height
+    const lw = this._laptopW;
+    const kh = this._laptopKH;
+    const sh = this._laptopH;
 
     // -- keyboard base (seen from slight above) --------------------------
     // top face of base - trapezoid giving depth illusion
@@ -1107,5 +1118,47 @@ export class LaptopComponent extends DrawComponent {
     ctx.beginPath();
     ctx.arc(x, y - 15, 40, 0, Math.PI * 2);
     ctx.fill();
+  }
+
+  /**
+   * return true if the given canvas coordinates are inside the laptop body.
+   * tests against the combined bounding trapezoid of keyboard + screen.
+   * @param {number} cx - canvas x
+   * @param {number} cy - canvas y
+   * @returns {boolean}
+   */
+  containsPoint(cx, cy) {
+    const {fox} = this.scene;
+    // translate into laptop-local space
+    const lx = (cx - (fox.x + this._offsetX)) / this._scale;
+    const ly = (cy - (fox.y + this._offsetY)) / this._scale;
+
+    const lw = this._laptopW;
+    const kh = this._laptopKH;
+    const sh = this._laptopH;
+    const tilt = 3;
+
+    // keyboard trapezoid: y in [0, kh] (drawn upward so [-kh, 0] in local)
+    // screen parallelogram: y in [kh, kh+sh] ([-kh-sh, -kh] in local)
+    // combined bounding box with a little padding
+    const top = -(kh + sh) - 2;
+    const bottom = 2;
+    const left = -lw - 2;
+    const right = lw + tilt + 2;
+
+    if (lx < left || lx > right || ly < top || ly > bottom) return false;
+
+    // more precise: above keyboard check if within the leaning screen parallelogram
+    if (ly < -kh) {
+      // inside screen parallelogram - left edge leans right as y decreases
+      const leanAtY = tilt * (-ly - kh) / sh;
+      const screenLeft = -lw + 3 + leanAtY;
+      const screenRight = lw - 3 + leanAtY;
+      return lx >= screenLeft && lx <= screenRight;
+    }
+
+    // inside keyboard trapezoid
+    const taper = 3 * (-ly / kh); // trapezoid narrows toward top
+    return lx >= -lw + taper && lx <= lw - taper;
   }
 }
