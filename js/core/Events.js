@@ -16,10 +16,7 @@ export class Events {
   static EVENT_STATUS_TEXT = 'StatusText';
   static EVENT_SPECIAL_EVENT = 'SpecialEvent';
   static EVENT_MOTHRON_DIVE = 'MothronDive';
-  /**
-   * used for bunny/fox only
-   * @deprecated
-   */
+  // main buttons are the buttons not in a tab
   static EVENT_MAIN_BUTTONS = 'MainButtons';
 
   /**

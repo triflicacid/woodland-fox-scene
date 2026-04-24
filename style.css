@@ -289,3 +289,28 @@ button:disabled {
     text-align: center;
     margin-top: 2px;
 }
+
+#tab-content {
+    width: 60vw;
+    min-height: 38px;
+    border-top: 1px solid #fff2;
+    margin-top: 2px;
+    padding-top: 6px;
+}
+
+#tab-content:empty,
+#tab-content:not(:has(.tab-active)) {
+    border-top: none;
+    padding-top: 0;
+}
+
+.tab-panel {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.tab-panel.tab-active {
+    display: flex;
+}
