@@ -8,7 +8,6 @@ Things desired to work on/that should be done.
 
 ## Tweaks
 
-- Add colours to un-coloured buttons
 - Tidy-up main page so buttons are less cluttered
 
 ## Tech Debt
