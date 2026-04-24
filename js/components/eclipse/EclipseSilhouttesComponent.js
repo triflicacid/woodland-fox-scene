@@ -26,7 +26,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
       type,
       phase: rnd(Math.PI * 2),
       scale: 0.5 + rnd(0.3),
-      alpha: 0.25 + rnd(0.2),
+      alpha: 0.5 + rnd(0.25),
     }));
   }
 
@@ -47,6 +47,8 @@ export class EclipseSilhouettesComponent extends DrawComponent {
       ctx.translate(s.x, s.y);
       ctx.scale(s.scale * (s.vx < 0 ? -1 : 1), s.scale);
       ctx.globalAlpha = s.alpha;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#6a2a9a';
       drawMonster(ctx, s.type, frame + s.phase, true);
       ctx.restore();
     });

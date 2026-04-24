@@ -47,7 +47,7 @@ export function drawMonster(ctx, type, frame, silhouette) {
  * @returns {string}
  */
 function c(col, silhouette) {
-  return silhouette ? '#1a0a2a' : col;
+  return silhouette ? '#5a3a7a' : col;
 }
 
 /**
