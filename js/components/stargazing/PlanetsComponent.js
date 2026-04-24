@@ -36,7 +36,7 @@ export class PlanetsComponent extends DrawComponent {
     const {ctx} = this;
     const {moonPhase} = this.scene;
     const nightAlpha = clamp(1 - this.scene.todBlend * 2.5, 0, 1);
-    const moonDim = 1 - (Math.abs(moonPhase - 4) / 4) * 0.4;
+    const moonDim = 0.15 + (Math.abs(moonPhase - 4) / 4) * 0.85;
     const baseAlpha = nightAlpha * moonDim;
 
     PLANETS.forEach(p => {

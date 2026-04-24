@@ -90,9 +90,7 @@ export class ConstellationsComponent extends DrawComponent {
     const {ctx} = this;
     const {moonPhase, frame} = this.scene;
 
-    // brightness inversely proportional to moon phase
-    // new moon (0) = full brightness, full moon (4) = dimmed
-    const moonDim = 1 - (Math.abs(moonPhase - 4) / 4) * 0.5; // 0.5 - 1.0
+    const moonDim = 0.15 + (Math.abs(moonPhase - 4) / 4) * 0.85;
     const nightAlpha = clamp(1 - this.scene.todBlend * 2.5, 0, 1);
     const baseAlpha = nightAlpha * moonDim;
 
