@@ -89,31 +89,32 @@ function c(col, silhouette) {
   return silhouette ? '#2a1040' : col;
 }
 
-
 // Frankenstein - form 0: classic green suit, form 1: shirtless
 export function drawFrankenstein(ctx, frame, silhouette, form) {
   const walk = Math.sin(frame * 0.07) * 5;
 
   // legs
+  const lfy = 14 + walk
+  const rfy = 14 - walk;
   ctx.strokeStyle = c(form === 0 ? '#2a4a20' : '#3a2a18', silhouette);
   ctx.lineWidth = 8;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-8, -8);
-  ctx.lineTo(-10, 14 + walk);
+  ctx.lineTo(-10, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(8, -8);
-  ctx.lineTo(10, 14 - walk);
+  ctx.lineTo(10, rfy);
   ctx.stroke();
 
   // boots
   ctx.fillStyle = c('#1a1008', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-10, 15, 7, 3, 0.1, 0, Math.PI * 2);
+  ctx.ellipse(-10, lfy + 1, 7, 3, 0.1, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(10, 15, 7, 3, 0.1, 0, Math.PI * 2);
+  ctx.ellipse(10, rfy + 1, 7, 3, 0.1, 0, Math.PI * 2);
   ctx.fill();
 
   // body
@@ -443,24 +444,26 @@ export function drawButcher(ctx, frame, silhouette, form) {
   const walk = Math.sin(frame * 0.09) * 5;
 
   // legs
+  const lfy = 16 + walk
+  const rfy = 16 - walk;
   ctx.strokeStyle = c('#2a1010', silhouette);
   ctx.lineWidth = 9;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-8, -6);
-  ctx.lineTo(-10, 16 + walk);
+  ctx.lineTo(-10, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(8, -6);
-  ctx.lineTo(10, 16 - walk);
+  ctx.lineTo(10, rfy);
   ctx.stroke();
   // boots
   ctx.fillStyle = c('#180a08', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-10, 17, 8, 3.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(-10, lfy + 1, 8, 3.5, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(10, 17, 8, 3.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(10, rfy + 1, 8, 3.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // large body
@@ -618,23 +621,25 @@ export function drawPsycho(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.20) * 6;
 
   // legs
+  const lfy = 16 + walk
+  const rfy = 16 - walk;
   ctx.strokeStyle = c('#102030', silhouette);
   ctx.lineWidth = 5;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-5, -4);
-  ctx.lineTo(-8, 16 + walk);
+  ctx.lineTo(-8, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(5, -4);
-  ctx.lineTo(6, 16 - walk);
+  ctx.lineTo(6, rfy);
   ctx.stroke();
   ctx.fillStyle = c('#0a1820', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-8, 17, 6, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(-8, lfy + 1, 6, 2.5, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(6, 17, 6, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(6, rfy + 1, 6, 2.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // wiry body
@@ -887,23 +892,25 @@ export function drawVampire(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.08) * 4;
 
   // legs
+  const lfy = 14 + walk
+  const rfy = 14 - walk;
   ctx.strokeStyle = c('#1a1428', silhouette);
   ctx.lineWidth = 6;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-6, -6);
-  ctx.lineTo(-8, 14 + walk);
+  ctx.lineTo(-8, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(6, -6);
-  ctx.lineTo(7, 14 - walk);
+  ctx.lineTo(7, rfy);
   ctx.stroke();
   ctx.fillStyle = c('#100c1a', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-8, 15, 6, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(-8, lfy + 1, 6, 2.5, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(7, 15, 6, 2.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(7, rfy + 1, 6, 2.5, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // flowing cape - drawn first so body overlaps
@@ -1059,23 +1066,25 @@ function drawEyezor(ctx, frame, silhouette) {
   const blink = Math.sin(frame * 0.025) > 0.9;
 
   // legs
+  const lfy = 14 + walk
+  const rfy = 14 - walk;
   ctx.strokeStyle = c('#3a2a18', silhouette);
   ctx.lineWidth = 7;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-6, -6);
-  ctx.lineTo(-9, 14 + walk);
+  ctx.lineTo(-9, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(6, -6);
-  ctx.lineTo(8, 14 - walk);
+  ctx.lineTo(8, rfy);
   ctx.stroke();
   ctx.fillStyle = c('#2a1a10', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-9, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(-9, lfy + 1, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(8, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(8, rfy + 1, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // body - tattered clothes
@@ -1223,23 +1232,25 @@ export function drawFritz(ctx, frame, silhouette) {
   ctx.rotate(hunch * 0.15); // slight forward lean
 
   // legs - shuffling
+  const lfy = 16 + walk
+  const rfy = 16 - walk;
   ctx.strokeStyle = c('#2a2030', silhouette);
   ctx.lineWidth = 6;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-5, -4);
-  ctx.lineTo(-8, 16 + walk);
+  ctx.lineTo(-8, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(5, -4);
-  ctx.lineTo(5, 16 - walk);
+  ctx.lineTo(5, rfy);
   ctx.stroke();
   ctx.fillStyle = c('#1a1020', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-8, 17, 7, 3, 0.2, 0, Math.PI * 2);
+  ctx.ellipse(-8, lfy + 1, 7, 3, 0.2, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(5, 17, 7, 3, 0.2, 0, Math.PI * 2);
+  ctx.ellipse(5, rfy + 1, 7, 3, 0.2, 0, Math.PI * 2);
   ctx.fill();
 
   // hunched body
@@ -1570,23 +1581,25 @@ function drawNailhead(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 4;
 
   // legs - dark trousers
+  const lfy = 14 + walk
+  const rfy = 14 - walk;
   ctx.strokeStyle = c('#1a1a24', silhouette);
   ctx.lineWidth = 7;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-6, -6);
-  ctx.lineTo(-8, 14 + walk);
+  ctx.lineTo(-8, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(6, -6);
-  ctx.lineTo(7, 14 - walk);
+  ctx.lineTo(7, rfy);
   ctx.stroke();
   ctx.fillStyle = c('#101018', silhouette);
   ctx.beginPath();
-  ctx.ellipse(-8, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(-8, lfy + 1, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
   ctx.beginPath();
-  ctx.ellipse(7, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.ellipse(7, rfy + 1, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
 
   // grey jacket body
@@ -1736,16 +1749,18 @@ function drawCreature(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 5;
 
   // legs/fins
+  const lfy = 14 + walk
+  const rfy = 14 - walk;
   ctx.strokeStyle = c('#1a4a28', silhouette);
   ctx.lineWidth = 8;
   ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(-7, -6);
-  ctx.lineTo(-10, 14 + walk);
+  ctx.lineTo(-10, lfy);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(7, -6);
-  ctx.lineTo(9, 14 - walk);
+  ctx.lineTo(9, rfy);
   ctx.stroke();
   // webbed feet
   ctx.fillStyle = c('#0f3018', silhouette);
