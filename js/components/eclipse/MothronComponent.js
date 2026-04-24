@@ -87,9 +87,9 @@ export class MothronComponent extends DrawComponent {
     if (!facingRight) ctx.scale(-1, 1);
 
     // upper wings
-    ctx.fillStyle = '#4a2060';
+    ctx.fillStyle = '#3a2010';
     ctx.shadowBlur = 12;
-    ctx.shadowColor = '#8040ff';
+    ctx.shadowColor = '#e07020';
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.bezierCurveTo(-15, -10 + flap * 20, -40, -5 + flap * 30, -45, 10 + flap * 15);
@@ -104,7 +104,7 @@ export class MothronComponent extends DrawComponent {
     ctx.fill();
 
     // wing patterns
-    ctx.fillStyle = 'rgba(180,80,255,0.4)';
+    ctx.fillStyle = 'rgba(200,100,20,0.5)';
     ctx.beginPath();
     ctx.ellipse(-25, 8 + flap * 15, 10, 6, 0.3, 0, Math.PI * 2);
     ctx.fill();
@@ -113,7 +113,7 @@ export class MothronComponent extends DrawComponent {
     ctx.fill();
 
     // lower wings
-    ctx.fillStyle = '#3a1850';
+    ctx.fillStyle = '#2a1808';
     ctx.beginPath();
     ctx.moveTo(0, 5);
     ctx.bezierCurveTo(-10, 15 - flap * 10, -30, 20 - flap * 15, -28, 35);
@@ -130,21 +130,21 @@ export class MothronComponent extends DrawComponent {
     ctx.shadowBlur = 0;
 
     // body
-    ctx.fillStyle = '#2a1040';
+    ctx.fillStyle = '#2a1808';
     ctx.beginPath();
     ctx.ellipse(0, 6, 5, 12, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // head
-    ctx.fillStyle = '#1a0830';
+    ctx.fillStyle = '#1a1008';
     ctx.beginPath();
     ctx.arc(0, -4, 6, 0, Math.PI * 2);
     ctx.fill();
 
     // glowing eyes
-    ctx.fillStyle = '#ff4040';
+    ctx.fillStyle   = '#ff8020';
     ctx.shadowBlur = 8;
-    ctx.shadowColor = '#ff0000';
+    ctx.shadowColor = '#e06000';
     ctx.beginPath();
     ctx.arc(-2.5, -4, 2, 0, Math.PI * 2);
     ctx.fill();
@@ -154,7 +154,7 @@ export class MothronComponent extends DrawComponent {
     ctx.shadowBlur = 0;
 
     // antennae
-    ctx.strokeStyle = '#8040a0';
+    ctx.strokeStyle = '#8a5020';
     ctx.lineWidth = 0.8;
     ctx.beginPath();
     ctx.moveTo(-2, -8);
