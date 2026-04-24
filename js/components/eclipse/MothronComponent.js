@@ -18,6 +18,7 @@ export class MothronComponent extends DrawComponent {
   _cooldown = 0;
 
   static COMPONENT_NAME = 'MothronComponent';
+
   getName() {
     return MothronComponent.COMPONENT_NAME;
   }
@@ -27,17 +28,13 @@ export class MothronComponent extends DrawComponent {
   }
 
   tick() {
-    const {W, H, fox} = this.scene;
+    const {W, fox} = this.scene;
     this._cooldown--;
     this._flapT += 0.12;
 
     if (this._phase === 'off') {
       if (this._cooldown <= 0 && prob(PROBABILITY.ECLIPSE.MOTHRON_SPAWN)) {
-        this._phase = 'flying';
-        this._x = prob(0.5) ? -80 : W + 80;
-        this._y = 40 + rnd(H * 0.3);
-        this._vx = this._x < 0 ? 2 + rnd(1.5) : -(2 + rnd(1.5));
-        this._vy = rndf(0.3);
+        this.summon();
       }
       return;
     }
@@ -47,7 +44,7 @@ export class MothronComponent extends DrawComponent {
       this._y += Math.sin(this._flapT * 0.08) * 1.2;
 
       // occasionally dive at fox
-      if (prob(0.002) && this._cooldown <= 0) {
+      if (prob(PROBABILITY.ECLIPSE.MOTHRON_DIVE) && this._cooldown <= 0) {
         this._phase = 'diving';
         this._diveTargetX = fox.x;
         this._diveTargetY = fox.y - 30;
@@ -169,5 +166,17 @@ export class MothronComponent extends DrawComponent {
     ctx.stroke();
 
     ctx.restore();
+  }
+
+  /**
+   * force-summon mothron immediately.
+   */
+  summon() {
+    if (this._phase !== 'off') return;
+    this._phase = 'flying';
+    this._x = prob(0.5) ? -80 : this.W + 80;
+    this._y = 40 + rnd(this.H * 0.3);
+    this._vx = this._x < 0 ? 2 + rnd(1.5) : -(2 + rnd(1.5));
+    this._vy = rndf(0.3);
   }
 }

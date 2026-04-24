@@ -133,11 +133,11 @@ export class Scene {
       new WindComponent(this.eventBus, this.state, this.ctx, W, H),
       new FogOverlayComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
       new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
@@ -271,6 +271,9 @@ export class Scene {
 
     const chicksBtn = document.getElementById('btn-chicks');
     chicksBtn.classList.toggle('btn-active', this._chicks.forced);
+
+    const mothronBtn = document.getElementById('btn-mothron');
+    mothronBtn.disabled = state.specialEvent !== 'eclipse';
 
     const wakeBtn = document.getElementById('btn-wake-fox');
     wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
@@ -421,7 +424,7 @@ export class Scene {
       }
       this._refreshUI();
     });
-    // stargazing toggle1
+    // stargazing toggle
     document.getElementById('btn-stargaze')?.addEventListener('click', () => {
       state.stargazing = !state.stargazing;
       state.savePref();
@@ -495,6 +498,9 @@ export class Scene {
 
     document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
       this._guyFawkes.summon();
+    });
+    document.getElementById('btn-mothron').addEventListener('click', () => {
+      this._mothron.summon();
     });
 
     document.getElementById('btn-eye').addEventListener('click', () => {
