@@ -89,9 +89,8 @@ function c(col, silhouette) {
   return silhouette ? '#2a1040' : col;
 }
 
-// ============================================================
+
 // Frankenstein - form 0: classic green suit, form 1: shirtless
-// ============================================================
 export function drawFrankenstein(ctx, frame, silhouette, form) {
   const walk = Math.sin(frame * 0.07) * 5;
 
@@ -215,9 +214,8 @@ export function drawFrankenstein(ctx, frame, silhouette, form) {
   }
 }
 
-// ============================================================
+
 // Swamp Thing
-// ============================================================
 export function drawSwampThing(ctx, frame, silhouette) {
   const sway = Math.sin(frame * 0.05) * 3;
 
@@ -349,9 +347,8 @@ export function drawSwampThing(ctx, frame, silhouette) {
   }
 }
 
-// ============================================================
+
 // Reaper - form 0: classic hood, form 1: exposed skull face
-// ============================================================
 export function drawReaper(ctx, frame, silhouette, form) {
   const float = Math.sin(frame * 0.04) * 4;
 
@@ -440,9 +437,8 @@ export function drawReaper(ctx, frame, silhouette, form) {
   ctx.restore();
 }
 
-// ============================================================
+
 // Butcher - form 0: cleaver, form 1: chainsaw
-// ============================================================
 export function drawButcher(ctx, frame, silhouette, form) {
   const walk = Math.sin(frame * 0.09) * 5;
 
@@ -615,9 +611,8 @@ export function drawButcher(ctx, frame, silhouette, form) {
   }
 }
 
-// ============================================================
+
 // Psycho
-// ============================================================
 export function drawPsycho(ctx, frame, silhouette) {
   const jerk = Math.sin(frame * 0.28) * 3;
   const walk = Math.sin(frame * 0.20) * 6;
@@ -770,9 +765,8 @@ export function drawPsycho(ctx, frame, silhouette) {
   ctx.restore();
 }
 
-// ============================================================
-// Deadly Sphere - 3 forms (as existing, keeping previous rewrite)
-// ============================================================
+
+// Deadly Sphere - 3 forms
 export function drawDeadlySphere(ctx, frame, silhouette, form) {
   const float = Math.sin(frame * 0.06) * 5;
   const spin = frame * 0.03;
@@ -887,9 +881,8 @@ export function drawDeadlySphere(ctx, frame, silhouette, form) {
   ctx.restore();
 }
 
-// ============================================================
+
 // Vampire - humanoid, cape, pale face
-// ============================================================
 export function drawVampire(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.08) * 4;
 
@@ -1060,128 +1053,119 @@ export function drawVampire(ctx, frame, silhouette) {
   }
 }
 
-// ============================================================
-// Eyezor - giant floating eyeball with legs
-// ============================================================
-export function drawEyezor(ctx, frame, silhouette) {
-  const float = Math.sin(frame * 0.05) * 3;
-  const blink = Math.sin(frame * 0.03) > 0.92; // occasional blink
+// Zombie with big eye
+function drawEyezor(ctx, frame, silhouette) {
+  const walk  = Math.sin(frame * 0.08) * 5;
+  const blink = Math.sin(frame * 0.025) > 0.9;
 
-  ctx.save();
-  ctx.translate(0, float);
-
-  // small legs dangling below
+  // legs
   ctx.strokeStyle = c('#3a2a18', silhouette);
-  ctx.lineWidth = 4;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(-8, 4);
-  ctx.lineTo(-10, 18);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(8, 4);
-  ctx.lineTo(10, 18);
-  ctx.stroke();
+  ctx.lineWidth = 7; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-6, -6);  ctx.lineTo(-9, 14 + walk);  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( 6, -6);  ctx.lineTo(  8, 14 - walk); ctx.stroke();
   ctx.fillStyle = c('#2a1a10', silhouette);
-  ctx.beginPath();
-  ctx.ellipse(-10, 19, 4, 2, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(10, 19, 4, 2, 0, 0, Math.PI * 2);
-  ctx.fill();
+  ctx.beginPath(); ctx.ellipse(-9, 15, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse( 8, 15, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
 
-  // eyeball body - large
-  const r = 22;
+  // body - tattered clothes
+  ctx.fillStyle = c('#4a3828', silhouette);
+  ctx.beginPath(); ctx.ellipse(0, -28, 13, 22, 0, 0, Math.PI * 2); ctx.fill();
+
   if (!silhouette) {
-    const eyeGrad = ctx.createRadialGradient(-r * 0.2, -r * 0.2, 0, 0, 0, r);
-    eyeGrad.addColorStop(0, '#f0e8e0');
-    eyeGrad.addColorStop(0.7, '#d8ccc0');
-    eyeGrad.addColorStop(1, '#b0a098');
-    ctx.fillStyle = eyeGrad;
-  } else {
-    ctx.fillStyle = '#1a0a2a';
+    // torn shirt detail
+    ctx.strokeStyle = '#2a1a10'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(-4, -48); ctx.lineTo(-6, -8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo( 4, -48); ctx.lineTo(  5, -8); ctx.stroke();
   }
-  ctx.beginPath();
-  ctx.arc(0, -18, r, 0, Math.PI * 2);
-  ctx.fill();
 
-  // veins
+  // arms
+  ctx.strokeStyle = c('#4a3828', silhouette);
+  ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.moveTo(-12, -38); ctx.lineTo(-24, -20); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo( 12, -38); ctx.lineTo( 24, -20); ctx.stroke();
+  ctx.fillStyle = c('#5a4838', silhouette);
+  ctx.beginPath(); ctx.arc(-24, -20, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc( 24, -20, 5, 0, Math.PI * 2); ctx.fill();
+
+  // neck stub
+  ctx.fillStyle = c('#5a4838', silhouette);
+  ctx.beginPath(); ctx.roundRect(-5, -52, 10, 8, 2); ctx.fill();
+
+  // head - small skull shape mostly consumed by the eye
+  ctx.fillStyle = c('#4a3828', silhouette);
+  ctx.beginPath(); ctx.ellipse(0, -62, 16, 14, 0, 0, Math.PI * 2); ctx.fill();
+
+  // THE massive eye - takes up most of the face
+  const er = 12;
   if (!silhouette) {
-    ctx.strokeStyle = 'rgba(200,80,80,0.4)';
-    ctx.lineWidth = 0.8;
-    [[-12, -8], [-5, -30], [10, -5], [16, -20]].forEach(([vx, vy]) => {
+    // sclera
+    const eyeGrad = ctx.createRadialGradient(-er*0.2, -62 - er*0.2, 0, 0, -62, er);
+    eyeGrad.addColorStop(0,   '#f8f0e8');
+    eyeGrad.addColorStop(0.6, '#e0d4c8');
+    eyeGrad.addColorStop(1,   '#c0b0a0');
+    ctx.fillStyle = eyeGrad;
+    ctx.beginPath(); ctx.arc(0, -62, er, 0, Math.PI * 2); ctx.fill();
+
+    // bloodshot veins
+    ctx.strokeStyle = 'rgba(200,60,60,0.5)';
+    ctx.lineWidth = 0.7;
+    [[-8,-56],[6,-54],[-4,-68],[8,-66],[-9,-62]].forEach(([vx,vy]) => {
       ctx.beginPath();
       ctx.moveTo(vx, vy);
-      ctx.bezierCurveTo(vx + 5, vy - 5, vx + 8, vy + 3, vx + 12, vy + 2);
+      ctx.bezierCurveTo(vx+3, vy-3, vx+5, vy+2, vx+8, vy+1);
       ctx.stroke();
     });
-  }
-
-  // eyelids
-  if (!silhouette) {
-    const lidOpen = blink ? 0.05 : 1;
-    ctx.fillStyle = '#c0a888';
-    // upper lid
-    ctx.beginPath();
-    ctx.moveTo(-r, -18);
-    ctx.bezierCurveTo(-r * 0.5, -18 - r * lidOpen, r * 0.5, -18 - r * lidOpen, r, -18);
-    ctx.lineTo(r, -18 - 2);
-    ctx.bezierCurveTo(r * 0.5, -18 - r * lidOpen - 4, -r * 0.5, -18 - r * lidOpen - 4, -r, -18 - 2);
-    ctx.closePath();
-    ctx.fill();
-    // lower lid
-    ctx.beginPath();
-    ctx.moveTo(-r, -18);
-    ctx.bezierCurveTo(-r * 0.5, -18 + r * lidOpen, r * 0.5, -18 + r * lidOpen, r, -18);
-    ctx.lineTo(r, -18 + 2);
-    ctx.bezierCurveTo(r * 0.5, -18 + r * lidOpen + 4, -r * 0.5, -18 + r * lidOpen + 4, -r, -18 + 2);
-    ctx.closePath();
-    ctx.fill();
 
     if (!blink) {
-      // iris
-      const irisGrad = ctx.createRadialGradient(0, -18, 0, 0, -18, r * 0.55);
-      irisGrad.addColorStop(0, '#2a1a60');
-      irisGrad.addColorStop(0.4, '#4a30a0');
-      irisGrad.addColorStop(1, '#1a1040');
+      // iris - red/orange like the sprite
+      const irisGrad = ctx.createRadialGradient(0, -62, 0, 0, -62, er * 0.55);
+      irisGrad.addColorStop(0,   '#ff8020');
+      irisGrad.addColorStop(0.5, '#cc3000');
+      irisGrad.addColorStop(1,   '#800000');
       ctx.fillStyle = irisGrad;
-      ctx.beginPath();
-      ctx.arc(0, -18, r * 0.55, 0, Math.PI * 2);
-      ctx.fill();
-      // pupil
-      ctx.fillStyle = '#050308';
-      ctx.beginPath();
-      ctx.arc(0, -18, r * 0.28, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(0, -62, er * 0.55, 0, Math.PI * 2); ctx.fill();
+
+      // pupil - vertical slit
+      ctx.fillStyle = '#0a0000';
+      ctx.beginPath(); ctx.ellipse(0, -62, er * 0.18, er * 0.42, 0, 0, Math.PI * 2); ctx.fill();
+
       // catchlight
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      ctx.beginPath();
-      ctx.arc(-r * 0.12, -18 - r * 0.15, r * 0.1, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath(); ctx.arc(-er*0.22, -62 - er*0.2, er*0.12, 0, Math.PI * 2); ctx.fill();
+
+      // laser beam shooting from eye
       if (!silhouette) {
-        // laser glow emanating from pupil
-        ctx.strokeStyle = 'rgba(160,80,255,0.5)';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(255,80,0,0.55)';
+        ctx.lineWidth = 2.5;
         ctx.beginPath();
-        ctx.moveTo(r * 0.28, -18);
-        ctx.lineTo(r * 1.8, -18);
+        ctx.moveTo(er, -62);
+        ctx.lineTo(er * 3.5, -62);
         ctx.stroke();
-        ctx.strokeStyle = 'rgba(200,140,255,0.25)';
+        ctx.strokeStyle = 'rgba(255,160,40,0.2)';
         ctx.lineWidth = 8;
         ctx.beginPath();
-        ctx.moveTo(r * 0.28, -18);
-        ctx.lineTo(r * 1.8, -18);
+        ctx.moveTo(er, -62);
+        ctx.lineTo(er * 3.5, -62);
         ctx.stroke();
       }
+    } else {
+      // eyelid closed
+      ctx.fillStyle = '#6a5040';
+      ctx.beginPath(); ctx.ellipse(0, -62, er, er * 0.25, 0, 0, Math.PI * 2); ctx.fill();
     }
-  }
 
-  ctx.restore();
+    // eyelid outline / brow ridge
+    ctx.strokeStyle = '#2a1808'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(0, -62, er, Math.PI, 0); ctx.stroke(); // brow
+  } else {
+    // silhouette - just the large eye circle
+    ctx.fillStyle = '#2a1040';
+    ctx.beginPath(); ctx.arc(0, -62, er, 0, Math.PI * 2); ctx.fill();
+  }
 }
 
-// ============================================================
+
 // Fritz - hunchbacked Igor assistant
-// ============================================================
 export function drawFritz(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.09) * 4;
   const hunch = 0.3; // forward lean
@@ -1319,10 +1303,9 @@ export function drawFritz(ctx, frame, silhouette) {
   ctx.restore(); // lean
 }
 
-// ============================================================
+
 // The Possessed - floating armour
 // form 0: knight armour, form 1: samurai armour
-// ============================================================
 export function drawPossessed(ctx, frame, silhouette, form) {
   const float = Math.sin(frame * 0.04) * 5;
   const spin = Math.sin(frame * 0.03) * 0.06; // slight hovering rotation
@@ -1532,9 +1515,8 @@ export function drawPossessed(ctx, frame, silhouette, form) {
   ctx.restore();
 }
 
-// ============================================================
+
 // Nailhead - grey figure with nails in head
-// ============================================================
 export function drawNailhead(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 4;
 
@@ -1638,9 +1620,8 @@ export function drawNailhead(ctx, frame, silhouette) {
   });
 }
 
-// ============================================================
+
 // Creature from the Deep - fishman with scuba gear
-// ============================================================
 export function drawCreature(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 5;
 
