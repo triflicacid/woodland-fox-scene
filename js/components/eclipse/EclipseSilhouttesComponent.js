@@ -50,7 +50,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
       ctx.globalAlpha = s.alpha;
       ctx.shadowBlur = 12;
       ctx.shadowColor = '#6a2a9a';
-      drawMonster(ctx, s.type, frame + s.phase, s.form, true);
+      drawMonster(ctx, s.type, frame + s.phase, true, s.form);
       ctx.restore();
     });
   }

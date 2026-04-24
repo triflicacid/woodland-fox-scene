@@ -26,7 +26,7 @@ export class EclipseMonstersComponent extends DrawComponent {
     this._spawnCooldown--;
 
     if (this._spawnCooldown <= 0 && prob(PROBABILITY.ECLIPSE.MONSTER_SPAWN)) {
-      this.summon(randomMonster());
+      this.summon();
       this._spawnCooldown = 100 + Math.floor(rnd(150));
     }
 
@@ -46,17 +46,18 @@ export class EclipseMonstersComponent extends DrawComponent {
           ctx.save();
           ctx.translate(m.x, m.y);
           ctx.scale(m.scale * (m.vx < 0 ? -1 : 1), m.scale);
-          drawMonster(ctx, m.type, frame + m.phase, m.form, false);
+          drawMonster(ctx, m.type, frame + m.phase, false, m.form);
           ctx.restore();
         });
   }
 
   /**
    * summon a monster of the given type
-   * @type {string} type
-   * @type {number | undefined} form
+   * @type {string | undefined} type monster type (random if unspecified)
+   * @type {number | undefined} form monster form (random if unspecified)
    */
-  summon(type, form=undefined) {
+  summon(type=undefined, form=undefined) {
+    if (type === undefined) type = randomMonster();
     const fromRight = prob(0.5);
     this._monsters.push({
       x: fromRight ? this.W + 60 : -60,
