@@ -7,7 +7,7 @@ import {lerp, rnd, rndf} from '@/utils';
  */
 export class TelescopeComponent extends DrawComponent {
   // position relative to fox
-  _offsetX = 120;
+  _offsetX = 110;
   _offsetY = 50;
   // panning state - target and current angles
   _panAngle = 0.55; // current tube angle from horizontal (negative = pointing up)

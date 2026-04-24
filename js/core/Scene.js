@@ -46,6 +46,9 @@ import {PlanetsComponent} from "@/components/stargazing/PlanetsComponent";
 import {ConstellationsComponent} from "@/components/stargazing/ConstellationsComponent";
 import {NorthStarComponent} from "@/components/stargazing/NorthStarComponent";
 import {TelescopeComponent} from "@/components/stargazing/TelescopeComponent";
+import {CampingTableComponent} from "@/components/stargazing/CampingTableComponent";
+import {FoldingStoolComponent} from "@/components/stargazing/FoldingStoolComponent";
+import {LaptopComponent} from "@/components/stargazing/LaptopComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -130,8 +133,11 @@ export class Scene {
       new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
-      this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
+      new CampingTableComponent(this.eventBus, this.state, this.ctx, W, H),
+      new LaptopComponent(this.eventBus, this.state, this.ctx, W, H),
+      new FoldingStoolComponent(this.eventBus, this.state, this.ctx, W, H),
       new TelescopeComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
     ]);
