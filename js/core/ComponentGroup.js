@@ -51,14 +51,10 @@ export class ComponentGroup extends Component {
   }
 
   tick() {
-    this._components
-        .filter(c => c.isEnabled())
-        .forEach(c => c.tick());
+    this._components.forEach(c => c.isEnabled() && c.tick());
   }
 
   draw() {
-    this._components
-        .filter(c => c.isEnabled())
-        .forEach(c => c.draw());
+    this._components.forEach(c => c.isEnabled() && c.draw());
   }
 }
