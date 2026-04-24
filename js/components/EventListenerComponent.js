@@ -12,7 +12,7 @@ export class EventListenerComponent extends Component {
 
   initialise(state) {
     this.eventBus.subscribe(new Subscription(Subscription.CAPTURE_ALL, this.getName(), event => {
-      console.log(`${event.eventName} (${event.originator})`, event.payload);
+      globalThis.printEvents && console.log(`${event.eventName} (${event.originator})`, event.payload);
     }, true));
   }
 }

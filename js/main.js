@@ -8,5 +8,7 @@ const statusEl = document.getElementById('status');
 const scene = new Scene(canvas, statusEl);
 globalThis.scene = scene;
 globalThis.probs = PROBABILITY;
+globalThis.printEvents = false;
+
 scene.initialise();
 scene.start();
