@@ -313,6 +313,7 @@ export class Scene {
 
     // main wake button
     document.getElementById('btn')?.addEventListener('click', () => {
+      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
       state.fox.phase = 'standup';
       state.fox.phaseT = 0;
@@ -322,6 +323,7 @@ export class Scene {
 
     // wander button
     document.getElementById('btn-wander')?.addEventListener('click', () => {
+      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
       state.fox.phase = 'wander_out';
       state.fox.phaseT = 0;
