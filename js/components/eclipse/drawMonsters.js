@@ -495,66 +495,63 @@ export function drawButcher(ctx, frame, silhouette, form) {
     ctx.fill();
   }
 
+  // weapon arm - store endpoint
+  const weaponArmY = -38 + Math.sin(frame * 0.08) * 4;
+  ctx.strokeStyle = c('#3a1818', silhouette);
+  ctx.lineWidth = 9;
+  ctx.beginPath();
+  ctx.moveTo(20, -44);
+  ctx.lineTo(38, weaponArmY);
+  ctx.stroke();
+
   if (form === 0) {
-    // cleaver arm
-    ctx.strokeStyle = c('#3a1818', silhouette);
-    ctx.lineWidth = 9;
-    ctx.beginPath();
-    ctx.moveTo(20, -44);
-    ctx.lineTo(38, -38 + Math.sin(frame * 0.08) * 4);
-    ctx.stroke();
-    // cleaver blade
+    // handle - fist grips bottom of handle
+    ctx.fillStyle = c('#5a3010', silhouette);
+    ctx.fillRect(32, weaponArmY - 16, 6, 16); // handle extends upward from grip
+
+    // blade - rises from top of handle, angled slightly to the side
     ctx.fillStyle = c('#8898a8', silhouette);
     ctx.beginPath();
-    ctx.moveTo(35, -46);
-    ctx.lineTo(50, -42);
-    ctx.lineTo(47, -28);
-    ctx.lineTo(32, -30);
+    ctx.moveTo(30, weaponArmY - 16);      // bottom-left of blade (handle top)
+    ctx.lineTo(36, weaponArmY - 16);      // bottom-right of blade
+    ctx.lineTo(44, weaponArmY - 42);      // tip (up and slightly right)
+    ctx.lineTo(28, weaponArmY - 38);      // back edge
     ctx.closePath();
     ctx.fill();
+
     if (!silhouette) {
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
+      // blade edge highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
       ctx.beginPath();
-      ctx.moveTo(36, -45);
-      ctx.lineTo(48, -42);
-      ctx.lineTo(46, -38);
+      ctx.moveTo(35, weaponArmY - 16);
+      ctx.lineTo(44, weaponArmY - 42);
+      ctx.lineTo(40, weaponArmY - 42);
+      ctx.lineTo(33, weaponArmY - 16);
       ctx.closePath();
       ctx.fill();
     }
-    // cleaver handle
-    ctx.fillStyle = c('#5a3010', silhouette);
-    ctx.fillRect(30, -32, 6, 10);
+
   } else {
-    // chainsaw arm
-    ctx.strokeStyle = c('#3a1818', silhouette);
-    ctx.lineWidth = 9;
-    ctx.beginPath();
-    ctx.moveTo(20, -44);
-    ctx.lineTo(38, -40);
-    ctx.stroke();
-    // chainsaw body
+    // chainsaw follows arm end
     ctx.fillStyle = c('#606870', silhouette);
-    ctx.fillRect(36, -48, 22, 12);
-    // chainsaw blade
+    ctx.fillRect(36, weaponArmY - 8, 22, 12);
+    // blade
     ctx.fillStyle = c('#808890', silhouette);
-    ctx.fillRect(58, -46, 16, 4);
+    ctx.fillRect(58, weaponArmY - 6, 16, 4);
     if (!silhouette) {
-      // chain teeth
       ctx.fillStyle = '#404850';
       for (let tx = 58; tx < 74; tx += 4) {
-        ctx.fillRect(tx, -47, 2, 2);
-        ctx.fillRect(tx, -42, 2, 2);
+        ctx.fillRect(tx, weaponArmY - 7, 2, 2);
+        ctx.fillRect(tx, weaponArmY - 2, 2, 2);
       }
-      // engine detail
       ctx.fillStyle = '#404850';
-      ctx.fillRect(38, -46, 6, 4);
-      // revving motion blur
+      ctx.fillRect(38, weaponArmY - 6, 6, 4);
       const rev = Math.sin(frame * 0.4) * 1.5;
       ctx.strokeStyle = 'rgba(200,200,200,0.3)';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(58, -46 + rev);
-      ctx.lineTo(74, -46 + rev);
+      ctx.moveTo(58, weaponArmY - 6 + rev);
+      ctx.lineTo(74, weaponArmY - 6 + rev);
       ctx.stroke();
     }
   }
@@ -613,7 +610,6 @@ export function drawButcher(ctx, frame, silhouette, form) {
     ctx.setLineDash([]);
   }
 }
-
 
 // Psycho
 export function drawPsycho(ctx, frame, silhouette) {
