@@ -237,14 +237,13 @@ export class Scene {
   _initTabs() {
     const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
     const saved = localStorage.getItem('activeTab') ?? 'world';
+    this._setActiveTab(saved === '' ? null : saved);
 
     tabs.forEach(tab => {
       document.getElementById(`tab-${tab}`)?.addEventListener('click', () => {
         this._setActiveTab(tab);
       });
     });
-
-    this._setActiveTab(saved);
   }
 
   /**
@@ -253,12 +252,17 @@ export class Scene {
    */
   _setActiveTab(tab) {
     const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
+
+    // clicking active tab deselects it
+    const newTab = this._activeTab === tab ? null : tab;
+
     tabs.forEach(t => {
-      document.getElementById(`tab-${t}`)?.classList.toggle('btn-active', t === tab);
-      document.getElementById(`tab-panel-${t}`)?.classList.toggle('tab-active', t === tab);
+      document.getElementById(`tab-${t}`)?.classList.toggle('btn-active', t === newTab);
+      document.getElementById(`tab-panel-${t}`)?.classList.toggle('tab-active', t === newTab);
     });
-    localStorage.setItem('activeTab', tab);
-    this._activeTab = tab;
+
+    localStorage.setItem('activeTab', newTab ?? '');
+    this._activeTab = newTab;
   }
 
   /**
