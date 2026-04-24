@@ -33,6 +33,7 @@ export const FOX_PHASES = {
   wander_sniff: {f: 80},
   wander_in: {f: 120},
   singing: {f: Infinity}, // till cancel
+  eclipse_watch: {f: Infinity}, // till cancel
 };
 
 /**
@@ -57,6 +58,7 @@ export class FoxComponent extends DrawComponent {
   }
 
   static COMPONENT_NAME = "FoxComponent";
+
   getName() {
     return FoxComponent.COMPONENT_NAME;
   }
@@ -90,6 +92,10 @@ export class FoxComponent extends DrawComponent {
         this.scene.fox.eyeTransitionT = 0;
       }
     }));
+    this.eventBus.subscribe(Subscriptions.onMothronDive(this.getName(), () => {
+      this._triggerEyeTransition();
+      this.scene.fox.quiverT = 0;
+    }));
   }
 
   tick() {
@@ -117,6 +123,23 @@ export class FoxComponent extends DrawComponent {
       fox.asleep = true;
       fox.singingMouthT = undefined;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sing.end'));
+    }
+
+    // eclipse management
+    if (this.scene.specialEvent === 'eclipse') {
+      if (fox.phase === 'idle') {
+        fox.phase = 'eclipse_watch';
+        fox.poseBlend = 1;
+        fox.asleep = false;
+        fox.quiverT = 0;
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The sky darkens... the fox stirs nervously...'));
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'eclipse_watch.start'));
+      }
+    } else if (fox.phase === 'eclipse_watch') {
+      fox.phase = 'curling';
+      fox.phaseT = 0;
+      fox.asleep = true;
+      this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'eclipse_watch.end'));
     }
 
     // passive idle behaviours
@@ -156,8 +179,14 @@ export class FoxComponent extends DrawComponent {
       if (fox.eyeTransitionT >= 50) fox.eyeTransitionT = -1;
     }
 
+    // countdown the quiver animation
+    if (fox.quiverT >= 0) {
+      fox.quiverT++;
+      if (fox.quiverT >= 60) fox.quiverT = -1;
+    }
+
     // early return (after this line we process event sequences)
-    if (fox.phase === 'idle' || fox.phase === 'singing') return;
+    if (fox.phase === 'idle' || fox.phase === 'singing' || fox.phase === 'eclipse_watch') return;
 
     fox.phaseT++;
     const cfg = FOX_PHASES[fox.phase];
@@ -206,6 +235,10 @@ export class FoxComponent extends DrawComponent {
         if (this.scene.specialEvent === 'birthday') {
           // skip idle, go straight to singing
           fox.phase = 'singing';
+          fox.poseBlend = 1;
+          fox.asleep = false;
+        } else if (this.scene.specialEvent === 'eclipse') {
+          fox.phase = 'eclipse_watch';
           fox.poseBlend = 1;
           fox.asleep = false;
         } else {
@@ -447,7 +480,7 @@ export class FoxComponent extends DrawComponent {
     // near eye, open or closed
     const eyeOpen = this._eyeOpenAmount();
     ctx.strokeStyle = '#4a1804';
-    ctx.lineWidth   = 1.5;
+    ctx.lineWidth = 1.5;
     if (eyeOpen > 0.1) {
       ctx.save();
       // sclera
@@ -726,6 +759,44 @@ export class FoxComponent extends DrawComponent {
         ctx.ellipse(-28, hy + 4 + mouthOpen * 0.3, 3, 2, 0, 0, Math.PI * 2);
         ctx.fill();
       }
+    }
+
+    // scared quiver lines when eclipse_watch
+    if (fox.quiverT >= 0) {
+      const qt      = fox.quiverT / 60;
+      const alpha   = Math.sin(qt * Math.PI) * 0.8;
+      const jitter  = Math.sin(fox.quiverT * 1.8) * 2.5;
+
+      ctx.save();
+      ctx.globalAlpha  = alpha;
+      ctx.strokeStyle  = '#ff8040';
+      ctx.lineWidth    = 1.2;
+      ctx.lineCap      = 'round';
+
+      // small jagged fear lines radiating from the fox body
+      const lines = [
+        { ox: -30, oy: -30, angle: -2.4, len: 8 },
+        { ox: -28, oy: -45, angle: -2.0, len: 6 },
+        { ox:  10, oy: -50, angle: -0.8, len: 7 },
+        { ox:  12, oy: -30, angle: -0.4, len: 6 },
+        { ox:  -5, oy: -60, angle: -1.5, len: 9 },
+      ];
+
+      lines.forEach((l, i) => {
+        const wobble = Math.sin(fox.quiverT * 0.6 + i) * 0.3;
+        const a      = l.angle + wobble;
+        const sx     = l.ox + jitter * (i % 2 === 0 ? 1 : -1);
+        ctx.beginPath();
+        ctx.moveTo(sx, l.oy);
+        // two-segment zigzag line
+        const mx = sx + Math.cos(a) * l.len * 0.5;
+        const my = l.oy + Math.sin(a) * l.len * 0.5;
+        ctx.lineTo(mx + jitter * 0.5, my);
+        ctx.lineTo(mx + Math.cos(a + 0.5) * l.len * 0.5, my + Math.sin(a + 0.5) * l.len * 0.5);
+        ctx.stroke();
+      });
+
+      ctx.restore();
     }
 
     ctx.restore();

@@ -15,6 +15,7 @@ export class Events {
   static EVENT_CHARACTER_ACTION = 'CharacterAction';
   static EVENT_STATUS_TEXT = 'StatusText';
   static EVENT_SPECIAL_EVENT = 'SpecialEvent';
+  static EVENT_MOTHRON_DIVE = 'MothronDive';
   /**
    * used for bunny/fox only
    * @deprecated
@@ -35,6 +36,7 @@ export class Events {
     eventBus.registerEvent(Events.EVENT_CHARACTER_ACTION);
     eventBus.registerEvent(Events.EVENT_STATUS_TEXT);
     eventBus.registerEvent(Events.EVENT_SPECIAL_EVENT);
+    eventBus.registerEvent(Events.EVENT_MOTHRON_DIVE);
     eventBus.registerEvent(Events.EVENT_MAIN_BUTTONS);
   }
 
@@ -135,5 +137,14 @@ export class Events {
    */
   static setMainButtons(originator, enabled) {
     return new Event(Events.EVENT_MAIN_BUTTONS, originator, {enabled});
+  }
+
+  /**
+   * create a mothron dive event, fired when mothron dives toward the fox
+   * @param {string} originator
+   * @returns {Event}
+   */
+  static mothronDive(originator) {
+    return new Event(Events.EVENT_MOTHRON_DIVE, originator, {});
   }
 }

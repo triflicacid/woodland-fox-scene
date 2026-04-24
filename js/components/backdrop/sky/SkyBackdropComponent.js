@@ -1,10 +1,12 @@
 import {DrawComponent} from "@/core/DrawComponent";
+import {clamp} from "@/utils";
 
 /**
  * render the sky backdrop (no moons etc.)
  */
 export class SkyBackdropComponent extends DrawComponent {
   static COMPONENT_NAME = "SkyBackdropComponent";
+
   getName() {
     return SkyBackdropComponent.COMPONENT_NAME;
   }
@@ -37,6 +39,13 @@ export class SkyBackdropComponent extends DrawComponent {
       ctx.globalAlpha = 0.85;
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
+    }
+
+    // eclipse sky darkening - deep purple overlay
+    if (this.scene.specialEvent === 'eclipse') {
+      const sa = clamp((td - 0.2) / 0.6, 0, 1);
+      ctx.fillStyle = `rgba(10,4,20,${0.88 * sa})`;
+      ctx.fillRect(0, 0, W, H);
     }
   }
 }

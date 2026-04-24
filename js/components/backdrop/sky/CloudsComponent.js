@@ -10,7 +10,7 @@ export class CloudsComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return !this.scene.stargazing;
+    return !this.scene.stargazing && this.scene.specialEvent !== 'eclipse';
   }
 
   draw() {

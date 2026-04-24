@@ -6,21 +6,27 @@ import {clamp} from "@/utils";
  */
 export class SunComponent extends DrawComponent {
   static COMPONENT_NAME = "SunComponent";
+
   getName() {
     return SunComponent.COMPONENT_NAME;
   }
 
   isEnabled() {
-    const {weather} = this.scene;
-    return this.scene.isDay() && weather !== 'fog' && weather !== 'rain' && weather !== 'storm';
+    const {weather, specialEvent} = this.scene;
+    return this.scene.isDay() && (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
   }
 
   draw() {
     const {ctx} = this;
-    const {season, weather, frame, todBlend: td} = this.scene;
+    const {season, weather, frame, todBlend: td, specialEvent} = this.scene;
     const sa = clamp((td - 0.2) / 0.6, 0, 1);
     const sunX = season === 'autumn' ? 120 : season === 'winter' ? 160 : 550;
     const sunY = season === 'winter' ? 90 : 65;
+
+    if (specialEvent === 'eclipse') {
+      this._drawEclipse(sunX, sunY, frame, sa);
+      return;
+    }
 
     ctx.save();
     ctx.globalAlpha = sa;
@@ -51,6 +57,92 @@ export class SunComponent extends DrawComponent {
       }
       ctx.globalAlpha = 1;
     }
+    ctx.restore();
+  }
+
+  /**
+   * draw the eclipsed sun - black disc with animated organic corona.
+   * @param {number} x
+   * @param {number} y
+   * @param {number} frame
+   * @param {number} sa - sun alpha based on tod blend
+   */
+  _drawEclipse(x, y, frame, sa) {
+    const {ctx} = this;
+
+    ctx.save();
+    ctx.globalAlpha = sa;
+
+    // outer diffuse glow
+    const glow = ctx.createRadialGradient(x, y, 26, x, y, 26 * 4.5);
+    glow.addColorStop(0, 'rgba(255,240,180,0.35)');
+    glow.addColorStop(0.3, 'rgba(255,200,80,0.15)');
+    glow.addColorStop(0.7, 'rgba(255,140,20,0.05)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(x, y, 26 * 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // plasma arcs
+    const r = 26;
+    for (let i = 0; i < 8; i++) {
+      const baseAngle = (i / 8) * Math.PI * 2;
+      const wobble = Math.sin(frame * 0.018 + i * 1.3) * 0.18;
+      const angle = baseAngle + wobble;
+      const len = r * (1.4 + 0.6 * Math.sin(frame * 0.025 + i * 0.9));
+      const bulge = r * (0.5 + 0.3 * Math.cos(frame * 0.02 + i * 1.1));
+      const cx1 = x + Math.cos(angle - 0.4) * (r + bulge);
+      const cy1 = y + Math.sin(angle - 0.4) * (r + bulge);
+      const cx2 = x + Math.cos(angle + 0.4) * (r + bulge);
+      const cy2 = y + Math.sin(angle + 0.4) * (r + bulge);
+      const ex = x + Math.cos(angle) * (r + len);
+      const ey = y + Math.sin(angle) * (r + len);
+      const alpha = sa * (0.4 + 0.3 * Math.sin(frame * 0.03 + i));
+
+      ctx.save();
+      ctx.strokeStyle = `rgba(255,220,100,${alpha})`;
+      ctx.lineWidth = 1.2 + Math.sin(frame * 0.02 + i) * 0.5;
+      ctx.lineCap = 'round';
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = '#ffcc40';
+      ctx.beginPath();
+      ctx.moveTo(x + Math.cos(angle - 0.3) * r, y + Math.sin(angle - 0.3) * r);
+      ctx.bezierCurveTo(cx1, cy1, cx2, cy2, ex, ey);
+      ctx.bezierCurveTo(cx2, cy2, cx1, cy1,
+          x + Math.cos(angle + 0.3) * r, y + Math.sin(angle + 0.3) * r);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // thin streamer rays
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2 + frame * 0.002;
+      const rayLen = r * (2 + Math.sin(frame * 0.015 + i * 0.7) * 0.8);
+      ctx.save();
+      ctx.strokeStyle = `rgba(255,240,180,${sa * (0.15 + 0.1 * Math.sin(frame * 0.02 + i))})`;
+      ctx.lineWidth = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(x + Math.cos(angle) * r, y + Math.sin(angle) * r);
+      ctx.lineTo(x + Math.cos(angle) * (r + rayLen), y + Math.sin(angle) * (r + rayLen));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // black moon disc
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#050208';
+    ctx.beginPath();
+    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.fill();
+
+    // chromosphere rim
+    ctx.strokeStyle = 'rgba(255,60,20,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.stroke();
+
     ctx.restore();
   }
 }

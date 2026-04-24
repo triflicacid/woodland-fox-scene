@@ -27,6 +27,11 @@ export const PROBABILITY = {
   BUNNY_SPAWN_NOTE: 0.04,
   DEER_SPAWN_NOTE: 0.03,
   HEDGEHOG_SPAWN_NOTE: 0.04,
+  ECLIPSE: {
+    MOTHRON_SPAWN: 0.0004,
+    MOTHRON_DIVE: 0.6,
+    MONSTER_SPAWN: 0.04,
+  }
 };
 
 /**
@@ -75,3 +80,8 @@ export const PALETTES = {
  * @type {string[]}
  */
 export const MOON_PHASES = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+
+export const ECLIPSE = {
+  SKY_COL:    '#1a0a2a',
+  CORONA_COL: '#fff8e0',
+};

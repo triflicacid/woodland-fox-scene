@@ -49,6 +49,11 @@ import {TelescopeComponent} from "@/components/stargazing/TelescopeComponent";
 import {CampingTableComponent} from "@/components/stargazing/CampingTableComponent";
 import {FoldingStoolComponent} from "@/components/stargazing/FoldingStoolComponent";
 import {LaptopComponent} from "@/components/stargazing/LaptopComponent";
+import {MothronComponent} from "@/components/eclipse/MothronComponent";
+import {EclipseMonstersComponent} from "@/components/eclipse/EclipseMonstersComponent";
+import {ScreenShakeComponent} from "@/components/shake/ScreenShakeComponent";
+import {ScreenShakeRestoreComponent} from "@/components/shake/ScreenShakeRestoreComponent";
+import {EclipseSilhouettesComponent} from "@/components/eclipse/EclipseSilhouttesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -74,6 +79,8 @@ export class Scene {
     // store the handle for the drawing loop
     /** @type {number | undefined} */
     this._handle = undefined;
+    // also store playing flag
+    this._active = false;
 
     // store the event bus for this scene
     this.eventBus = new EventBus();
@@ -83,13 +90,17 @@ export class Scene {
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, this.state, [
       new EventListenerComponent(this.eventBus, this.state),
+      this._shake = new ScreenShakeComponent(this.eventBus, this.state, this.ctx, W, H),
       new TimeOfDayComponent(this.eventBus, this.state),
+
       new SkyBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
 
       new PlanetsComponent(this.eventBus, this.state, this.ctx, W, H),
       new ConstellationsComponent(this.eventBus, this.state, this.ctx, W, H),
       new NorthStarComponent(this.eventBus, this.state, this.ctx, W, H),
+
+      new EclipseSilhouettesComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
@@ -124,7 +135,9 @@ export class Scene {
 
       new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._eclipseMonsters = new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
@@ -140,6 +153,8 @@ export class Scene {
       this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
+
+      new ScreenShakeRestoreComponent(this.eventBus, this.state, this.ctx, W, H, this._shake),
     ]);
     this._aurora = requireNonNull(this._components.getComponent(AuroraComponent.COMPONENT_NAME));
   }
@@ -167,15 +182,19 @@ export class Scene {
    * start the rendering loop.
    */
   start() {
-    if (this._handle === undefined) {
-      this._handle = requestAnimationFrame(this._loop);
+    if (this._active) {
+      throw new Error("Scene is already active");
     }
+    this._handle = requestAnimationFrame(this._loop);
+    this._active = true;
   }
 
   /**
    * stop the rendering loop.
    */
   stop() {
+    console.warn("Stopping scene.");
+    this._active = false;
     if (this._handle !== undefined) {
       cancelAnimationFrame(this._handle);
       this._handle = undefined;
@@ -186,6 +205,8 @@ export class Scene {
    * run one frame: clear, tick, draw all components, then request next frame.
    */
   _loop() {
+    if (!this._active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
+
     const {ctx, state} = this;
     ctx.clearRect(0, 0, CANVAS.WIDTH, CANVAS.HEIGHT);
     state.frame++;
@@ -193,7 +214,7 @@ export class Scene {
     this._components.tick();
     this._components.draw();
 
-    requestAnimationFrame(this._loop);
+    this._handle = requestAnimationFrame(this._loop);
   }
 
   /**
@@ -252,6 +273,9 @@ export class Scene {
     const chicksBtn = document.getElementById('btn-chicks');
     chicksBtn.classList.toggle('btn-active', this._chicks.forced);
 
+    const mothronBtn = document.getElementById('btn-mothron');
+    mothronBtn.disabled = state.specialEvent !== 'eclipse';
+
     const wakeBtn = document.getElementById('btn-wake-fox');
     wakeBtn.textContent = !state.fox.asleep ? '😴 Sleep' : '👁 Wake';
     wakeBtn.classList.toggle('btn-active', !state.fox.asleep);
@@ -272,6 +296,10 @@ export class Scene {
       stargazeBtn.disabled = !canStargaze;
       stargazeBtn.classList.toggle('btn-active', state.stargazing);
     }
+
+    const eclipseBtn = document.getElementById('btn-eclipse');
+    eclipseBtn.disabled = state.timeOfDay === 'night' || (state.specialEvent !== null && state.specialEvent !== 'eclipse');
+    eclipseBtn.classList.toggle('btn-active', state.specialEvent === 'eclipse');
   }
 
   /**
@@ -399,7 +427,7 @@ export class Scene {
       }
       this._refreshUI();
     });
-    // stargazing toggle1
+    // stargazing toggle
     document.getElementById('btn-stargaze')?.addEventListener('click', () => {
       state.stargazing = !state.stargazing;
       state.savePref();
@@ -474,6 +502,9 @@ export class Scene {
     document.getElementById('btn-guy-fawkes').addEventListener('click', () => {
       this._guyFawkes.summon();
     });
+    document.getElementById('btn-mothron').addEventListener('click', () => {
+      this._mothron.summon();
+    });
 
     document.getElementById('btn-eye').addEventListener('click', () => {
       state.fox.eyeTransitionT = 0;
@@ -485,6 +516,17 @@ export class Scene {
         fox.asleep = !fox.asleep;
         this._refreshUI();
       }
+    });
+
+    document.getElementById('btn-eclipse')?.addEventListener('click', () => {
+      const old = state.specialEvent;
+      state.specialEvent = state.specialEvent === 'eclipse' ? null : 'eclipse';
+      this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
+      state.savePref();
+      if (state.specialEvent === 'eclipse') {
+        this.eventBus.dispatch(Events.statusText('Scene', 'The sky darkens as the moon devours the sun...'));
+      }
+      this._refreshUI();
     });
   }
 }
