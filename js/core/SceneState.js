@@ -25,6 +25,8 @@ export class SceneState {
     /** @type{string | null} */
     this.specialEvent = localStorage.getItem('special_event') || null;
     if (this.specialEvent === 'null') this.specialEvent = null;
+    /** @type{boolean} */
+    this.stargazing = localStorage.getItem('stargazing') === 'true';
     /** @type{number} */
     this.moonPhase = parseInt(localStorage.getItem('moon_phase') ?? '4'); // default full
 
@@ -129,6 +131,7 @@ export class SceneState {
     localStorage.setItem('weather', this.weather);
     localStorage.setItem('special_event', this.specialEvent);
     localStorage.setItem('moon_phase', this.moonPhase.toString());
+    localStorage.setItem('stargazing', this.stargazing.toString());
   }
 
   /**

@@ -42,6 +42,13 @@ import {PresentsComponent} from "@/components/PresentsComponent";
 import {MusicalNotesComponent} from "@/components/birthday/MusicalNotesComponent";
 import {EasterEggsComponent} from "@/components/easter/EasterEggsComponent";
 import {ChicksComponent} from "@/components/animals/ChicksComponent";
+import {PlanetsComponent} from "@/components/stargazing/PlanetsComponent";
+import {ConstellationsComponent} from "@/components/stargazing/ConstellationsComponent";
+import {NorthStarComponent} from "@/components/stargazing/NorthStarComponent";
+import {TelescopeComponent} from "@/components/stargazing/TelescopeComponent";
+import {CampingTableComponent} from "@/components/stargazing/CampingTableComponent";
+import {FoldingStoolComponent} from "@/components/stargazing/FoldingStoolComponent";
+import {LaptopComponent} from "@/components/stargazing/LaptopComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -79,6 +86,10 @@ export class Scene {
       new TimeOfDayComponent(this.eventBus, this.state),
       new SkyBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
       new GroundBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
+
+      new PlanetsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new ConstellationsComponent(this.eventBus, this.state, this.ctx, W, H),
+      new NorthStarComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
@@ -122,6 +133,10 @@ export class Scene {
       new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new CampingTableComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._laptop = new LaptopComponent(this.eventBus, this.state, this.ctx, W, H),
+      new FoldingStoolComponent(this.eventBus, this.state, this.ctx, W, H),
+      new TelescopeComponent(this.eventBus, this.state, this.ctx, W, H),
       this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -207,8 +222,10 @@ export class Scene {
 
     const snowBtn = document.getElementById('btn-snow');
     snowBtn.disabled = state.season !== 'winter';
+
     const auroraBtn = document.getElementById('btn-aurora');
-    auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night';
+    auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing;
+    auroraBtn.classList.toggle('btn-active', this._aurora.on);
 
     const halloweenBtn = document.getElementById('btn-halloween');
     halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
@@ -245,6 +262,15 @@ export class Scene {
     const easterBtn = document.getElementById('btn-easter');
     easterBtn.disabled = !(state.season === 'spring' && state.timeOfDay === 'day');
     easterBtn.classList.toggle('btn-active', state.specialEvent === 'easter');
+
+    const stargazeBtn = document.getElementById('btn-stargaze');
+    if (stargazeBtn) {
+      const canStargaze = state.timeOfDay === 'night'
+          && (state.weather === 'clear' || state.weather === 'wind')
+          && !this._aurora.on;
+      stargazeBtn.disabled = !canStargaze;
+      stargazeBtn.classList.toggle('btn-active', state.stargazing);
+    }
   }
 
   /**
@@ -277,6 +303,12 @@ export class Scene {
           this._birds.spawnStartledBird(tr);
         }
       });
+
+      // click on laptop to cycle screen mode
+      if (this._laptop.isEnabled() && this._laptop.containsPoint(cx, cy)) {
+        this._laptop.cycleScreenMode();
+        return;
+      }
     });
 
     // main wake button
@@ -356,8 +388,21 @@ export class Scene {
 
     // aurora toggle
     document.getElementById('btn-aurora')?.addEventListener('click', () => {
-      if (state.season !== 'winter' || state.timeOfDay !== 'night') return;
+      if (state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing) return;
       this._aurora.toggle();
+      if (this._aurora.on && state.stargazing) {
+        state.stargazing = false; // supress stargazing
+        state.savePref();
+      }
+      this._refreshUI();
+    });
+    // stargazing toggle1
+    document.getElementById('btn-stargaze')?.addEventListener('click', () => {
+      state.stargazing = !state.stargazing;
+      state.savePref();
+      if (state.stargazing && this._aurora.on) {
+        this._aurora.on = false; // supress aurora
+      }
       this._refreshUI();
     });
 

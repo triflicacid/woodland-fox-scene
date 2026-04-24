@@ -74,4 +74,4 @@ export const PALETTES = {
  * internally we use numbers, but emojis here makes it more obvious what they mean.
  * @type {string[]}
  */
-export const MOON_PHASES = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+export const MOON_PHASES = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
