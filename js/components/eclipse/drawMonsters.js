@@ -1055,83 +1055,125 @@ export function drawVampire(ctx, frame, silhouette) {
 
 // Zombie with big eye
 function drawEyezor(ctx, frame, silhouette) {
-  const walk  = Math.sin(frame * 0.08) * 5;
+  const walk = Math.sin(frame * 0.08) * 5;
   const blink = Math.sin(frame * 0.025) > 0.9;
 
   // legs
   ctx.strokeStyle = c('#3a2a18', silhouette);
-  ctx.lineWidth = 7; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-6, -6);  ctx.lineTo(-9, 14 + walk);  ctx.stroke();
-  ctx.beginPath(); ctx.moveTo( 6, -6);  ctx.lineTo(  8, 14 - walk); ctx.stroke();
+  ctx.lineWidth = 7;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-6, -6);
+  ctx.lineTo(-9, 14 + walk);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(6, -6);
+  ctx.lineTo(8, 14 - walk);
+  ctx.stroke();
   ctx.fillStyle = c('#2a1a10', silhouette);
-  ctx.beginPath(); ctx.ellipse(-9, 15, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.ellipse( 8, 15, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(-9, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(8, 15, 7, 3, 0, 0, Math.PI * 2);
+  ctx.fill();
 
   // body - tattered clothes
   ctx.fillStyle = c('#4a3828', silhouette);
-  ctx.beginPath(); ctx.ellipse(0, -28, 13, 22, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, -28, 13, 22, 0, 0, Math.PI * 2);
+  ctx.fill();
 
   if (!silhouette) {
     // torn shirt detail
-    ctx.strokeStyle = '#2a1a10'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(-4, -48); ctx.lineTo(-6, -8); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo( 4, -48); ctx.lineTo(  5, -8); ctx.stroke();
+    ctx.strokeStyle = '#2a1a10';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-4, -48);
+    ctx.lineTo(-6, -8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(4, -48);
+    ctx.lineTo(5, -8);
+    ctx.stroke();
   }
 
   // arms
   ctx.strokeStyle = c('#4a3828', silhouette);
   ctx.lineWidth = 7;
-  ctx.beginPath(); ctx.moveTo(-12, -38); ctx.lineTo(-24, -20); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo( 12, -38); ctx.lineTo( 24, -20); ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-12, -38);
+  ctx.lineTo(-24, -20);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(12, -38);
+  ctx.lineTo(24, -20);
+  ctx.stroke();
   ctx.fillStyle = c('#5a4838', silhouette);
-  ctx.beginPath(); ctx.arc(-24, -20, 5, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc( 24, -20, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.arc(-24, -20, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(24, -20, 5, 0, Math.PI * 2);
+  ctx.fill();
 
   // neck stub
   ctx.fillStyle = c('#5a4838', silhouette);
-  ctx.beginPath(); ctx.roundRect(-5, -52, 10, 8, 2); ctx.fill();
+  ctx.beginPath();
+  ctx.roundRect(-5, -52, 10, 8, 2);
+  ctx.fill();
 
   // head - small skull shape mostly consumed by the eye
   ctx.fillStyle = c('#4a3828', silhouette);
-  ctx.beginPath(); ctx.ellipse(0, -62, 16, 14, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(0, -62, 16, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
 
   // THE massive eye - takes up most of the face
   const er = 12;
   if (!silhouette) {
     // sclera
-    const eyeGrad = ctx.createRadialGradient(-er*0.2, -62 - er*0.2, 0, 0, -62, er);
-    eyeGrad.addColorStop(0,   '#f8f0e8');
+    const eyeGrad = ctx.createRadialGradient(-er * 0.2, -62 - er * 0.2, 0, 0, -62, er);
+    eyeGrad.addColorStop(0, '#f8f0e8');
     eyeGrad.addColorStop(0.6, '#e0d4c8');
-    eyeGrad.addColorStop(1,   '#c0b0a0');
+    eyeGrad.addColorStop(1, '#c0b0a0');
     ctx.fillStyle = eyeGrad;
-    ctx.beginPath(); ctx.arc(0, -62, er, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, -62, er, 0, Math.PI * 2);
+    ctx.fill();
 
     // bloodshot veins
     ctx.strokeStyle = 'rgba(200,60,60,0.5)';
     ctx.lineWidth = 0.7;
-    [[-8,-56],[6,-54],[-4,-68],[8,-66],[-9,-62]].forEach(([vx,vy]) => {
+    [[-8, -56], [6, -54], [-4, -68], [8, -66], [-9, -62]].forEach(([vx, vy]) => {
       ctx.beginPath();
       ctx.moveTo(vx, vy);
-      ctx.bezierCurveTo(vx+3, vy-3, vx+5, vy+2, vx+8, vy+1);
+      ctx.bezierCurveTo(vx + 3, vy - 3, vx + 5, vy + 2, vx + 8, vy + 1);
       ctx.stroke();
     });
 
     if (!blink) {
       // iris - red/orange like the sprite
       const irisGrad = ctx.createRadialGradient(0, -62, 0, 0, -62, er * 0.55);
-      irisGrad.addColorStop(0,   '#ff8020');
+      irisGrad.addColorStop(0, '#ff8020');
       irisGrad.addColorStop(0.5, '#cc3000');
-      irisGrad.addColorStop(1,   '#800000');
+      irisGrad.addColorStop(1, '#800000');
       ctx.fillStyle = irisGrad;
-      ctx.beginPath(); ctx.arc(0, -62, er * 0.55, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(0, -62, er * 0.55, 0, Math.PI * 2);
+      ctx.fill();
 
       // pupil - vertical slit
       ctx.fillStyle = '#0a0000';
-      ctx.beginPath(); ctx.ellipse(0, -62, er * 0.18, er * 0.42, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, -62, er * 0.18, er * 0.42, 0, 0, Math.PI * 2);
+      ctx.fill();
 
       // catchlight
       ctx.fillStyle = 'rgba(255,255,255,0.7)';
-      ctx.beginPath(); ctx.arc(-er*0.22, -62 - er*0.2, er*0.12, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.arc(-er * 0.22, -62 - er * 0.2, er * 0.12, 0, Math.PI * 2);
+      ctx.fill();
 
       // laser beam shooting from eye
       if (!silhouette) {
@@ -1151,16 +1193,23 @@ function drawEyezor(ctx, frame, silhouette) {
     } else {
       // eyelid closed
       ctx.fillStyle = '#6a5040';
-      ctx.beginPath(); ctx.ellipse(0, -62, er, er * 0.25, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, -62, er, er * 0.25, 0, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // eyelid outline / brow ridge
-    ctx.strokeStyle = '#2a1808'; ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.arc(0, -62, er, Math.PI, 0); ctx.stroke(); // brow
+    ctx.strokeStyle = '#2a1808';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, -62, er, Math.PI, 0);
+    ctx.stroke(); // brow
   } else {
     // silhouette - just the large eye circle
     ctx.fillStyle = '#2a1040';
-    ctx.beginPath(); ctx.arc(0, -62, er, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, -62, er, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
@@ -1517,11 +1566,11 @@ export function drawPossessed(ctx, frame, silhouette, form) {
 
 
 // Nailhead - grey figure with nails in head
-export function drawNailhead(ctx, frame, silhouette) {
+function drawNailhead(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 4;
 
-  // legs
-  ctx.strokeStyle = c('#303840', silhouette);
+  // legs - dark trousers
+  ctx.strokeStyle = c('#1a1a24', silhouette);
   ctx.lineWidth = 7;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -1532,7 +1581,7 @@ export function drawNailhead(ctx, frame, silhouette) {
   ctx.moveTo(6, -6);
   ctx.lineTo(7, 14 - walk);
   ctx.stroke();
-  ctx.fillStyle = c('#202830', silhouette);
+  ctx.fillStyle = c('#101018', silhouette);
   ctx.beginPath();
   ctx.ellipse(-8, 15, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
@@ -1540,89 +1589,150 @@ export function drawNailhead(ctx, frame, silhouette) {
   ctx.ellipse(7, 15, 7, 3, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // body - stocky grey
-  ctx.fillStyle = c('#404858', silhouette);
+  // grey jacket body
+  ctx.fillStyle = c('#606068', silhouette);
   ctx.beginPath();
   ctx.ellipse(0, -28, 14, 22, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // arms
-  ctx.strokeStyle = c('#404858', silhouette);
-  ctx.lineWidth = 8;
-  ctx.beginPath();
-  ctx.moveTo(-14, -38);
-  ctx.lineTo(-26, -24);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(14, -38);
-  ctx.lineTo(26, -24);
-  ctx.stroke();
-  ctx.fillStyle = c('#505868', silhouette);
-  ctx.beginPath();
-  ctx.arc(-26, -24, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(26, -24, 5, 0, Math.PI * 2);
-  ctx.fill();
-
-  // large cube/box head - distinctive feature
-  ctx.fillStyle = c('#505868', silhouette);
-  ctx.fillRect(-14, -72, 28, 26);
   if (!silhouette) {
-    ctx.strokeStyle = '#606878';
-    ctx.lineWidth = 0.8;
-    ctx.strokeRect(-14, -72, 28, 26);
-    // face
-    ctx.fillStyle = '#1a2028';
-    ctx.fillRect(-8, -66, 5, 6);   // left eye socket
-    ctx.fillRect(3, -66, 5, 6);   // right eye socket
-    ctx.fillStyle = '#ff3020';
+    // jacket lapels - darker grey
+    ctx.fillStyle = '#404048';
     ctx.beginPath();
-    ctx.arc(-5.5, -63, 2, 0, Math.PI * 2);
+    ctx.moveTo(-14, -46);
+    ctx.lineTo(0, -32);
+    ctx.lineTo(14, -46);
+    ctx.closePath();
     ctx.fill();
+    // jacket centre seam
+    ctx.strokeStyle = '#404048';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(5.5, -63, 2, 0, Math.PI * 2);
-    ctx.fill();
-    // mouth grill
-    ctx.strokeStyle = '#1a2028';
-    ctx.lineWidth = 1.5;
-    [-4, -2, 0, 2, 4].forEach(mx => {
+    ctx.moveTo(0, -32);
+    ctx.lineTo(0, -8);
+    ctx.stroke();
+    // buttons
+    ctx.fillStyle = '#303038';
+    [-28, -20, -12].forEach(by => {
       ctx.beginPath();
-      ctx.moveTo(mx, -55);
-      ctx.lineTo(mx, -51);
-      ctx.stroke();
+      ctx.arc(0, by, 1.2, 0, Math.PI * 2);
+      ctx.fill();
     });
   }
 
+  // arms - jacket sleeves
+  ctx.strokeStyle = c('#606068', silhouette);
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(-13, -38);
+  ctx.lineTo(-24, -20);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(13, -38);
+  ctx.lineTo(24, -20);
+  ctx.stroke();
+  // hands
+  ctx.fillStyle = c('#b0a090', silhouette);
+  ctx.beginPath();
+  ctx.arc(-24, -20, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(24, -20, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // neck
+  ctx.fillStyle = c('#b0a090', silhouette);
+  ctx.beginPath();
+  ctx.roundRect(-4, -52, 8, 8, 1);
+  ctx.fill();
+
+  // head - rounded, slightly wide
+  ctx.fillStyle = c('#b0a090', silhouette);
+  ctx.beginPath();
+  ctx.ellipse(0, -62, 13, 13, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (!silhouette) {
+    // white mask - covers most of face, slightly oval
+    ctx.fillStyle = '#e8e8e8';
+    ctx.beginPath();
+    ctx.ellipse(0, -62, 11, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // mask highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.ellipse(-3, -66, 4, 5, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    // mask eye holes - dark hollow recesses
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(-4, -64, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(4, -64, 3, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // red glow in eye holes
+    ctx.fillStyle = '#cc1010';
+    ctx.shadowBlur = 4;
+    ctx.shadowColor = '#ff0000';
+    ctx.beginPath();
+    ctx.arc(-4, -64, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(4, -64, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // mask mouth slit
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-4, -56);
+    ctx.lineTo(4, -56);
+    ctx.stroke();
+    // mask outline
+    ctx.strokeStyle = '#c0c0c0';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.ellipse(0, -62, 11, 12, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
   // nails sticking out of head - the key feature
-  ctx.strokeStyle = c('#8898a8', silhouette);
+  ctx.strokeStyle = c('#a0a8b0', silhouette);
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
   const nails = [
-    [-8, -72, -10, -84],
-    [-3, -72, -4, -85],
-    [3, -72, 4, -85],
-    [8, -72, 10, -84],
-    [0, -72, 0, -86],
-    [-11, -68, -18, -76],
-    [11, -68, 18, -76],
+    [-7, -74, -9, -86],
+    [-2, -74, -2, -88],
+    [3, -74, 4, -87],
+    [8, -73, 11, -85],
+    [-11, -68, -18, -78],
+    [11, -68, 18, -78],
+    [0, -74, 1, -88],
   ];
   nails.forEach(([x1, y1, x2, y2]) => {
+    // nail shaft
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-    // nail head (flat top)
-    ctx.fillStyle = c('#a0b0c0', silhouette);
+    // flat nail head
+    ctx.fillStyle = c('#c0c8d0', silhouette);
     ctx.beginPath();
-    ctx.arc(x2, y2, 2, 0, Math.PI * 2);
+    ctx.arc(x2, y2, 2.2, 0, Math.PI * 2);
     ctx.fill();
+    if (!silhouette) {
+      // nail highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.beginPath();
+      ctx.arc(x2 - 0.5, y2 - 0.5, 0.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
   });
 }
 
-
 // Creature from the Deep - fishman with scuba gear
-export function drawCreature(ctx, frame, silhouette) {
+function drawCreature(ctx, frame, silhouette) {
   const walk = Math.sin(frame * 0.07) * 5;
 
   // legs/fins
