@@ -125,3 +125,14 @@ export function requireNonNull(x) {
   }
   return x;
 }
+
+/**
+ * Show/hide the given element.
+ * This sets the element's `style.display` properties, so do not use if you're
+ * precious about that.
+ * @param {HTMLElement} el
+ * @param {boolean} hide hide or show the element?
+ */
+export function hideElement(el, hide) {
+  el.style.display = hide ? "none" : "block";
+}

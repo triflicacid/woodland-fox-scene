@@ -33,7 +33,7 @@ import {FireworksComponent} from "@/components/bonfire/FireworkComponent";
 import {BonfireComponent} from "@/components/bonfire/BonfireComponent";
 import {GuyFawkesComponent} from "@/components/bonfire/GuyFawkesComponent";
 import {EventListenerComponent} from "@/components/EventListenerComponent";
-import {requireNonNull} from "@/utils";
+import {hideElement, requireNonNull} from "@/utils";
 import {Subscriptions} from "@/core/Subscriptions";
 import {BalloonsComponent} from "@/components/birthday/BalloonsComponent";
 import {BuntingComponent} from "@/components/birthday/BuntingComponent";
@@ -263,8 +263,9 @@ export class Scene {
     MOON_PHASES.forEach((_, i) => {
       const btn = document.getElementById(`btn-phase-${i}`);
       btn.classList.toggle('btn-active', state.moonPhase === i);
-      btn.disabled = state.timeOfDay !== 'night';
     });
+    // hide all moon buttons as there are a lot
+    hideElement(document.getElementById('moon-buttons'), state.timeOfDay !== 'night');
 
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
@@ -341,6 +342,7 @@ export class Scene {
 
     // main wake button
     document.getElementById('btn')?.addEventListener('click', () => {
+      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
       state.fox.phase = 'standup';
       state.fox.phaseT = 0;
@@ -350,6 +352,7 @@ export class Scene {
 
     // wander button
     document.getElementById('btn-wander')?.addEventListener('click', () => {
+      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
       state.fox.phase = 'wander_out';
       state.fox.phaseT = 0;
