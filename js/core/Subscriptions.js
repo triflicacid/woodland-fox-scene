@@ -122,6 +122,16 @@ export class Subscriptions {
   }
 
   /**
+   * create a subscription for mothron dive events
+   * @param {string} subscriber
+   * @param {function(): void} onChange
+   * @returns {Subscription}
+   */
+  static onMothronDive(subscriber, onChange) {
+    return new Subscription(Events.EVENT_MOTHRON_DIVE, subscriber, onChange);
+  }
+
+  /**
    * create a new subscription for a main buttons enable/disable event
    * @param {string} subscriber
    * @param {function({enabled:boolean}): void} onChange

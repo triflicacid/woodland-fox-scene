@@ -61,6 +61,7 @@ export class SceneState {
       asleep: true, // used for Zs and default eye state (open/closed)
       eyeTransitionT: -1,
       singingMouthT: 0,
+      quiverT: -1, // -1 = not quivering, 0+ = quiver timer
     };
 
     // bunny state
@@ -192,6 +193,8 @@ export class SceneState {
     } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'day')) {
+      this.specialEvent = null;
+    } else if (this.specialEvent === 'eclipse' && this.timeOfDay !== 'day') {
       this.specialEvent = null;
     }
   }

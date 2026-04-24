@@ -25,8 +25,8 @@ export class ButterfliesComponent extends DrawComponent {
   }
 
   isEnabled() {
-    const {todBlend, season, weather} = this.scene;
-    return todBlend > 0.4
+    const {todBlend, season, weather, specialEvent} = this.scene;
+    return todBlend > 0.4 && specialEvent !== 'eclipse'
         && !(season === 'winter' || season === 'autumn')
         && !(weather === 'rain' || weather === 'storm');
   }
