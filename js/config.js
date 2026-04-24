@@ -29,7 +29,7 @@ export const PROBABILITY = {
   HEDGEHOG_SPAWN_NOTE: 0.04,
   ECLIPSE: {
     MOTHRON_SPAWN:  0.0004,
-    MONSTER_SPAWN:  0.002,
+    MONSTER_SPAWN:  0.2,
   }
 };
 

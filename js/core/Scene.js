@@ -53,6 +53,7 @@ import {MothronComponent} from "@/components/eclipse/MothronComponent";
 import {EclipseMonstersComponent} from "@/components/eclipse/EclipseMonstersComponent";
 import {ScreenShakeComponent} from "@/components/shake/ScreenShakeComponent";
 import {ScreenShakeRestoreComponent} from "@/components/shake/ScreenShakeRestoreComponent";
+import {EclipseSilhouettesComponent} from "@/components/eclipse/EclipseSilhouttesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -99,11 +100,12 @@ export class Scene {
       new ConstellationsComponent(this.eventBus, this.state, this.ctx, W, H),
       new NorthStarComponent(this.eventBus, this.state, this.ctx, W, H),
 
+      new EclipseSilhouettesComponent(this.eventBus, this.state, this.ctx, W, H),
+
       new BackgroundTreesComponent(this.eventBus, this.state, this.ctx),
 
       new LightningComponent(this.eventBus, this.state, this.ctx, W, H),
       new SmokeComponent(this.eventBus, this.state, this.ctx, W, H),
-      new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new ForegroundTreesComponent(this.eventBus, this.state, this.ctx),
 
@@ -131,6 +133,7 @@ export class Scene {
       new WindComponent(this.eventBus, this.state, this.ctx, W, H),
       new FogOverlayComponent(this.eventBus, this.state, this.ctx, W, H),
 
+      new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
       new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),

@@ -1,0 +1,54 @@
+import {DrawComponent} from '@/core/DrawComponent';
+import {prob, rnd, rndf} from '@/utils';
+import {drawMonster, MONSTER_TYPES} from "@/components/eclipse/drawMonsters";
+
+/**
+ * drifting background monster silhouettes during solar eclipse
+ */
+export class EclipseSilhouettesComponent extends DrawComponent {
+  /** @type {Array<Object>} */
+  _silhouettes = [];
+
+  static COMPONENT_NAME = "EclipseSilhouettesComponent";
+  getName() {
+    return EclipseSilhouettesComponent.COMPONENT_NAME;
+  }
+
+  isEnabled() {
+    return this.scene.specialEvent === 'eclipse';
+  }
+
+  initialise() {
+    this._silhouettes = MONSTER_TYPES.map((type, i) => ({
+      x: 60 + i * 110 + rndf(30),
+      y: this.H * 0.15 + rnd(this.H * 0.3),
+      vx: (0.15 + rnd(0.15)) * (prob(0.5) ? 1 : -1),
+      type,
+      phase: rnd(Math.PI * 2),
+      scale: 0.5 + rnd(0.3),
+      alpha: 0.25 + rnd(0.2),
+    }));
+  }
+
+  tick() {
+    const {W} = this;
+    this._silhouettes.forEach(s => {
+      s.x += s.vx;
+      if (s.x > W + 80) s.x = -80;
+      if (s.x < -80) s.x = W + 80;
+    });
+  }
+
+  draw() {
+    const {ctx} = this;
+    const {frame} = this.scene;
+    this._silhouettes.forEach(s => {
+      ctx.save();
+      ctx.translate(s.x, s.y);
+      ctx.scale(s.scale * (s.vx < 0 ? -1 : 1), s.scale);
+      ctx.globalAlpha = s.alpha;
+      drawMonster(ctx, s.type, frame + s.phase, true);
+      ctx.restore();
+    });
+  }
+}
