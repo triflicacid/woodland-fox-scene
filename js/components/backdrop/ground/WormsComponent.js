@@ -56,7 +56,9 @@ export class WormsComponent extends DrawComponent {
   }
 
   draw() {
-    const {ctx, frame} = this;
+    const {ctx} = this;
+    const {frame} = this.scene;
+
     this._worms.forEach(w => {
       const alpha = w.alpha(this.scene.puddleLevel);
       const wormX = w.x(frame);
