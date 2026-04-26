@@ -4,13 +4,17 @@ import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";
 
 /**
- * render bunny which hops to greet the fox
+ * render bunny which hops to greet the fox.
+ * handles spawning heart particles during Visitor scene.
  */
 export class BunnyComponent extends DrawComponent {
   /** @type {MusicalNotesComponent} */
   _notes;
+  /** @type {HeartsComponent} */
+  _hearts;
 
   static COMPONENT_NAME = "BunnyComponent";
+
   getName() {
     return BunnyComponent.COMPONENT_NAME;
   }
@@ -22,10 +26,12 @@ export class BunnyComponent extends DrawComponent {
    * @param {number} W - canvas width
    * @param {number} H - canvas height
    * @param {MusicalNotesComponent} notes
+   * @param {HeartsComponent} hearts
    */
-  constructor(eventBus, scene, ctx, W, H, notes) {
+  constructor(eventBus, scene, ctx, W, H, notes, hearts) {
     super(eventBus, scene, ctx, W, H);
     this._notes = notes;
+    this._hearts = hearts;
   }
 
   isEnabled() {
@@ -102,7 +108,6 @@ export class BunnyComponent extends DrawComponent {
       if (bunny.phaseT >= 90) {
         bunny.phase = 'nuzzle';
         bunny.phaseT = 0;
-        this.scene.hearts = [];
         this.eventBus.dispatch(Events.statusText(this.getName(), 'They touch noses...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
@@ -112,25 +117,14 @@ export class BunnyComponent extends DrawComponent {
       // spawn heart particles periodically
       if (bunny.phaseT % 20 === 0 && bunny.phaseT < 140) {
         const noseX = (bunny.x + 35 + fox.x - 34) / 2;
-        this.scene.hearts.push({
-          x: noseX + (Math.random() - 0.5) * 20,
-          y: bunny.y - 72,
-          vy: -0.55 - rnd(0.45),
-          life: 0,
-        });
+        this._hearts.spawn(noseX + (Math.random() - 0.5) * 20, bunny.y - 72);
       }
-      this.scene.hearts = this.scene.hearts.filter(h => {
-        h.y += h.vy;
-        h.life++;
-        return h.life < 65;
-      });
 
       if (bunny.phaseT >= 160) {
         bunny.phase = 'fox_sleep';
         bunny.phaseT = 0;
         fox.phase = 'bunny_curling';
         fox.phaseT = 0;
-        this.scene.hearts = [];
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }

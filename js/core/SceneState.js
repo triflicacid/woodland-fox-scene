@@ -74,9 +74,6 @@ export class SceneState {
       hop: {arc: 0, from: -80, to: -80, frame: 1, t: 0},
     };
 
-    // contains heart particles
-    this.hearts = [];
-
     // birds/owl state
     this.owlForced = false;
 
