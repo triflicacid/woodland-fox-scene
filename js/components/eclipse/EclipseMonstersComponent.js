@@ -13,6 +13,7 @@ export class EclipseMonstersComponent extends DrawComponent {
   _spawnCooldown = 0;
 
   static COMPONENT_NAME = "EclipseMonstersComponent";
+
   getName() {
     return EclipseMonstersComponent.COMPONENT_NAME;
   }
@@ -56,7 +57,7 @@ export class EclipseMonstersComponent extends DrawComponent {
    * @type {string | undefined} type monster type (random if unspecified)
    * @type {number | undefined} form monster form (random if unspecified)
    */
-  summon(type=undefined, form=undefined) {
+  summon(type = undefined, form = undefined) {
     if (type === undefined) type = randomMonster();
     const fromRight = prob(0.5);
     this._monsters.push({

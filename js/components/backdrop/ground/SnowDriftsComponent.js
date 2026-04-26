@@ -5,6 +5,7 @@ import {DrawComponent} from "@/core/DrawComponent";
  */
 export class SnowDriftsComponent extends DrawComponent {
   static COMPONENT_NAME = "SnowDriftsComponent";
+
   getName() {
     return SnowDriftsComponent.COMPONENT_NAME;
   }

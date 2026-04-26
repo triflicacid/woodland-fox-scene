@@ -14,7 +14,7 @@ export class Subscription {
    * @param {(function(value: T): void) | (function(event: Event<T>): void)} onReceive called with the event's value or the event itself
    * @param {boolean} detail provide callback with entire event or just its payload
    */
-  constructor(eventName, subscriber, onReceive, detail=false) {
+  constructor(eventName, subscriber, onReceive, detail = false) {
     this.eventName = eventName;
     this.subscriber = subscriber;
     this.onReceive = onReceive;

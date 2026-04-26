@@ -13,6 +13,7 @@ export class BasicComponent extends Component {
   }
 
   static COMPONENT_NAME = "BasicComponent";
+
   getName() {
     return BasicComponent.COMPONENT_NAME;
   }

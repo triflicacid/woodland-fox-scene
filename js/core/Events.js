@@ -83,7 +83,7 @@ export class Events {
    * @param {boolean} loud was the firework loud?
    */
   static fireworkBang(originator, loud) {
-    return new Event(Events.EVENT_FIREWORK_BANG, originator, { loud });
+    return new Event(Events.EVENT_FIREWORK_BANG, originator, {loud});
   }
 
   /**
@@ -92,7 +92,7 @@ export class Events {
    * @param {boolean} superBolt was the bolt a super bolt?
    */
   static lightningStrike(originator, superBolt) {
-    return new Event(Events.EVENT_LIGHTNING_STRIKE, originator, { superBolt });
+    return new Event(Events.EVENT_LIGHTNING_STRIKE, originator, {superBolt});
   }
 
   /**
@@ -113,7 +113,7 @@ export class Events {
    * @returns {Event}
    */
   static characterAction(originator, character, action) {
-    return new Event(Events.EVENT_CHARACTER_ACTION, originator, { character, action });
+    return new Event(Events.EVENT_CHARACTER_ACTION, originator, {character, action});
   }
 
   /**
@@ -123,7 +123,7 @@ export class Events {
    * @returns {Event}
    */
   static statusText(originator, text) {
-    return new Event(Events.EVENT_STATUS_TEXT, originator, { text });
+    return new Event(Events.EVENT_STATUS_TEXT, originator, {text});
   }
 
   /**

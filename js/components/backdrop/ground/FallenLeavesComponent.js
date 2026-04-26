@@ -9,6 +9,7 @@ export class FallenLeavesComponent extends DrawComponent {
   leaves;
 
   static COMPONENT_NAME = "FallenLeavesComponent";
+
   getName() {
     return FallenLeavesComponent.COMPONENT_NAME;
   }

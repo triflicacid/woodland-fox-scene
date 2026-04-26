@@ -22,6 +22,7 @@ const PLANETS = [
  */
 export class PlanetsComponent extends DrawComponent {
   static COMPONENT_NAME = 'PlanetsComponent';
+
   getName() {
     return PlanetsComponent.COMPONENT_NAME;
   }

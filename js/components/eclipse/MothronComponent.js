@@ -142,7 +142,7 @@ export class MothronComponent extends DrawComponent {
     ctx.fill();
 
     // glowing eyes
-    ctx.fillStyle   = '#ff8020';
+    ctx.fillStyle = '#ff8020';
     ctx.shadowBlur = 8;
     ctx.shadowColor = '#e06000';
     ctx.beginPath();

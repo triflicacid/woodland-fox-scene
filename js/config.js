@@ -82,6 +82,6 @@ export const PALETTES = {
 export const MOON_PHASES = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
 
 export const ECLIPSE = {
-  SKY_COL:    '#1a0a2a',
+  SKY_COL: '#1a0a2a',
   CORONA_COL: '#fff8e0',
 };

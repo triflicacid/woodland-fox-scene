@@ -76,6 +76,7 @@ export const CONSTELLATIONS = [
  */
 export class ConstellationsComponent extends DrawComponent {
   static COMPONENT_NAME = 'ConstellationsComponent';
+
   getName() {
     return ConstellationsComponent.COMPONENT_NAME;
   }

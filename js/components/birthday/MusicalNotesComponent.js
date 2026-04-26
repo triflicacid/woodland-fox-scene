@@ -11,6 +11,7 @@ export class MusicalNotesComponent extends DrawComponent {
   _notes = [];
 
   static COMPONENT_NAME = "MusicalNotesComponent";
+
   getName() {
     return MusicalNotesComponent.COMPONENT_NAME;
   }

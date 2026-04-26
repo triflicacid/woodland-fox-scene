@@ -9,6 +9,7 @@ export class SnowflakesComponent extends DrawComponent {
   snowflakes;
 
   static COMPONENT_NAME = "SnowflakesComponent";
+
   getName() {
     return SnowflakesComponent.COMPONENT_NAME;
   }
@@ -58,4 +59,5 @@ export class SnowflakesComponent extends DrawComponent {
       ctx.fill();
       ctx.restore();
     });
-  }}
+  }
+}

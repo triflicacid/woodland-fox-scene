@@ -15,6 +15,7 @@ export class BirdsComponent extends DrawComponent {
   flyingBirds;
 
   static COMPONENT_NAME = "BirdsComponent";
+
   getName() {
     return BirdsComponent.COMPONENT_NAME;
   }

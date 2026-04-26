@@ -9,6 +9,7 @@ export class SmokeComponent extends DrawComponent {
   particles;
 
   static COMPONENT_NAME = "SmokeComponent";
+
   getName() {
     return SmokeComponent.COMPONENT_NAME;
   }

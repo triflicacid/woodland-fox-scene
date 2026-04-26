@@ -10,6 +10,7 @@ export class WindComponent extends DrawComponent {
   windDebris;
 
   static COMPONENT_NAME = "WindComponent";
+
   getName() {
     return WindComponent.COMPONENT_NAME;
   }

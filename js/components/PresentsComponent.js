@@ -26,6 +26,7 @@ const BIRTHDAY_PRESENTS = [
  */
 export class PresentsComponent extends DrawComponent {
   static COMPONENT_NAME = "PresentsComponent";
+
   getName() {
     return PresentsComponent.COMPONENT_NAME;
   }

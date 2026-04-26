@@ -375,7 +375,7 @@ export class Scene {
       // click on laptop to cycle screen mode
       if (this._laptop.isEnabled() && this._laptop.containsPoint(cx, cy)) {
         this._laptop.cycleScreenMode();
-        return;
+
       }
     });
 

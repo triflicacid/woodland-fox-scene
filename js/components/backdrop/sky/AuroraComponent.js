@@ -11,6 +11,7 @@ export class AuroraComponent extends DrawComponent {
   on = false;
 
   static COMPONENT_NAME = "AuroraComponent";
+
   getName() {
     return AuroraComponent.COMPONENT_NAME;
   }

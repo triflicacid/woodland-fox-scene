@@ -6,6 +6,7 @@ import {Subscription} from "@/event/Subscription";
  */
 export class EventListenerComponent extends Component {
   static COMPONENT_NAME = "EventListenerComponent";
+
   getName() {
     return EventListenerComponent.COMPONENT_NAME;
   }

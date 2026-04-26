@@ -1370,8 +1370,7 @@ export function drawPossessed(ctx, frame, silhouette, form) {
   ctx.translate(0, float);
   ctx.rotate(spin);
 
-  if (form === 0) {
-    // -- knight armour --
+  if (form === 0) { // knight armour
     // greaves (legs floating, slightly apart)
     ctx.fillStyle = c('#6878a0', silhouette);
     ctx.beginPath();
@@ -1470,8 +1469,7 @@ export function drawPossessed(ctx, frame, silhouette, form) {
       ctx.stroke();
     }
 
-  } else {
-    // -- samurai armour --
+  } else { // samurai armour
     // hakama (leg coverings)
     ctx.fillStyle = c('#4a2a18', silhouette);
     ctx.beginPath();

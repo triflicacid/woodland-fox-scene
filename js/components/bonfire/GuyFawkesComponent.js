@@ -24,6 +24,7 @@ export class GuyFawkesComponent extends DrawComponent {
   _cooldown = 0;
 
   static COMPONENT_NAME = "GuyFawkesComponent";
+
   getName() {
     return GuyFawkesComponent.COMPONENT_NAME;
   }
@@ -194,23 +195,23 @@ export class GuyFawkesComponent extends DrawComponent {
     if (this._phase === 'watching' || this._phase === 'salute') {
       // fist rises from side of cloak as he watches
       // t goes 0->1 over watching phase, then holds at 1 during salute
-      const riseT  = this._phase === 'salute' ? 1
+      const riseT = this._phase === 'salute' ? 1
           : clamp(this._phaseT / 40, 0, 1); // rises over first 40 frames of watching
 
       // pump slightly during salute
-      const pump   = this._phase === 'salute'
+      const pump = this._phase === 'salute'
           ? Math.sin(this._phaseT * 0.25) * 4 : 0;
 
       // emerges from right side of cloak, punches upward
-      const fistX  = 14;
-      const fistY  = -44 - riseT * 36 + pump; // rises from cloak hem to above head
+      const fistX = 14;
+      const fistY = -44 - riseT * 36 + pump; // rises from cloak hem to above head
 
       // arm - only visible portion above cloak edge
       const armStartY = -36; // cloak edge
       if (fistY < armStartY) {
         ctx.strokeStyle = '#1a1a2a';
-        ctx.lineWidth   = 5;
-        ctx.lineCap     = 'round';
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(fistX, armStartY);
         ctx.lineTo(fistX, fistY + 4);
@@ -224,7 +225,7 @@ export class GuyFawkesComponent extends DrawComponent {
       ctx.fill();
       // knuckle lines
       ctx.strokeStyle = '#a07848';
-      ctx.lineWidth   = 0.8;
+      ctx.lineWidth = 0.8;
       [-2, 0, 2].forEach(ky => {
         ctx.beginPath();
         ctx.moveTo(fistX - 3, fistY + ky);

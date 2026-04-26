@@ -26,6 +26,7 @@ export class DeerComponent extends DrawComponent {
   }
 
   static COMPONENT_NAME = "DeerComponent";
+
   getName() {
     return DeerComponent.COMPONENT_NAME;
   }

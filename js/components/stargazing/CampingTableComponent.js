@@ -10,6 +10,7 @@ export class CampingTableComponent extends DrawComponent {
   _scale = 0.97;
 
   static COMPONENT_NAME = 'CampingTableComponent';
+
   getName() {
     return CampingTableComponent.COMPONENT_NAME;
   }

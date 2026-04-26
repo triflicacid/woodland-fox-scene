@@ -20,6 +20,7 @@ export class ScreenShakeRestoreComponent extends DrawComponent {
   }
 
   static COMPONENT_NAME = 'ScreenShakeRestoreComponent';
+
   getName() {
     return ScreenShakeRestoreComponent.COMPONENT_NAME;
   }

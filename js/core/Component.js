@@ -29,7 +29,8 @@ export class Component {
   /**
    * called once after scene has been initialised
    */
-  initialise() {}
+  initialise() {
+  }
 
   /**
    * is this component enabled this frame?
@@ -44,10 +45,12 @@ export class Component {
   /**
    * draw this component.
    */
-  draw() {}
+  draw() {
+  }
 
   /**
    * process a tick update for this component.
    */
-  tick() {}
+  tick() {
+  }
 }
