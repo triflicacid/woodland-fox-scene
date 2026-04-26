@@ -37,6 +37,7 @@ export class EasterEggsComponent extends DrawComponent {
   _eggs = [];
 
   static COMPONENT_NAME = "EasterEggsComponent";
+
   getName() {
     return EasterEggsComponent.COMPONENT_NAME;
   }
@@ -49,7 +50,7 @@ export class EasterEggsComponent extends DrawComponent {
           const accent = PASTEL_COLS[Math.floor(rnd(PASTEL_COLS.length))];
           // pre-generate dot positions so they don't jump each frame
           const dots = pattern === 'dots'
-              ? Array.from({length: 5}, () => ({ dx: rndf(1) * 0.6, dy: rndf(1) * 0.6 }))
+              ? Array.from({length: 5}, () => ({dx: rndf(1) * 0.6, dy: rndf(1) * 0.6}))
               : [];
           return {
             x: cx + rndf(28),

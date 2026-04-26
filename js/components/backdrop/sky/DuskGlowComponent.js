@@ -6,6 +6,7 @@ import {clamp} from "@/utils";
  */
 export class DuskGlowComponent extends DrawComponent {
   static COMPONENT_NAME = "DuskGlowComponent";
+
   getName() {
     return DuskGlowComponent.COMPONENT_NAME;
   }

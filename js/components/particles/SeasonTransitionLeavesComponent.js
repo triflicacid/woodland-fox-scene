@@ -11,6 +11,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
   seasonLeaves;
 
   static COMPONENT_NAME = "SeasonTransitionLeavesComponent";
+
   getName() {
     return SeasonTransitionLeavesComponent.COMPONENT_NAME;
   }

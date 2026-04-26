@@ -6,6 +6,7 @@ import {clamp} from "@/utils";
  */
 export class StarsComponent extends DrawComponent {
   static COMPONENT_NAME = "StarsComponent";
+
   getName() {
     return StarsComponent.COMPONENT_NAME;
   }

@@ -6,6 +6,7 @@ import {DrawComponent} from "@/core/DrawComponent";
  */
 export class MistComponent extends DrawComponent {
   static COMPONENT_NAME = "MistComponent";
+
   getName() {
     return MistComponent.COMPONENT_NAME;
   }

@@ -48,8 +48,8 @@ export class GroundBackdropComponents extends ComponentGroup {
 }
 
 /**
-* group together backdrop sky components
-*/
+ * group together backdrop sky components
+ */
 export class SkyBackdropComponents extends ComponentGroup {
   /**
    * @param {EventBus} eventBus

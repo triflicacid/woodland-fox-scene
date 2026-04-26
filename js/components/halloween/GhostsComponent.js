@@ -10,6 +10,7 @@ export class GhostsComponent extends DrawComponent {
   ghosts;
 
   static COMPONENT_NAME = "GhostsComponent";
+
   getName() {
     return GhostsComponent.COMPONENT_NAME;
   }

@@ -9,6 +9,7 @@ export class FogOverlayComponent extends DrawComponent {
   fogParticles;
 
   static COMPONENT_NAME = "FogOverlayComponent";
+
   getName() {
     return FogOverlayComponent.COMPONENT_NAME;
   }

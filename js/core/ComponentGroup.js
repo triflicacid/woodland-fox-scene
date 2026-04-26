@@ -9,7 +9,7 @@ export class ComponentGroup extends Component {
    * @param {SceneState} scene
    * @param {Array<Component> | undefined} components
    */
-  constructor(eventBus, scene, components=undefined) {
+  constructor(eventBus, scene, components = undefined) {
     super(eventBus, scene);
     /** @type{Array<Component>} */
     this._components = components !== undefined ? components.slice() : [];

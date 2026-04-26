@@ -11,6 +11,7 @@ const LETTER_COLS = ['#ffcc00', '#ff6633', '#ff3399', '#33aaff', '#66cc33', '#cc
  */
 export class BirthdayBannerComponent extends DrawComponent {
   static COMPONENT_NAME = "BirthdayBannerComponent";
+
   getName() {
     return BirthdayBannerComponent.COMPONENT_NAME;
   }

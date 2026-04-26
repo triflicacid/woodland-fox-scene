@@ -9,6 +9,7 @@ export class HeartsComponent extends DrawComponent {
   _hearts = [];
 
   static COMPONENT_NAME = "HeartsComponent";
+
   getName() {
     return HeartsComponent.COMPONENT_NAME;
   }

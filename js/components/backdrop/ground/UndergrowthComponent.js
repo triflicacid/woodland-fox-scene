@@ -5,6 +5,7 @@ import {DrawComponent} from "@/core/DrawComponent";
  */
 export class UndergrowthComponent extends DrawComponent {
   static COMPONENT_NAME = "UndergrowthComponent";
+
   getName() {
     return UndergrowthComponent.COMPONENT_NAME;
   }

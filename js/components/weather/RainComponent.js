@@ -9,6 +9,7 @@ export class RainComponent extends DrawComponent {
   raindrops;
 
   static COMPONENT_NAME = "RainComponent";
+
   getName() {
     return RainComponent.COMPONENT_NAME;
   }

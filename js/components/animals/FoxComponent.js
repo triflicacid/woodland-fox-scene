@@ -763,29 +763,29 @@ export class FoxComponent extends DrawComponent {
 
     // scared quiver lines when eclipse_watch
     if (fox.quiverT >= 0) {
-      const qt      = fox.quiverT / 60;
-      const alpha   = Math.sin(qt * Math.PI) * 0.8;
-      const jitter  = Math.sin(fox.quiverT * 1.8) * 2.5;
+      const qt = fox.quiverT / 60;
+      const alpha = Math.sin(qt * Math.PI) * 0.8;
+      const jitter = Math.sin(fox.quiverT * 1.8) * 2.5;
 
       ctx.save();
-      ctx.globalAlpha  = alpha;
-      ctx.strokeStyle  = '#ff8040';
-      ctx.lineWidth    = 1.2;
-      ctx.lineCap      = 'round';
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#ff8040';
+      ctx.lineWidth = 1.2;
+      ctx.lineCap = 'round';
 
       // small jagged fear lines radiating from the fox body
       const lines = [
-        { ox: -30, oy: -30, angle: -2.4, len: 8 },
-        { ox: -28, oy: -45, angle: -2.0, len: 6 },
-        { ox:  10, oy: -50, angle: -0.8, len: 7 },
-        { ox:  12, oy: -30, angle: -0.4, len: 6 },
-        { ox:  -5, oy: -60, angle: -1.5, len: 9 },
+        {ox: -30, oy: -30, angle: -2.4, len: 8},
+        {ox: -28, oy: -45, angle: -2.0, len: 6},
+        {ox: 10, oy: -50, angle: -0.8, len: 7},
+        {ox: 12, oy: -30, angle: -0.4, len: 6},
+        {ox: -5, oy: -60, angle: -1.5, len: 9},
       ];
 
       lines.forEach((l, i) => {
         const wobble = Math.sin(fox.quiverT * 0.6 + i) * 0.3;
-        const a      = l.angle + wobble;
-        const sx     = l.ox + jitter * (i % 2 === 0 ? 1 : -1);
+        const a = l.angle + wobble;
+        const sx = l.ox + jitter * (i % 2 === 0 ? 1 : -1);
         ctx.beginPath();
         ctx.moveTo(sx, l.oy);
         // two-segment zigzag line

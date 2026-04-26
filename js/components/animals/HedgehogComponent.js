@@ -30,6 +30,7 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   static COMPONENT_NAME = "HedgehogComponent";
+
   getName() {
     return HedgehogComponent.COMPONENT_NAME;
   }

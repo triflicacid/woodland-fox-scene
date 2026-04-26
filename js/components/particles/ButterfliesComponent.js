@@ -10,6 +10,7 @@ export class ButterfliesComponent extends DrawComponent {
   butterflies;
 
   static COMPONENT_NAME = "ButterfliesComponent";
+
   getName() {
     return ButterfliesComponent.COMPONENT_NAME;
   }

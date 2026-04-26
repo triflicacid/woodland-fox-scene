@@ -6,6 +6,7 @@ import {DrawComponent} from "@/core/DrawComponent";
  */
 export class PuddlesComponent extends DrawComponent {
   static COMPONENT_NAME = "PuddlesComponent";
+
   getName() {
     return PuddlesComponent.COMPONENT_NAME;
   }

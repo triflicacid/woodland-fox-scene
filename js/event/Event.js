@@ -9,7 +9,7 @@ export class Event {
    * @param {T} payload event payload
    * @param {boolean | undefined} alertOriginator
    */
-  constructor(eventName, originator, payload, alertOriginator=false) {
+  constructor(eventName, originator, payload, alertOriginator = false) {
     this.eventName = eventName;
     this.originator = originator;
     this.payload = payload;

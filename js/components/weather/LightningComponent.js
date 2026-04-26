@@ -11,10 +11,11 @@ export class LightningComponent extends DrawComponent {
   _bolts = [];
 
   static COMPONENT_NAME = "LightningComponent";
+
   getName() {
     return LightningComponent.COMPONENT_NAME;
   }
-  
+
   isEnabled() {
     return this.scene.weather === 'storm';
   }

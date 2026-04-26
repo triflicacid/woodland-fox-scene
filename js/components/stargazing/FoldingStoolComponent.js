@@ -10,6 +10,7 @@ export class FoldingStoolComponent extends DrawComponent {
   _scale = 1.2;
 
   static COMPONENT_NAME = 'FoldingStoolComponent';
+
   getName() {
     return FoldingStoolComponent.COMPONENT_NAME;
   }

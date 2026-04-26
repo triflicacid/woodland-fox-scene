@@ -11,6 +11,7 @@ export class CometComponent extends DrawComponent {
   comets = [];
 
   static COMPONENT_NAME = "CometComponent";
+
   getName() {
     return CometComponent.COMPONENT_NAME;
   }

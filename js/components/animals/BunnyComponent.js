@@ -1,4 +1,4 @@
-import {prob, rnd} from '@/utils';
+import {prob} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";

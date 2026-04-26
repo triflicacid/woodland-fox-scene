@@ -1,6 +1,6 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {prob, rnd, rndf} from '@/utils';
-import {drawMonster, MONSTER_TYPES, randomMonster, randomMonsterForm} from "@/components/eclipse/drawMonsters";
+import {drawMonster, randomMonster, randomMonsterForm} from "@/components/eclipse/drawMonsters";
 import {Subscriptions} from "@/core/Subscriptions";
 
 /**
@@ -11,6 +11,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
   _silhouettes = [];
 
   static COMPONENT_NAME = "EclipseSilhouettesComponent";
+
   getName() {
     return EclipseSilhouettesComponent.COMPONENT_NAME;
   }

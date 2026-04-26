@@ -10,6 +10,7 @@ export class WormsComponent extends DrawComponent {
   _worms = [];
 
   static COMPONENT_NAME = "WormsComponent";
+
   getName() {
     return WormsComponent.COMPONENT_NAME;
   }

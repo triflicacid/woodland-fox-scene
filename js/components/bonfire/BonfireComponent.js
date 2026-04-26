@@ -9,6 +9,7 @@ export class BonfireComponent extends DrawComponent {
   smoke = [];
 
   static COMPONENT_NAME = "BonfireComponent";
+
   getName() {
     return BonfireComponent.COMPONENT_NAME;
   }

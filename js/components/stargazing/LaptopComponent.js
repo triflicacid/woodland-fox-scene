@@ -32,7 +32,7 @@ export class LaptopComponent extends DrawComponent {
 
   cycleScreenMode() {
     const idx = this._modes.indexOf(this._mode);
-    this._mode  = this._modes[(idx + 1) % this._modes.length];
+    this._mode = this._modes[(idx + 1) % this._modes.length];
   }
 
   draw() {

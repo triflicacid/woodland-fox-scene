@@ -31,6 +31,7 @@ export class ChicksComponent extends DrawComponent {
   forced = false;
 
   static COMPONENT_NAME = "ChicksComponent";
+
   getName() {
     return ChicksComponent.COMPONENT_NAME;
   }
@@ -90,7 +91,7 @@ export class ChicksComponent extends DrawComponent {
         peckAmt: 0,
         y: H * c.yF + Math.sin(frame * 0.18 + c.phase) * 1.5 // slight waddle bob
       })),
-      ...this._peckers.map(c  => ({
+      ...this._peckers.map(c => ({
         ...c,
         pecking: true,
         peckAmt: Math.max(0, Math.sin(c.peckPhase)) * 6, // head dips down

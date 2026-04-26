@@ -5,6 +5,7 @@ import {DrawComponent} from "@/core/DrawComponent";
  */
 export class GravestoneComponent extends DrawComponent {
   static COMPONENT_NAME = "GravestoneComponent";
+
   getName() {
     return GravestoneComponent.COMPONENT_NAME;
   }

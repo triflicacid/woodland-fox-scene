@@ -14,6 +14,7 @@ const FLAG_H = 18;
  */
 export class BuntingComponent extends DrawComponent {
   static COMPONENT_NAME = "BuntingComponent";
+
   getName() {
     return BuntingComponent.COMPONENT_NAME;
   }

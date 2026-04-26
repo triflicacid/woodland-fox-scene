@@ -13,6 +13,7 @@ export class BalloonsComponent extends DrawComponent {
   _balloons = [];
 
   static COMPONENT_NAME = "BalloonsComponent";
+
   getName() {
     return BalloonsComponent.COMPONENT_NAME;
   }

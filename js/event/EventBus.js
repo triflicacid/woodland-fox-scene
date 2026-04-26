@@ -87,8 +87,8 @@ export class EventBus {
     }
 
     [
-        ...this._subscriptions.get(event.eventName),
-        ...this._special
+      ...this._subscriptions.get(event.eventName),
+      ...this._special
     ]
         .filter(s => event.alertOriginator || s.subscriber !== event.originator)
         .forEach(s => s.trigger(event));

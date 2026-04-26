@@ -7,6 +7,7 @@ import {Events} from "@/core/Events";
  */
 export class TimeOfDayComponent extends Component {
   static COMPONENT_NAME = "TimeOfDayComponent";
+
   getName() {
     return TimeOfDayComponent.COMPONENT_NAME;
   }

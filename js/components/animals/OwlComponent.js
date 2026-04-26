@@ -16,6 +16,7 @@ export class OwlComponent extends DrawComponent {
   };
 
   static COMPONENT_NAME = "OwlComponent";
+
   getName() {
     return OwlComponent.COMPONENT_NAME;
   }

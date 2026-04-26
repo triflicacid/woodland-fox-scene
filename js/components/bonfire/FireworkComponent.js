@@ -14,6 +14,7 @@ export class FireworksComponent extends DrawComponent {
   bursts = [];
 
   static COMPONENT_NAME = "FireworksComponent";
+
   getName() {
     return FireworksComponent.COMPONENT_NAME;
   }
