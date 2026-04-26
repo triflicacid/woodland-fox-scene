@@ -98,6 +98,8 @@ export class SceneState {
       x: 220,
       y_fraction: 0.72,
     };
+
+    this.clearInvalidStates();
   }
 
   /**
