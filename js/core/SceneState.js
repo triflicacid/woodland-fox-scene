@@ -98,6 +98,8 @@ export class SceneState {
       x: 220,
       y_fraction: 0.72,
     };
+
+    this.clearInvalidStates();
   }
 
   /**
@@ -183,9 +185,10 @@ export class SceneState {
   }
 
   /**
-   * clears out specialEvent if now invalid
+   * correct any invalid states
    */
-  clearInvalidSpecialEvent() {
+  clearInvalidStates() {
+    // special events
     if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
@@ -196,6 +199,11 @@ export class SceneState {
       this.specialEvent = null;
     } else if (this.specialEvent === 'eclipse' && this.timeOfDay !== 'day') {
       this.specialEvent = null;
+    }
+
+    // stargazing
+    if (this.stargazing && (this.timeOfDay !== 'night' || this.specialEvent !== null)) {
+      this.stargazing = false;
     }
   }
 }
