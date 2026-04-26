@@ -4,7 +4,8 @@ import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";
 
 /**
- * render bunny which hops to greet the fox
+ * render bunny which hops to greet the fox.
+ * handles spawning heart particles during Visitor scene.
  */
 export class BunnyComponent extends DrawComponent {
   /** @type {MusicalNotesComponent} */
@@ -13,6 +14,7 @@ export class BunnyComponent extends DrawComponent {
   _hearts;
 
   static COMPONENT_NAME = "BunnyComponent";
+
   getName() {
     return BunnyComponent.COMPONENT_NAME;
   }
