@@ -427,7 +427,7 @@ export class Scene {
         document.getElementById('btn-' + s)?.addEventListener('click', () => {
           const oldSeason = state.season;
           state.changeSeason(s);
-          state.clearInvalidSpecialEvent();
+          state.clearInvalidStates();
           this.eventBus.dispatch(Events.seasonChange("Scene", oldSeason, state));
           this._refreshUI();
         }));
@@ -435,12 +435,12 @@ export class Scene {
     // time of day buttons
     document.getElementById('btn-day')?.addEventListener('click', () => {
       state.setTOD('day');
-      state.clearInvalidSpecialEvent();
+      state.clearInvalidStates();
       this._refreshUI();
     });
     document.getElementById('btn-night')?.addEventListener('click', () => {
       state.setTOD('night');
-      state.clearInvalidSpecialEvent();
+      state.clearInvalidStates();
       this._refreshUI();
     });
 
@@ -450,7 +450,7 @@ export class Scene {
           if (w === 'snow' && state.season !== 'winter') return;
           const oldWeather = state.weather;
           state.weather = w;
-          state.clearInvalidSpecialEvent();
+          state.clearInvalidStates();
           state.savePref();
           this._refreshUI();
           this.eventBus.dispatch(Events.weatherChange("Scene", oldWeather, state));
