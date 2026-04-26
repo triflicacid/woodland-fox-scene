@@ -125,7 +125,7 @@ export class Scene {
 
       new FirefliesComponent(this.eventBus, this.state, this.ctx, W, H),
       new ButterfliesComponent(this.eventBus, this.state, this.ctx, W, H),
-      new HeartsComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._hearts = new HeartsComponent(this.eventBus, this.state, this.ctx, W, H),
 
       new SeasonTransitionLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
       new AutumnBlowingLeavesComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -142,7 +142,7 @@ export class Scene {
       this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
-      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
+      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes, this._hearts),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -411,7 +411,7 @@ export class Scene {
       fox.stretchBlend = 0;
       fox.spinAngle = 0;
       fox.tailWag = 0;
-      state.hearts = [];
+      this._hearts.clear();
       bunny.phase = 'hopping_in';
       bunny.phaseT = 0;
       bunny.x = -80;

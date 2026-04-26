@@ -1,45 +1,77 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {clamp} from "@/utils";
+import {clamp, rnd} from "@/utils";
 
 /**
  * render heart particles when hare and fox are kissing
  */
 export class HeartsComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  _hearts = [];
+
   static COMPONENT_NAME = "HeartsComponent";
   getName() {
     return HeartsComponent.COMPONENT_NAME;
   }
 
   isEnabled() {
-    return this.scene.hearts.length > 0;
+    return this._hearts.length > 0;
+  }
+
+  tick() {
+    this._hearts = this._hearts.filter(h => {
+      h.y += h.vy;
+      h.life++;
+      return h.life < 65;
+    });
   }
 
   draw() {
-    this.scene.hearts.forEach(h => {
+    this._hearts.forEach(h => {
       const a = clamp(1 - h.life / 60, 0, 1);
-      drawHeart(this.ctx, h.x, h.y, 6 + h.life * 0.09, a);
+      this._drawHeart(h.x, h.y, 6 + h.life * 0.09, a);
     });
   }
-}
 
-/**
- * draw a heart shape at the given position.
- * @param {CanvasRenderingContext2D} ctx
- * @param {number} x
- * @param {number} y
- * @param {number} size
- * @param {number} alpha
- */
-function drawHeart(ctx, x, y, size, alpha) {
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = '#ff88aa';
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.bezierCurveTo(x, y - size, x - size * 1.5, y - size, x - size * 1.5, y - size * 0.4);
-  ctx.bezierCurveTo(x - size * 1.5, y + size * 0.3, x, y + size, x, y + size * 1.2);
-  ctx.bezierCurveTo(x, y + size, x + size * 1.5, y + size * 0.3, x + size * 1.5, y - size * 0.4);
-  ctx.bezierCurveTo(x + size * 1.5, y - size, x, y - size, x, y);
-  ctx.fill();
-  ctx.restore();
+  /**
+   * draw a heart shape at the given position.
+   * @param {number} x
+   * @param {number} y
+   * @param {number} size
+   * @param {number} alpha
+   */
+  _drawHeart(x, y, size, alpha) {
+    const {ctx} = this;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ff88aa';
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x, y - size, x - size * 1.5, y - size, x - size * 1.5, y - size * 0.4);
+    ctx.bezierCurveTo(x - size * 1.5, y + size * 0.3, x, y + size, x, y + size * 1.2);
+    ctx.bezierCurveTo(x, y + size, x + size * 1.5, y + size * 0.3, x + size * 1.5, y - size * 0.4);
+    ctx.bezierCurveTo(x + size * 1.5, y - size, x, y - size, x, y);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /**
+   * Spawn a new heart at the given position
+   * @param{number} x
+   * @param{number} y
+   */
+  spawn(x, y) {
+    this._hearts.push({
+      x,
+      y,
+      vy: -0.55 - rnd(0.45),
+      life: 0,
+    });
+  }
+
+  /**
+   * Remove all heart particles
+   */
+  clear() {
+    this._hearts.length = 0;
+  }
 }
