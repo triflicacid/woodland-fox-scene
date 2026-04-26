@@ -2,8 +2,7 @@ import {DrawComponent} from '@/core/DrawComponent';
 import {clamp} from '@/utils';
 
 /**
- * a laptop on the camping table showing astronomy content.
- * _appMode: 'starfield' shows a simple star map, 'app' shows a stylised astronomy app UI.
+ * a laptop on the camping table showing astronomy content
  */
 export class LaptopComponent extends DrawComponent {
   // offset from fox
@@ -17,6 +16,7 @@ export class LaptopComponent extends DrawComponent {
   // keyboard height
   _laptopKH = 6;
 
+  // contan current mode of the laptop (drives screen content)
   _modes = ['off', 'starfield', 'app', 'telescope_feed', 'orrery', 'spectrograph', 'light_curve', 'chat', 'research_paper'];
   _mode = 'spectrograph';
 
@@ -59,8 +59,7 @@ export class LaptopComponent extends DrawComponent {
     const kh = this._laptopKH;
     const sh = this._laptopH;
 
-    // -- keyboard base (seen from slight above) --------------------------
-    // top face of base - trapezoid giving depth illusion
+    // top face of keyboard base - trapezoid giving depth illusion
     const baseGrad = ctx.createLinearGradient(0, -kh, 0, 0);
     baseGrad.addColorStop(0, '#686e78');
     baseGrad.addColorStop(1, '#505860');
@@ -115,13 +114,13 @@ export class LaptopComponent extends DrawComponent {
     ctx.closePath();
     ctx.fill();
 
-    // -- hinge ----------------------------------------------------------
+    // hinge
     ctx.fillStyle = '#303840';
     ctx.beginPath();
     ctx.roundRect(-lw + 3, -kh - 1, (lw - 3) * 2, 2, 1);
     ctx.fill();
 
-    // -- screen ----------------------------------------------------------
+    // screen
     const tilt = 3;
     const screenY = -kh;
 
@@ -939,7 +938,7 @@ export class LaptopComponent extends DrawComponent {
     ctx.lineTo(colDiv, colTop + colH);
     ctx.stroke();
 
-    // -- left column: text body --
+    // text in left column
     const lx = ox + 2;
     const lcw = sw * 0.5 - 4;
 
@@ -980,7 +979,7 @@ export class LaptopComponent extends DrawComponent {
       bodyY += 3.2;
     });
 
-    // -- right column: figure --
+    // figure in right column
     const rx = colDiv + 2;
     const rcw = sw * 0.5 - 4;
     const figY = colTop + 2;
