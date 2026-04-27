@@ -322,7 +322,6 @@ export class Scene {
     wakeBtn.classList.toggle('btn-active', !state.fox.asleep);
 
     const birthdayBtn = document.getElementById('btn-birthday');
-    birthdayBtn.disabled = !!state.specialEvent && state.specialEvent !== 'birthday';
     birthdayBtn.classList.toggle('btn-active', state.specialEvent === 'birthday');
 
     const easterBtn = document.getElementById('btn-easter');
@@ -339,7 +338,7 @@ export class Scene {
     }
 
     const eclipseBtn = document.getElementById('btn-eclipse');
-    eclipseBtn.disabled = state.timeOfDay === 'night' || (state.specialEvent !== null && state.specialEvent !== 'eclipse');
+    eclipseBtn.disabled = state.timeOfDay === 'night';
     eclipseBtn.classList.toggle('btn-active', state.specialEvent === 'eclipse');
 
     this._updateTabSummaries();
