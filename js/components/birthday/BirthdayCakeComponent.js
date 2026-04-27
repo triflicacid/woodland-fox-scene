@@ -1,5 +1,8 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {shadeHex} from "@/utils";
+import {drawFlame} from "@/components/birthday/drawFlame";
+
+const SPRINKLE_COLS = ['#ff88cc', '#88ccff', '#ffcc44', '#88ffcc', '#cc88ff', '#ff8844', '#44ffcc'];
 
 /**
  * draws a tiered birthday cake with digit candles
@@ -108,8 +111,7 @@ export class BirthdayCakeComponent extends DrawComponent {
 
       ctx.shadowBlur = 0;
 
-      const sprinkleCol = ['#ff88cc', '#88ccff', '#ffcc44', '#88ffcc', '#cc88ff', '#ff8844', '#44ffcc'][i % 7];
-      ctx.fillStyle = sprinkleCol;
+      ctx.fillStyle = SPRINKLE_COLS[i % SPRINKLE_COLS.length];
       ctx.save();
       ctx.translate(dx + 2, dy - 4);
       ctx.rotate(i * 0.8);
@@ -256,31 +258,9 @@ export class BirthdayCakeComponent extends DrawComponent {
     ctx.stroke();
 
     // flame above wick tip
-    const flameX = x + 1;
-    const flameY = wickTipY;
     const flicker = Math.sin(frame * 0.22 + index * 1.3) * 1.5;
     const fSway = Math.sin(frame * 0.15 + index * 0.9) * 1.2;
-
-    ctx.fillStyle = 'rgba(255,140,20,0.9)';
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#ffaa00';
-    ctx.beginPath();
-    ctx.moveTo(flameX + fSway - 3, flameY);
-    ctx.bezierCurveTo(flameX + fSway - 2, flameY - 6 + flicker, flameX + fSway + 2, flameY - 6 + flicker, flameX + fSway + 3, flameY);
-    ctx.bezierCurveTo(flameX + fSway + 2, flameY - 12 + flicker, flameX + fSway, flameY - 14 + flicker, flameX + fSway, flameY - 14 + flicker);
-    ctx.bezierCurveTo(flameX + fSway, flameY - 12 + flicker, flameX + fSway - 2, flameY - 6 + flicker, flameX + fSway - 3, flameY);
-    ctx.fill();
-
-    ctx.fillStyle = 'rgba(255,230,80,0.95)';
-    ctx.shadowBlur = 4;
-    ctx.shadowColor = '#ffee44';
-    ctx.beginPath();
-    ctx.moveTo(flameX + fSway - 1.5, flameY);
-    ctx.bezierCurveTo(flameX + fSway - 1, flameY - 4 + flicker, flameX + fSway + 1, flameY - 4 + flicker, flameX + fSway + 1.5, flameY);
-    ctx.bezierCurveTo(flameX + fSway + 1, flameY - 9 + flicker, flameX + fSway, flameY - 10 + flicker, flameX + fSway, flameY - 10 + flicker);
-    ctx.bezierCurveTo(flameX + fSway, flameY - 9 + flicker, flameX + fSway - 1, flameY - 4 + flicker, flameX + fSway - 1.5, flameY);
-    ctx.fill();
-    ctx.shadowBlur = 0;
+    drawFlame(ctx, x + 1, wickTipY, flicker, fSway);
   }
 
   /**
