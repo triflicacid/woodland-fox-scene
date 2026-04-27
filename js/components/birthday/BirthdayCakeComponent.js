@@ -2,8 +2,7 @@ import {DrawComponent} from '@/core/DrawComponent';
 import {shadeHex} from "@/utils";
 
 /**
- * draws a three-tier birthday cake with digit candles.
- * change _age to update the candles displayed.
+ * draws a tiered birthday cake with digit candles
  */
 export class BirthdayCakeComponent extends DrawComponent {
   // offset from fox

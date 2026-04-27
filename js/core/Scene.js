@@ -55,6 +55,7 @@ import {ScreenShakeComponent} from "@/components/shake/ScreenShakeComponent";
 import {ScreenShakeRestoreComponent} from "@/components/shake/ScreenShakeRestoreComponent";
 import {EclipseSilhouettesComponent} from "@/components/eclipse/EclipseSilhouttesComponent";
 import {BirthdayCakeComponent} from "@/components/birthday/BirthdayCakeComponent";
+import {CupcakesComponent} from "@/components/birthday/CupcakesComponent";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -150,6 +151,7 @@ export class Scene {
 
       this._hedgehog = new HedgehogComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new BirthdayCakeComponent(this.eventBus, this.state, this.ctx, W, H),
+      new CupcakesComponent(this.eventBus, this.state, this.ctx, W, H),
       new CampingTableComponent(this.eventBus, this.state, this.ctx, W, H),
       this._laptop = new LaptopComponent(this.eventBus, this.state, this.ctx, W, H),
       new FoldingStoolComponent(this.eventBus, this.state, this.ctx, W, H),
