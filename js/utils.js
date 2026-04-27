@@ -136,3 +136,17 @@ export function requireNonNull(x) {
 export function hideElement(el, hide) {
   el.style.display = hide ? "none" : "block";
 }
+
+/**
+ * darken or lighten a hex colour by an amount.
+ * @param {string} hex
+ * @param {number} amt - negative darkens, positive lightens
+ * @returns {string}
+ */
+export function shadeHex(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = Math.min(255, Math.max(0, (n >> 16) + amt));
+  const g = Math.min(255, Math.max(0, ((n >> 8) & 0xff) + amt));
+  const b = Math.min(255, Math.max(0, (n & 0xff) + amt));
+  return `rgb(${r},${g},${b})`;
+}
