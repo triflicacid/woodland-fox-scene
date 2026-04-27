@@ -54,7 +54,7 @@ export class EasterEggsComponent extends DrawComponent {
               : [];
           return {
             x: cx + rndf(28),
-            cyF,
+            yFrac: cyF,
             tilt: rndf(0.4),
             rx: 7 + rnd(5),
             ry: 9 + rnd(6),
@@ -74,7 +74,7 @@ export class EasterEggsComponent extends DrawComponent {
   draw() {
     const {ctx, H} = this;
     this._eggs.forEach(e => {
-      const y = H * e.cyF;
+      const y = H * e.yFrac;
       ctx.save();
       ctx.translate(e.x, y);
       ctx.rotate(e.tilt);
