@@ -132,9 +132,11 @@ If you find yourself adding a field to `SceneState` for a new component, ask whe
 
 > *Note that `SceneState` still has some shared fields left over that do not need to be there. This is a remnant from the legacy codebase and is in the process of being migrated.*
 
-Related to this: components should not reach into each other directly. If one component needs to trigger behaviour in another, fire an event. If it needs to read a value that belongs to another component, consider whether that value should be on `SceneState` instead, or whether the two components can react to the same event independently.
+Components should communicate via events rather than calling each other directly. This keeps them decoupled and allows behaviour to evolve without introducing tight dependencies.
+Use direct references only when components are tightly coupled and conceptually part of the same feature.
 
-> *Example: `BunnyComponent` accepts both a `MusicalNotesComponent` and a `HeartsComponent`, which is uses to spawn particles. This is done via a method on the respective component.*
+For example, a lightning strike dispatches an event, which `FoxComponent` reacts to independently.
+In contrast, `FoxComponent` may hold a reference to a `MusicalNotesComponent` to spawn particles during a singing scene - this is a dependency between closely related components.
 
 The `isEnabled()` check is also the right place to handle conditional visibility - no need to track a separate `visible` flag if you can derive it from scene state. For example:
 
