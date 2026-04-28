@@ -863,4 +863,28 @@ export class FoxComponent extends DrawComponent {
     this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox\'s ear twitches...'));
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
   }
+
+  /**
+   * start the wake-up-and-stretch scene
+   */
+  startWakeUpScene() {
+    const {fox} = this.scene;
+    if (fox.phase !== 'idle') return;
+
+    fox.phase = 'standup';
+    fox.phaseT = 0;
+  }
+
+  /**
+   * start the wander scene
+   */
+  startWanderScene() {
+    const {fox} = this.scene;
+    if (fox.phase !== 'idle') return;
+
+    fox.phase = 'wander_out';
+    fox.phaseT = 0;
+    fox.poseBlend = 1;
+    fox.wanderX = fox.x;
+  }
 }

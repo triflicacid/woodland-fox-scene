@@ -384,24 +384,18 @@ export class Scene {
 
     // main wake button
     document.getElementById('btn')?.addEventListener('click', () => {
-      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
-      state.fox.phase = 'standup';
-      state.fox.phaseT = 0;
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Waking up...';
+      this._fox.startWakeUpScene();
     });
 
     // wander button
     document.getElementById('btn-wander')?.addEventListener('click', () => {
-      // TODO move into FoxComponent
       if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
-      state.fox.phase = 'wander_out';
-      state.fox.phaseT = 0;
-      state.fox.poseBlend = 1;
-      state.fox.wanderX = state.fox.x;
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Off for a little wander...';
+      this._fox.startWanderScene();
     });
 
     // visitor button (bunny)
