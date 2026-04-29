@@ -244,7 +244,7 @@ export class Scene {
     this._setActiveTab(saved === '' ? null : saved);
 
     tabs.forEach(tab => {
-      document.getElementById(`tab-${tab}`)?.addEventListener('click', () => {
+      document.getElementById(`tab-${tab}`).addEventListener('click', () => {
         this._setActiveTab(tab);
       });
     });
@@ -261,8 +261,8 @@ export class Scene {
     const newTab = this._activeTab === tab ? null : tab;
 
     tabs.forEach(t => {
-      document.getElementById(`tab-${t}`)?.classList.toggle('btn-active', t === newTab);
-      document.getElementById(`tab-panel-${t}`)?.classList.toggle('tab-active', t === newTab);
+      document.getElementById(`tab-${t}`).classList.toggle('btn-active', t === newTab);
+      document.getElementById(`tab-panel-${t}`).classList.toggle('tab-active', t === newTab);
     });
 
     localStorage.setItem('activeTab', newTab ?? '');
@@ -376,7 +376,7 @@ export class Scene {
     });
 
     // main wake button
-    document.getElementById('btn')?.addEventListener('click', () => {
+    document.getElementById('btn').addEventListener('click', () => {
       if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Waking up...';
@@ -384,7 +384,7 @@ export class Scene {
     });
 
     // wander button
-    document.getElementById('btn-wander')?.addEventListener('click', () => {
+    document.getElementById('btn-wander').addEventListener('click', () => {
       if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Off for a little wander...';
@@ -392,7 +392,7 @@ export class Scene {
     });
 
     // visitor button (bunny)
-    document.getElementById('btn-bunny')?.addEventListener('click', () => {
+    document.getElementById('btn-bunny').addEventListener('click', () => {
       if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
       this._fox.forceIdle();
@@ -403,7 +403,7 @@ export class Scene {
 
     // season buttons
     ['spring', 'summer', 'autumn', 'winter'].forEach(s =>
-        document.getElementById('btn-' + s)?.addEventListener('click', () => {
+        document.getElementById('btn-' + s).addEventListener('click', () => {
           const oldSeason = state.season;
           state.changeSeason(s);
           state.clearInvalidStates();
@@ -412,12 +412,12 @@ export class Scene {
         }));
 
     // time of day buttons
-    document.getElementById('btn-day')?.addEventListener('click', () => {
+    document.getElementById('btn-day').addEventListener('click', () => {
       state.setTOD('day');
       state.clearInvalidStates();
       this._refreshUI();
     });
-    document.getElementById('btn-night')?.addEventListener('click', () => {
+    document.getElementById('btn-night').addEventListener('click', () => {
       state.setTOD('night');
       state.clearInvalidStates();
       this._refreshUI();
@@ -425,7 +425,7 @@ export class Scene {
 
     // weather buttons
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(w =>
-        document.getElementById('btn-' + w)?.addEventListener('click', () => {
+        document.getElementById('btn-' + w).addEventListener('click', () => {
           if (w === 'snow' && state.season !== 'winter') return;
           const oldWeather = state.weather;
           state.weather = w;
@@ -436,7 +436,7 @@ export class Scene {
         }));
 
     // aurora toggle
-    document.getElementById('btn-aurora')?.addEventListener('click', () => {
+    document.getElementById('btn-aurora').addEventListener('click', () => {
       if (state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing) return;
       this._aurora.toggle();
       if (this._aurora.on && state.stargazing) {
@@ -446,7 +446,7 @@ export class Scene {
       this._refreshUI();
     });
     // stargazing toggle
-    document.getElementById('btn-stargaze')?.addEventListener('click', () => {
+    document.getElementById('btn-stargaze').addEventListener('click', () => {
       state.stargazing = !state.stargazing;
       state.savePref();
       if (state.stargazing && this._aurora.on) {
@@ -456,49 +456,49 @@ export class Scene {
     });
 
     // animal / reaction summon buttons
-    document.getElementById('btn-deer')?.addEventListener('click', () => this._deer.summon());
-    document.getElementById('btn-hog')?.addEventListener('click', () => this._hedgehog.summon());
-    document.getElementById('btn-owl')?.addEventListener('click', function () {
+    document.getElementById('btn-deer').addEventListener('click', () => this._deer.summon());
+    document.getElementById('btn-hog').addEventListener('click', () => this._hedgehog.summon());
+    document.getElementById('btn-owl').addEventListener('click', function () {
       state.owlForced = !state.owlForced;
       this.classList.toggle('btn-active');
     });
-    document.getElementById('btn-yawn')?.addEventListener('click', () => this._fox.triggerYawn());
-    document.getElementById('btn-ear')?.addEventListener('click', () => this._fox.triggerEarTwitch());
-    document.getElementById('btn-grumble')?.addEventListener('click', () => this._fox.triggerGrumble());
-    document.getElementById('btn-chicks')?.addEventListener('click', e => {
+    document.getElementById('btn-yawn').addEventListener('click', () => this._fox.triggerYawn());
+    document.getElementById('btn-ear').addEventListener('click', () => this._fox.triggerEarTwitch());
+    document.getElementById('btn-grumble').addEventListener('click', () => this._fox.triggerGrumble());
+    document.getElementById('btn-chicks').addEventListener('click', e => {
       this._chicks.forced = !this._chicks.forced;
       e.target.classList.toggle('btn-active', this._chicks.forced);
     });
 
-    document.getElementById('btn-halloween')?.addEventListener('click', () => {
+    document.getElementById('btn-halloween').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
-    document.getElementById('btn-christmas')?.addEventListener('click', () => {
+    document.getElementById('btn-christmas').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
-    document.getElementById('btn-bonfire')?.addEventListener('click', () => {
+    document.getElementById('btn-bonfire').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'bonfire' ? null : 'bonfire';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
-    document.getElementById('btn-birthday')?.addEventListener('click', () => {
+    document.getElementById('btn-birthday').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
       state.savePref();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
-    document.getElementById('btn-easter')?.addEventListener('click', () => {
+    document.getElementById('btn-easter').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'easter' ? null : 'easter';
       state.savePref();
@@ -508,7 +508,7 @@ export class Scene {
     });
 
     MOON_PHASES.forEach((_, i) => {
-      document.getElementById(`btn-phase-${i}`)?.addEventListener('click', () => {
+      document.getElementById(`btn-phase-${i}`).addEventListener('click', () => {
         const oldMoonPhase = state.moonPhase;
         state.moonPhase = i;
         state.savePref();
@@ -536,7 +536,7 @@ export class Scene {
       }
     });
 
-    document.getElementById('btn-eclipse')?.addEventListener('click', () => {
+    document.getElementById('btn-eclipse').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'eclipse' ? null : 'eclipse';
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
