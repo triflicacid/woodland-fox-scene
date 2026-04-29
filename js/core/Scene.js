@@ -313,7 +313,7 @@ export class Scene {
     guyBtn.disabled = state.specialEvent !== 'bonfire';
 
     const chicksBtn = document.getElementById('btn-chicks');
-    chicksBtn.classList.toggle('btn-active', this._chicks.forced);
+    chicksBtn.classList.toggle('btn-active', this._chicks.isForced());
 
     const mothronBtn = document.getElementById('btn-mothron');
     mothronBtn.disabled = state.specialEvent !== 'eclipse';
@@ -469,8 +469,8 @@ export class Scene {
     document.getElementById('btn-ear').addEventListener('click', () => this._fox.triggerEarTwitch());
     document.getElementById('btn-grumble').addEventListener('click', () => this._fox.triggerGrumble());
     document.getElementById('btn-chicks').addEventListener('click', e => {
-      this._chicks.forced = !this._chicks.forced;
-      e.target.classList.toggle('btn-active', this._chicks.forced);
+      this._chicks.setForced(!this._chicks.isForced());
+      e.target.classList.toggle('btn-active', this._chicks.isForced());
     });
 
     document.getElementById('btn-halloween').addEventListener('click', () => {

@@ -232,4 +232,19 @@ export class ChicksComponent extends DrawComponent {
 
     ctx.restore(); // chick
   }
+
+  /**
+   * is this component currently forced?
+   */
+  isForced() {
+    return this.forced;
+  }
+
+  /**
+   * set whether the chicks are forced or not
+   * @param {boolean} forced
+   */
+  setForced(forced) {
+    this.forced = forced;
+  }
 }
