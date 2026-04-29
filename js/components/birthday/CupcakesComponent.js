@@ -11,7 +11,7 @@ const SPRINKLE_COLS = DOLLOP_COLS;
  * and optionally a candle.
  */
 export class CupcakesComponent extends DrawComponent {
-  _cupcakes = [
+  cupcakes = [
     {x: 220, yFrac: 0.865, scale: 0.8, cupCol: '#cc88ff', pattern: 'stripes', accentCol: '#9944ff', hasCandle: false},
     {x: 260, yFrac: 0.85, scale: 1.0, cupCol: '#ff88cc', pattern: 'stripes', accentCol: '#ff44aa', hasCandle: true},
     {x: 310, yFrac: 0.845, scale: 0.85, cupCol: '#88ccff', pattern: 'dots', accentCol: '#4499ff', hasCandle: false},
@@ -28,7 +28,7 @@ export class CupcakesComponent extends DrawComponent {
 
   initialise() {
     // attach pre-generated sprinkle positions to each cupcake def
-    this._cupcakes.forEach(def => {
+    this.cupcakes.forEach(def => {
       def.sprinkles = Array.from({length: 9}, (_, i) => ({
         dx: (Math.random() - 0.5) * 18,
         dy: (Math.random() - 0.5) * 6 - 2,
@@ -44,7 +44,7 @@ export class CupcakesComponent extends DrawComponent {
 
   draw() {
     const {frame} = this.scene;
-    this._cupcakes.forEach((cup, i) => {
+    this.cupcakes.forEach((cup, i) => {
       const y = this.H * cup.yFrac;
       this.ctx.save();
       this.ctx.translate(cup.x, y);

@@ -7,15 +7,15 @@ import {PROBABILITY} from "@/config";
  * mothron - giant moth boss that flies across the sky and occasionally dives at the fox.
  */
 export class MothronComponent extends DrawComponent {
-  _x = -200;
-  _y = 80;
-  _vx = 0;
-  _vy = 0;
-  _phase = 'off'; // off | flying | diving | returning
-  _flapT = 0;
-  _diveTargetX = 0;
-  _diveTargetY = 0;
-  _cooldown = 0;
+  x = -200;
+  y = 80;
+  vx = 0;
+  vy = 0;
+  phase = 'off'; // off | flying | diving | returning
+  flapT = 0;
+  diveTargetX = 0;
+  diveTargetY = 0;
+  cooldown = 0;
 
   static COMPONENT_NAME = 'MothronComponent';
 
@@ -29,61 +29,61 @@ export class MothronComponent extends DrawComponent {
 
   tick() {
     const {W, fox} = this.scene;
-    this._cooldown--;
-    this._flapT += 0.12;
+    this.cooldown--;
+    this.flapT += 0.12;
 
-    if (this._phase === 'off') {
-      if (this._cooldown <= 0 && prob(PROBABILITY.ECLIPSE.MOTHRON_SPAWN)) {
+    if (this.phase === 'off') {
+      if (this.cooldown <= 0 && prob(PROBABILITY.ECLIPSE.MOTHRON_SPAWN)) {
         this.summon();
       }
       return;
     }
 
-    if (this._phase === 'flying') {
-      this._x += this._vx;
-      this._y += Math.sin(this._flapT * 0.08) * 1.2;
+    if (this.phase === 'flying') {
+      this.x += this.vx;
+      this.y += Math.sin(this.flapT * 0.08) * 1.2;
 
       // occasionally dive at fox
-      if (prob(PROBABILITY.ECLIPSE.MOTHRON_DIVE) && this._cooldown <= 0) {
-        this._phase = 'diving';
-        this._diveTargetX = fox.x;
-        this._diveTargetY = fox.y - 30;
+      if (prob(PROBABILITY.ECLIPSE.MOTHRON_DIVE) && this.cooldown <= 0) {
+        this.phase = 'diving';
+        this.diveTargetX = fox.x;
+        this.diveTargetY = fox.y - 30;
         this.eventBus.dispatch(Events.mothronDive(this.getName()));
       }
 
-      if (this._x < -100 || this._x > W + 100) {
-        this._phase = 'off';
-        this._cooldown = 300;
+      if (this.x < -100 || this.x > W + 100) {
+        this.phase = 'off';
+        this.cooldown = 300;
       }
     }
 
-    if (this._phase === 'diving') {
-      this._x = lerp(this._x, this._diveTargetX, 0.04);
-      this._y = lerp(this._y, this._diveTargetY, 0.04);
-      if (Math.abs(this._x - this._diveTargetX) < 20) {
-        this._phase = 'returning';
-        this._cooldown = 200;
+    if (this.phase === 'diving') {
+      this.x = lerp(this.x, this.diveTargetX, 0.04);
+      this.y = lerp(this.y, this.diveTargetY, 0.04);
+      if (Math.abs(this.x - this.diveTargetX) < 20) {
+        this.phase = 'returning';
+        this.cooldown = 200;
       }
     }
 
-    if (this._phase === 'returning') {
-      this._y = lerp(this._y, 60 + rnd(60), 0.02);
-      this._x += this._vx;
-      if (this._x < -100 || this._x > W + 100) {
-        this._phase = 'off';
-        this._cooldown = 400;
+    if (this.phase === 'returning') {
+      this.y = lerp(this.y, 60 + rnd(60), 0.02);
+      this.x += this.vx;
+      if (this.x < -100 || this.x > W + 100) {
+        this.phase = 'off';
+        this.cooldown = 400;
       }
     }
   }
 
   draw() {
-    if (this._phase === 'off') return;
+    if (this.phase === 'off') return;
     const {ctx} = this;
-    const flap = Math.sin(this._flapT) * 0.8;
-    const facingRight = this._vx > 0;
+    const flap = Math.sin(this.flapT) * 0.8;
+    const facingRight = this.vx > 0;
 
     ctx.save();
-    ctx.translate(this._x, this._y);
+    ctx.translate(this.x, this.y);
     if (!facingRight) ctx.scale(-1, 1);
 
     // upper wings
@@ -172,11 +172,11 @@ export class MothronComponent extends DrawComponent {
    * force-summon mothron immediately.
    */
   summon() {
-    if (this._phase !== 'off') return;
-    this._phase = 'flying';
-    this._x = prob(0.5) ? -80 : this.W + 80;
-    this._y = 40 + rnd(this.H * 0.3);
-    this._vx = this._x < 0 ? 2 + rnd(1.5) : -(2 + rnd(1.5));
-    this._vy = rndf(0.3);
+    if (this.phase !== 'off') return;
+    this.phase = 'flying';
+    this.x = prob(0.5) ? -80 : this.W + 80;
+    this.y = 40 + rnd(this.H * 0.3);
+    this.vx = this.x < 0 ? 2 + rnd(1.5) : -(2 + rnd(1.5));
+    this.vy = rndf(0.3);
   }
 }

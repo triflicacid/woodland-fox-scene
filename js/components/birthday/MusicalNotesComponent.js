@@ -8,7 +8,7 @@ const NOTES = ['♪', '♫', '♩'];
  */
 export class MusicalNotesComponent extends DrawComponent {
   /** @type {Array<Object>} */
-  _notes = [];
+  notes = [];
 
   static COMPONENT_NAME = "MusicalNotesComponent";
 
@@ -17,7 +17,7 @@ export class MusicalNotesComponent extends DrawComponent {
   }
 
   tick() {
-    this._notes = this._notes.filter(n => {
+    this.notes = this.notes.filter(n => {
       n.x += n.vx;
       n.y += n.vy;
       n.alpha -= 0.012;
@@ -28,7 +28,7 @@ export class MusicalNotesComponent extends DrawComponent {
 
   draw() {
     const {ctx} = this;
-    this._notes.forEach(n => {
+    this.notes.forEach(n => {
       ctx.save();
       ctx.globalAlpha = n.alpha;
       ctx.fillStyle = n.col;
@@ -47,7 +47,7 @@ export class MusicalNotesComponent extends DrawComponent {
    * @param {number} y
    */
   spawnNote(x, y) {
-    this._notes.push({
+    this.notes.push({
       x: x + rndf(10),
       y: y + rndf(10),
       vx: rndf(0.6),

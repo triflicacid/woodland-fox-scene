@@ -14,9 +14,9 @@ export class HedgehogComponent extends DrawComponent {
     phase: 'off',
     phaseT: 0,
   };
-  _bunnyActive = false;
+  bunnyActive = false;
   /** @type{MusicalNotesComponent} */
-  _notes;
+  notes;
 
   /**
    * @param {EventBus} eventBus
@@ -28,7 +28,7 @@ export class HedgehogComponent extends DrawComponent {
    */
   constructor(eventBus, scene, ctx, W, H, notes) {
     super(eventBus, scene, ctx, W, H);
-    this._notes = notes;
+    this.notes = notes;
   }
 
   static COMPONENT_NAME = "HedgehogComponent";
@@ -41,9 +41,9 @@ export class HedgehogComponent extends DrawComponent {
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
       if (character === 'bunny') {
         if (action === 'enter') {
-          this._bunnyActive = true;
+          this.bunnyActive = true;
         } else if (action === 'exit') {
-          this._bunnyActive = false;
+          this.bunnyActive = false;
         }
       }
     }));
@@ -69,7 +69,7 @@ export class HedgehogComponent extends DrawComponent {
         }
       }
       if (hog.phase === 'birthday_bob' && prob(PROBABILITY.HEDGEHOG_SPAWN_NOTE)) {
-        this._notes.spawnNote(hog.x + 38, this.H * hog.y_fraction - 30);
+        this.notes.spawnNote(hog.x + 38, this.H * hog.y_fraction - 30);
       }
       return; // early return
     } else if (hog.phase === 'birthday_bob') {
@@ -79,7 +79,7 @@ export class HedgehogComponent extends DrawComponent {
     }
 
     // spontaneous arrival in autumn
-    if (hog.phase === 'off' && !this._bunnyActive && prob(PROBABILITY.HEDGEHOG) && season === 'autumn') {
+    if (hog.phase === 'off' && !this.bunnyActive && prob(PROBABILITY.HEDGEHOG) && season === 'autumn') {
       hog.phase = 'in';
       hog.phaseT = 0;
       hog.x = -60;

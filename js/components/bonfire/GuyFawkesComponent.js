@@ -17,11 +17,11 @@ const PHASES = {
  * only active during bonfire night special event.
  */
 export class GuyFawkesComponent extends DrawComponent {
-  _phase = 'off';
-  _phaseT = 0;
-  _x = 0;
-  _fromRight = false;
-  _cooldown = 0;
+  phase = 'off';
+  phaseT = 0;
+  x = 0;
+  fromRight = false;
+  cooldown = 0;
 
   static COMPONENT_NAME = "GuyFawkesComponent";
 
@@ -33,67 +33,67 @@ export class GuyFawkesComponent extends DrawComponent {
    * summon guy fawkes immediately.
    */
   summon() {
-    if (this._phase !== 'off') return;
+    if (this.phase !== 'off') return;
     this._start();
   }
 
   isEnabled() {
     // check phase to allow for manual overriding
-    return this.scene.specialEvent === 'bonfire' || this._phase !== 'off';
+    return this.scene.specialEvent === 'bonfire' || this.phase !== 'off';
   }
 
   tick() {
-    this._cooldown--;
+    this.cooldown--;
 
-    if (this._phase === 'off') {
-      if (this._cooldown <= 0 && prob(PROBABILITY.GUY_FAWKES)) {
+    if (this.phase === 'off') {
+      if (this.cooldown <= 0 && prob(PROBABILITY.GUY_FAWKES)) {
         this._start();
         this.eventBus.dispatch(Events.statusText(this.getName(), 'A mysterious cloaked figure approaches...'));
       }
       return;
     }
 
-    this._phaseT++;
-    const cfg = PHASES[this._phase];
-    const t = clamp(this._phaseT / cfg.f, 0, 1);
-    const targetX = this.scene.bonfire.x + (this._fromRight ? 90 : -90);
-    const startX = this._fromRight ? this.W + 40 : -40;
-    const exitX = this._fromRight ? -40 : this.W + 40;
+    this.phaseT++;
+    const cfg = PHASES[this.phase];
+    const t = clamp(this.phaseT / cfg.f, 0, 1);
+    const targetX = this.scene.bonfire.x + (this.fromRight ? 90 : -90);
+    const startX = this.fromRight ? this.W + 40 : -40;
+    const exitX = this.fromRight ? -40 : this.W + 40;
 
-    if (this._phase === 'entering') {
-      this._x = lerp(startX, targetX, eo(t));
-      if (this._phaseT >= cfg.f) {
-        this._phase = 'watching';
-        this._phaseT = 0;
+    if (this.phase === 'entering') {
+      this.x = lerp(startX, targetX, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'watching';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The figure stares into the flames...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'guyfawkes', 'watch.start'));
       }
 
-    } else if (this._phase === 'watching') {
+    } else if (this.phase === 'watching') {
       // slight sway while watching
-      this._x = targetX + Math.sin(this._phaseT * 0.03) * 3;
-      if (this._phaseT >= cfg.f) {
-        this._phase = 'salute';
-        this._phaseT = 0;
+      this.x = targetX + Math.sin(this.phaseT * 0.03) * 3;
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'salute';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Remember, remember...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'guyfawkes', 'salute'));
       }
 
-    } else if (this._phase === 'salute') {
-      this._x = targetX;
-      if (this._phaseT >= cfg.f) {
-        this._phase = 'leaving';
-        this._phaseT = 0;
+    } else if (this.phase === 'salute') {
+      this.x = targetX;
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'leaving';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The figure slips back into the dark...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'guyfawkes', 'watch.end'));
       }
 
-    } else if (this._phase === 'leaving') {
-      this._x = lerp(targetX, exitX, eo(t));
-      if (this._phaseT >= cfg.f) {
-        this._phase = 'off';
-        this._phaseT = 0;
-        this._cooldown = 1800;
+    } else if (this.phase === 'leaving') {
+      this.x = lerp(targetX, exitX, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'off';
+        this.phaseT = 0;
+        this.cooldown = 1800;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'guyfawkes', 'exit'));
       }
@@ -101,21 +101,21 @@ export class GuyFawkesComponent extends DrawComponent {
   }
 
   draw() {
-    if (this._phase === 'off') return;
+    if (this.phase === 'off') return;
     const y = this.H * 0.62;
-    const saluting = this._phase === 'salute';
-    const facingRight = !this._fromRight; // faces toward bonfire
-    this._drawGuyFawkes(this._x, y, facingRight, saluting, this.scene.frame);
+    const saluting = this.phase === 'salute';
+    const facingRight = !this.fromRight; // faces toward bonfire
+    this._drawGuyFawkes(this.x, y, facingRight, saluting, this.scene.frame);
   }
 
   /**
    * start a new guy fawkes appearance.
    */
   _start() {
-    this._fromRight = prob(0.5);
-    this._phase = 'entering';
-    this._phaseT = 0;
-    this._cooldown = 2400;
+    this.fromRight = prob(0.5);
+    this.phase = 'entering';
+    this.phaseT = 0;
+    this.cooldown = 2400;
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'guyfawkes', 'enter'));
   }
 
@@ -172,7 +172,7 @@ export class GuyFawkesComponent extends DrawComponent {
     ctx.strokeStyle = '#111120';
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    const legSway = Math.sin(frame * 0.08) * (this._phase === 'watching' || this._phase === 'salute' ? 0 : 3);
+    const legSway = Math.sin(frame * 0.08) * (this.phase === 'watching' || this.phase === 'salute' ? 0 : 3);
     ctx.beginPath();
     ctx.moveTo(-5, -8);
     ctx.lineTo(-6, 2 + legSway);
@@ -192,15 +192,15 @@ export class GuyFawkesComponent extends DrawComponent {
     ctx.fill();
 
     // arms only visible when watching or saluting
-    if (this._phase === 'watching' || this._phase === 'salute') {
+    if (this.phase === 'watching' || this.phase === 'salute') {
       // fist rises from side of cloak as he watches
       // t goes 0->1 over watching phase, then holds at 1 during salute
-      const riseT = this._phase === 'salute' ? 1
-          : clamp(this._phaseT / 40, 0, 1); // rises over first 40 frames of watching
+      const riseT = this.phase === 'salute' ? 1
+          : clamp(this.phaseT / 40, 0, 1); // rises over first 40 frames of watching
 
       // pump slightly during salute
-      const pump = this._phase === 'salute'
-          ? Math.sin(this._phaseT * 0.25) * 4 : 0;
+      const pump = this.phase === 'salute'
+          ? Math.sin(this.phaseT * 0.25) * 4 : 0;
 
       // emerges from right side of cloak, punches upward
       const fistX = 14;

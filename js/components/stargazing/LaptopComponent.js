@@ -6,19 +6,19 @@ import {clamp} from '@/utils';
  */
 export class LaptopComponent extends DrawComponent {
   // offset from fox
-  _offsetX = 210;
-  _offsetY = 30;
-  _scale = 1.1;
+  offsetX = 210;
+  offsetY = 30;
+  scale = 1.1;
   // half-width of the laptop
-  _laptopW = 28;
+  laptopW = 28;
   // screen height of the laptop
-  _laptopH = 26;
+  laptopH = 26;
   // keyboard height
-  _laptopKH = 6;
+  laptopKH = 6;
 
   // contan current mode of the laptop (drives screen content)
-  _modes = ['off', 'starfield', 'app', 'telescope_feed', 'orrery', 'spectrograph', 'light_curve', 'chat', 'research_paper'];
-  _mode = 'spectrograph';
+  modes = ['off', 'starfield', 'app', 'telescope_feed', 'orrery', 'spectrograph', 'light_curve', 'chat', 'research_paper'];
+  mode = 'spectrograph';
 
   static COMPONENT_NAME = 'LaptopComponent';
 
@@ -31,19 +31,19 @@ export class LaptopComponent extends DrawComponent {
   }
 
   cycleScreenMode() {
-    const idx = this._modes.indexOf(this._mode);
-    this._mode = this._modes[(idx + 1) % this._modes.length];
+    const idx = this.modes.indexOf(this.mode);
+    this.mode = this.modes[(idx + 1) % this.modes.length];
   }
 
   draw() {
     const {ctx} = this;
     const {fox} = this.scene;
-    const x = fox.x + this._offsetX;
-    const y = fox.y + this._offsetY;
+    const x = fox.x + this.offsetX;
+    const y = fox.y + this.offsetY;
 
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(this._scale, this._scale);
+    ctx.scale(this.scale, this.scale);
     this._drawLaptop();
     ctx.restore();
 
@@ -55,9 +55,9 @@ export class LaptopComponent extends DrawComponent {
 
   _drawLaptop() {
     const {ctx} = this;
-    const lw = this._laptopW;
-    const kh = this._laptopKH;
-    const sh = this._laptopH;
+    const lw = this.laptopW;
+    const kh = this.laptopKH;
+    const sh = this.laptopH;
 
     // top face of keyboard base - trapezoid giving depth illusion
     const baseGrad = ctx.createLinearGradient(0, -kh, 0, 0);
@@ -200,8 +200,8 @@ export class LaptopComponent extends DrawComponent {
     ctx.translate(cx4, cy4);
     ctx.transform(1, 0, -(tilt / ch), 1, 0, 0);
 
-    if (this._mode !== 'off') {
-      switch (this._mode) {
+    if (this.mode !== 'off') {
+      switch (this.mode) {
         case 'starfield':
           this._drawStarfieldScreen(0, 0, cw, ch);
           break;
@@ -1129,12 +1129,12 @@ export class LaptopComponent extends DrawComponent {
   containsPoint(cx, cy) {
     const {fox} = this.scene;
     // translate into laptop-local space
-    const lx = (cx - (fox.x + this._offsetX)) / this._scale;
-    const ly = (cy - (fox.y + this._offsetY)) / this._scale;
+    const lx = (cx - (fox.x + this.offsetX)) / this.scale;
+    const ly = (cy - (fox.y + this.offsetY)) / this.scale;
 
-    const lw = this._laptopW;
-    const kh = this._laptopKH;
-    const sh = this._laptopH;
+    const lw = this.laptopW;
+    const kh = this.laptopKH;
+    const sh = this.laptopH;
     const tilt = 3;
 
     // keyboard trapezoid: y in [0, kh] (drawn upward so [-kh, 0] in local)

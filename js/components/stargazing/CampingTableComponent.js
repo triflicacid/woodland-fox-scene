@@ -5,9 +5,9 @@ import {DrawComponent} from '@/core/DrawComponent';
  */
 export class CampingTableComponent extends DrawComponent {
   // offset from fox
-  _offsetX = 210;
-  _offsetY = 35;
-  _scale = 0.97;
+  offsetX = 210;
+  offsetY = 35;
+  scale = 0.97;
 
   static COMPONENT_NAME = 'CampingTableComponent';
 
@@ -22,12 +22,12 @@ export class CampingTableComponent extends DrawComponent {
   draw() {
     const {ctx} = this;
     const {fox} = this.scene
-    const x = fox.x + this._offsetX;
-    const y = fox.y + this._offsetY;
+    const x = fox.x + this.offsetX;
+    const y = fox.y + this.offsetY;
 
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(this._scale, this._scale);
+    ctx.scale(this.scale, this.scale);
     this._drawTable();
     ctx.restore();
   }

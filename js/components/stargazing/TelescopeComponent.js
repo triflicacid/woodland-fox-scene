@@ -7,15 +7,15 @@ import {lerp, rnd, rndf} from '@/utils';
  */
 export class TelescopeComponent extends DrawComponent {
   // position relative to fox
-  _offsetX = 110;
-  _offsetY = 50;
+  offsetX = 110;
+  offsetY = 50;
   // panning state - target and current angles
-  _panAngle = 0.55; // current tube angle from horizontal (negative = pointing up)
-  _panTarget = 0.55;
-  _panTimer = 0;
-  _panX = 0;
-  _panXTarget = 0;
-  _panXTimer = 0;
+  panAngle = 0.55; // current tube angle from horizontal (negative = pointing up)
+  panTarget = 0.55;
+  panTimer = 0;
+  panX = 0;
+  panXTarget = 0;
+  panXTimer = 0;
   tripodFeet = [[-22, 28], [0, 32], [22, 28]];
 
   static COMPONENT_NAME = 'TelescopeComponent';
@@ -35,19 +35,19 @@ export class TelescopeComponent extends DrawComponent {
 
     if (observing) {
       // slowly drift toward a new target angle
-      this._panTimer--;
-      if (this._panTimer <= 0) {
-        this._panTarget = 0.35 + rnd(0.45);
-        this._panTimer = 180 + Math.floor(rnd(240));
+      this.panTimer--;
+      if (this.panTimer <= 0) {
+        this.panTarget = 0.35 + rnd(0.45);
+        this.panTimer = 180 + Math.floor(rnd(240));
       }
-      this._panXTimer--;
-      if (this._panXTimer <= 0) {
-        this._panXTarget = rndf(Math.PI / 5); // small left/right swing, in rad
-        this._panXTimer = 120 + Math.floor(rnd(180));
+      this.panXTimer--;
+      if (this.panXTimer <= 0) {
+        this.panXTarget = rndf(Math.PI / 5); // small left/right swing, in rad
+        this.panXTimer = 120 + Math.floor(rnd(180));
       }
       // smooth lerp toward targets
-      this._panAngle = lerp(this._panAngle, this._panTarget, 0.008);
-      this._panX = lerp(this._panX, this._panXTarget, 0.006);
+      this.panAngle = lerp(this.panAngle, this.panTarget, 0.008);
+      this.panX = lerp(this.panX, this.panXTarget, 0.006);
     }
   }
 
@@ -55,12 +55,12 @@ export class TelescopeComponent extends DrawComponent {
     const {ctx} = this;
     const {fox} = this.scene;
 
-    const x = fox.x + this._offsetX;
-    const y = fox.y + this._offsetY;
+    const x = fox.x + this.offsetX;
+    const y = fox.y + this.offsetY;
 
     ctx.save();
     ctx.translate(x, y);
-    this._drawTelescope(this._panAngle);
+    this._drawTelescope(this.panAngle);
     ctx.restore();
   }
 
@@ -166,7 +166,7 @@ export class TelescopeComponent extends DrawComponent {
     ctx.save();
     ctx.translate(tubeLen * 0.35, -14); // positions tube on mount
     ctx.rotate(tubeAngle);
-    ctx.scale(Math.cos(this._panX), 1);
+    ctx.scale(Math.cos(this.panX), 1);
 
     // finder scope (small secondary tube on top)
     ctx.save();

@@ -8,10 +8,10 @@ import {Subscriptions} from "@/core/Subscriptions";
  * call restore() equivalent via a paired component registered last.
  */
 export class ScreenShakeComponent extends DrawComponent {
-  _shakeT = 0;
-  _shakeAmt = 0;
-  _active = false;
-  _didSave = false; // to prevent this: _active=true, tick then sets _active to false
+  shakeT = 0;
+  shakeAmt = 0;
+  active = false;
+  didSave = false; // to prevent this: active=true, tick then sets active to false
 
   static COMPONENT_NAME = 'ScreenShakeComponent';
 
@@ -40,33 +40,33 @@ export class ScreenShakeComponent extends DrawComponent {
    * @param {number} duration - frames
    */
   _trigger(amt, duration) {
-    this._shakeAmt = amt;
-    this._shakeT = duration;
-    this._active = true;
+    this.shakeAmt = amt;
+    this.shakeT = duration;
+    this.active = true;
   }
 
   isEnabled() {
-    return this._active;
+    return this.active;
   }
 
   tick() {
-    this._shakeT--;
-    if (this._shakeT <= 0) {
-      this._active = false;
+    this.shakeT--;
+    if (this.shakeT <= 0) {
+      this.active = false;
     }
   }
 
   draw() {
-    if (this._didSave) { // don't double-save... but this shouldn't happen, so panic
+    if (this.didSave) { // don't double-save... but this shouldn't happen, so panic
       console.error('draw() called twice without restore');
       return;
     }
     const {ctx} = this;
-    const decay = this._shakeT / 12;
-    const sx = (Math.random() - 0.5) * this._shakeAmt * decay;
-    const sy = (Math.random() - 0.5) * this._shakeAmt * decay;
+    const decay = this.shakeT / 12;
+    const sx = (Math.random() - 0.5) * this.shakeAmt * decay;
+    const sy = (Math.random() - 0.5) * this.shakeAmt * decay;
     ctx.save();
     ctx.translate(sx, sy);
-    this._didSave = true;
+    this.didSave = true;
   }
 }

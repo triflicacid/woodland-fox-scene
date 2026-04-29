@@ -62,7 +62,7 @@ A typical component looks like this:
 
 ```js
 export class SnowflakesComponent extends DrawComponent {
-  _flakes = [];
+  flakes = [];
   
   static COMPONENT_NAME = "SnowflakesComponent";
   
@@ -71,7 +71,7 @@ export class SnowflakesComponent extends DrawComponent {
   }
 
   initialise() {
-    this._flakes = Array.from({length: 80}, () => ({ x: rnd(this.W), y: rnd(this.H), ... }));
+    this.flakes = Array.from({length: 80}, () => ({ x: rnd(this.W), y: rnd(this.H), ... }));
   }
 
   isEnabled() {
@@ -79,11 +79,11 @@ export class SnowflakesComponent extends DrawComponent {
   }
 
   tick() {
-    this._flakes.forEach(f => { f.y += f.speed; if (f.y > this.H) f.y = 0; });
+    this.flakes.forEach(f => { f.y += f.speed; if (f.y > this.H) f.y = 0; });
   }
 
   draw() {
-    this._flakes.forEach(f => { ... });
+    this.flakes.forEach(f => { ... });
   }
 }
 ```
