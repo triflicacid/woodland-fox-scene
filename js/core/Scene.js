@@ -357,15 +357,8 @@ export class Scene {
       const cx = (e.clientX - rect.left) * (W / rect.width);
       const cy = (e.clientY - rect.top) * (H / rect.height);
 
-      let fx = state.fox.x;
-      const wandering = ['wander_out', 'wander_sniff', 'wander_in'].includes(state.fox.phase);
-      if (wandering) fx = state.fox.wanderX;
-
-      if (Math.abs(cx - fx) < 46 && Math.abs(cy - (state.fox.y - 15)) < 32) {
-        if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05 && state.bunny.phase === 'off') {
-          this._fox.triggerGrumble();
-        }
-        return;
+      if (this._fox.containsPoint(cx, cy)) {
+        this._fox.click();
       }
 
       // click on a tree top to startle a bird
