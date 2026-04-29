@@ -8,6 +8,18 @@ import {PROBABILITY} from "@/config";
  * handles spawning heart particles during Visitor scene.
  */
 export class BunnyComponent extends DrawComponent {
+  _x = -80;
+  _meetX = 0;
+  _y = 0;
+  _phase = 'off';
+  _phaseT = 0;
+  _hop = {
+    arc: 0,
+    from: -80,
+    to: -80,
+    frame: 1,
+    t: 0
+  };
   /** @type {MusicalNotesComponent} */
   _notes;
   /** @type {HeartsComponent} */
@@ -37,102 +49,107 @@ export class BunnyComponent extends DrawComponent {
   isEnabled() {
     const specialEvent = this.scene.specialEvent;
     if (specialEvent === 'birthday' || specialEvent === 'easter') return true;
-    const phase = this.scene.bunny.phase;
-    return !(phase === 'off' || phase === 'done');
+    return !(this._phase === 'off' || this._phase === 'done');
+  }
+
+  initialise() {
+    this._meetX = this.scene.fox.x - 80;
+    this._y = this.scene.fox.y;
   }
 
   tick() {
-    const {bunny, fox, specialEvent} = this.scene;
-    bunny.phaseT++;
+    const {fox, specialEvent} = this.scene;
+    this._phaseT++;
 
     // easter management
     if (specialEvent === 'easter') {
-      if (bunny.phase === 'off' || bunny.phase === 'done') {
-        bunny.phase = 'easter_bob';
-        bunny.x = fox.x - 100;
-        bunny.y = fox.y;
-        bunny.phaseT = 0;
-      } else if (bunny.phase === 'easter_bob') {
-        bunny.x = (fox.x - 100) + Math.sin(this.scene.frame * 0.015) * 13;
+      if (this._phase === 'off' || this._phase === 'done') {
+        this._phase = 'easter_bob';
+        this._x = fox.x - 100;
+        this._y = fox.y;
+        this._phaseT = 0;
+      } else if (this._phase === 'easter_bob') {
+        this._x = (fox.x - 100) + Math.sin(this.scene.frame * 0.015) * 13;
       }
       return;
-    } else if (bunny.phase === 'easter_bob') {
+    } else if (this._phase === 'easter_bob') {
       // easter ended - hop off
-      bunny.phase = 'hopping_out';
-      bunny.phaseT = 0;
-      this.startHop(bunny.x, this.W + 90, 130);
+      this._phase = 'hopping_out';
+      this._phaseT = 0;
+      this.startHop(this._x, this.W + 90, 130);
     }
 
     // birthday - bunny hops in and bobs along
     if (this.scene.specialEvent === 'birthday') {
-      if (bunny.phase === 'off' || bunny.phase === 'done') {
-        bunny.phase = 'hopping_in';
-        bunny.phaseT = 0;
-        bunny.x = -80;
-        bunny.hop.arc = 0;
+      if (this._phase === 'off' || this._phase === 'done') {
+        this._phase = 'hopping_in';
+        this._phaseT = 0;
+        this._x = -80;
+        this._hop.arc = 0;
         this.startHop(-80, fox.x - 100, 135);
-      } else if (bunny.phase === 'hopping_in' || bunny.phase === 'birthday_bob') {
+      } else if (this._phase === 'hopping_in' || this._phase === 'birthday_bob') {
         // once arrived, lock into birthday bob
-        if (bunny.phase === 'hopping_in' && this.tickHop()) {
-          bunny.phase = 'birthday_bob';
-          bunny.phaseT = 0;
+        if (this._phase === 'hopping_in' && this.tickHop()) {
+          this._phase = 'birthday_bob';
+          this._phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.start'));
         }
       }
       // spawn notes occasionally while bobbing
-      if (bunny.phase === 'birthday_bob' && prob(PROBABILITY.BUNNY_SPAWN_NOTE)) {
-        this._notes.spawnNote(bunny.x + 40, bunny.y - 35);
+      if (this._phase === 'birthday_bob' && prob(PROBABILITY.BUNNY_SPAWN_NOTE)) {
+        this._notes.spawnNote(this._x + 40, this._y - 35);
       }
       return; // skip normal bunny tick during birthday
-    } else if (bunny.phase === 'birthday_bob') {
+    } else if (this._phase === 'birthday_bob') {
       // birthday ended - hop off
-      bunny.phase = 'hopping_out';
-      bunny.phaseT = 0;
-      this.startHop(bunny.x, this.W + 90, 130);
+      this._phase = 'hopping_out';
+      this._phaseT = 0;
+      this.startHop(this._x, this.W + 90, 130);
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.end'));
     }
 
-    if (bunny.phase === 'hopping_in') {
+    if (this._phase === 'hopping_in') {
       if (this.tickHop()) {
-        bunny.hop.arc = 0;
-        bunny.phase = 'fox_waking';
-        bunny.phaseT = 0;
+        this._hop.arc = 0;
+        this._phase = 'fox_waking';
+        this._phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
       }
 
-    } else if (bunny.phase === 'fox_waking') {
-      if (bunny.phaseT >= 90) {
-        bunny.phase = 'nuzzle';
-        bunny.phaseT = 0;
+    } else if (this._phase === 'fox_waking') {
+      if (this._phaseT >= 90) {
+        this._phase = 'nuzzle';
+        this._phaseT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'They touch noses...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.start'));
       }
 
-    } else if (bunny.phase === 'nuzzle') {
-      bunny.hop.arc = 0;
+    } else if (this._phase === 'nuzzle') {
+      this._hop.arc = 0;
       // spawn heart particles periodically
-      if (bunny.phaseT % 20 === 0 && bunny.phaseT < 140) {
-        const noseX = (bunny.x + 35 + fox.x - 34) / 2;
-        this._hearts.spawn(noseX + (Math.random() - 0.5) * 20, bunny.y - 72);
+      if (this._phaseT % 20 === 0 && this._phaseT < 140) {
+        const noseX = (this._x + 35 + fox.x - 34) / 2;
+        this._hearts.spawn(noseX + (Math.random() - 0.5) * 20, this._y - 72);
       }
 
-      if (bunny.phaseT >= 160) {
-        bunny.phase = 'fox_sleep';
-        bunny.phaseT = 0;
+      if (this._phaseT >= 160) {
+        this._phase = 'fox_sleep';
+        this._phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
-    } else if (bunny.phase === 'fox_sleep') {
-      if (bunny.phaseT >= 95) {
-        bunny.phase = 'hopping_out';
-        bunny.phaseT = 0;
-        this.startHop(bunny.x, this.W + 90, 130);
+    } else if (this._phase === 'fox_sleep') {
+      if (this._phaseT >= 95) {
+        this._phase = 'hopping_out';
+        this._phaseT = 0;
+        this.startHop(this._x, this.W + 90, 130);
+        this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'exiting'));
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The bunny hops off...'));
       }
 
-    } else if (bunny.phase === 'hopping_out') {
+    } else if (this._phase === 'hopping_out') {
       if (this.tickHop()) {
-        bunny.phase = 'done';
+        this._phase = 'done';
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
         this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'exit'));
@@ -142,30 +159,30 @@ export class BunnyComponent extends DrawComponent {
 
   draw() {
     const {ctx} = this;
-    const {bunny, fox, frame} = this.scene;
+    const {fox, frame} = this.scene;
 
     // easter bob with crown
-    if (bunny.phase === 'easter_bob') {
+    if (this._phase === 'easter_bob') {
       const bob = Math.sin(frame * 0.08) * 3;
-      this._drawBunny(bunny.x, bunny.y + bob, 0);
-      this._drawCrown(bunny.x, bunny.y + bob);
+      this._drawBunny(this._x, this._y + bob, 0);
+      this._drawCrown(this._x, this._y + bob);
       return;
     }
 
     // birthday bob
-    if (bunny.phase === 'birthday_bob') {
+    if (this._phase === 'birthday_bob') {
       const bob = Math.sin(frame * 0.1 + 1.0) * 4;
-      this._drawBunny(bunny.x, bunny.y + bob, 0);
+      this._drawBunny(this._x, this._y + bob, 0);
       return; // early return
     }
 
-    this._drawBunny(bunny.x, bunny.y, bunny.hop.arc);
+    this._drawBunny(this._x, this._y, this._hop.arc);
 
     // nuzzle glow between bunny and fox noses
-    if (bunny.phase === 'nuzzle') {
-      const pulse = 0.22 + 0.22 * Math.sin(bunny.phaseT * 0.15);
-      const nx = (bunny.x + 35 + fox.x - 34) / 2;
-      const ny = bunny.y - 60;
+    if (this._phase === 'nuzzle') {
+      const pulse = 0.22 + 0.22 * Math.sin(this._phaseT * 0.15);
+      const nx = (this._x + 35 + fox.x - 34) / 2;
+      const ny = this._y - 60;
       ctx.save();
       ctx.globalAlpha = pulse;
       const grd = ctx.createRadialGradient(nx, ny, 2, nx, ny, 34);
@@ -394,14 +411,13 @@ export class BunnyComponent extends DrawComponent {
    * start the visitor scene, making the bunny enter into the scene
    */
   startVisitorScene() {
-    const {bunny} = this.scene;
-    if (bunny.phase !== 'off') return;
+    if (this._phase !== 'off') return;
 
-    bunny.phase = 'hopping_in';
-    bunny.phaseT = 0;
-    bunny.x = -80;
-    bunny.hop.arc = 0;
-    this.startHop(-80, bunny.meetX, 135);
+    this._phase = 'hopping_in';
+    this._phaseT = 0;
+    this._x = -80;
+    this._hop.arc = 0;
+    this.startHop(-80, this._meetX, 135);
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'enter'));
   }
 
@@ -412,7 +428,7 @@ export class BunnyComponent extends DrawComponent {
    * @param {number} fr - frame duration of hop
    */
   startHop(f, t, fr) {
-    const hop = this.scene.bunny.hop;
+    const hop = this._hop;
     hop.from = f;
     hop.to = t;
     hop.frame = fr;
@@ -424,12 +440,11 @@ export class BunnyComponent extends DrawComponent {
    * @returns {boolean} true when the hop is complete
    */
   tickHop() {
-    const {bunny} = this.scene;
-    const hop = bunny.hop;
+    const hop = this._hop;
     hop.t++;
     const p = clamp(hop.t / hop.frame, 0, 1);
     hop.arc = (p * Math.max(1, Math.round(Math.abs(hop.to - hop.from) / 55))) % 1;
-    bunny.x = lerp(hop.from, hop.to, eo(p));
+    this._x = lerp(hop.from, hop.to, eo(p));
     return p >= 1;
   }
 }

@@ -2,11 +2,13 @@ import {PROBABILITY} from "@/config";
 import {clamp, eo, lerp, prob} from "@/utils";
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render a deer which sometimes walks into frame
  */
 export class DeerComponent extends DrawComponent {
+  _bunnyActive = false;
   /** @type{Object} */
   deer;
   /** @type{MusicalNotesComponent} */
@@ -39,6 +41,16 @@ export class DeerComponent extends DrawComponent {
       phaseT: 0,
       cooldown: 0,
     };
+
+    this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
+      if (character === 'bunny') {
+        if (action === 'enter') {
+          this._bunnyActive = true;
+        } else if (action === 'exit') {
+          this._bunnyActive = false;
+        }
+      }
+    }));
   }
 
   tick() {
@@ -73,7 +85,7 @@ export class DeerComponent extends DrawComponent {
 
     if (deer.phase === 'off') {
       const atTransition = Math.abs(this.scene.todBlend - 0.5) < 0.15;
-      if (atTransition && deer.cooldown <= 0 && prob(PROBABILITY.DEER) && this.scene.bunny.phase === 'off') {
+      if (atTransition && deer.cooldown <= 0 && !this._bunnyActive && prob(PROBABILITY.DEER)) {
         deer.phase = 'entering';
         deer.phaseT = 0;
         deer.x = this.W + 80;
