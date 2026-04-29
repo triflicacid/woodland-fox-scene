@@ -156,32 +156,6 @@ export class SceneState {
   }
 
   /**
-   * start a bunny hop from one x position to another.
-   * @param {number} f - from x
-   * @param {number} t - to x
-   * @param {number} fr - frame duration of hop
-   */
-  startHop(f, t, fr) {
-    this.bunny.hop.from = f;
-    this.bunny.hop.to = t;
-    this.bunny.hop.frame = fr;
-    this.bunny.hop.t = 0;
-  }
-
-  /**
-   * advance the bunny hop by one frame.
-   * @returns {boolean} true when the hop is complete
-   */
-  tickHop() {
-    const hop = this.bunny.hop;
-    hop.t++;
-    const p = clamp(hop.t / hop.frame, 0, 1);
-    hop.arc = (p * Math.max(1, Math.round(Math.abs(hop.to - hop.from) / 55))) % 1;
-    this.bunny.x = lerp(hop.from, hop.to, eo(p));
-    return p >= 1;
-  }
-
-  /**
    * correct any invalid states
    */
   clearInvalidStates() {

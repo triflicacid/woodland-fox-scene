@@ -83,19 +83,41 @@ export class FoxComponent extends DrawComponent {
       }
     }));
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
-      if (character !== 'guyfawkes') return;
-      if (action === 'watch.start') {
-        this.scene.fox.asleep = false;
-        this.scene.fox.eyeTransitionT = 0;
-      } else if (action === 'watch.end') {
-        this.scene.fox.asleep = true;
-        this.scene.fox.eyeTransitionT = 0;
-      }
+      this._onCharacterAction(character, action);
     }));
     this.eventBus.subscribe(Subscriptions.onMothronDive(this.getName(), () => {
       this._triggerEyeTransition();
       this.scene.fox.quiverT = 0;
     }));
+  }
+
+  /**
+   * event handler for a character action
+   * @param {string} character
+   * @param {string} action
+   */
+  _onCharacterAction(character, action) {
+    const {fox} = this.scene;
+    if (character === 'guyfawkes') {
+      if (action === 'watch.start') {
+        fox.asleep = false;
+        fox.eyeTransitionT = 0;
+      } else if (action === 'watch.end') {
+        fox.asleep = true;
+        fox.eyeTransitionT = 0;
+      }
+    } else if (character === 'bunny') {
+      if (action === 'nuzzle.prepare') {
+        fox.phase = 'bunny_standup';
+        fox.phaseT = 0;
+        fox.poseBlend = 0;
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox stirs...'));
+      } else if (action === 'nuzzle.end') {
+        fox.phase = 'bunny_curling';
+        fox.phaseT = 0;
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
+      }
+    }
   }
 
   tick() {
@@ -827,6 +849,20 @@ export class FoxComponent extends DrawComponent {
     if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
       fox.eyeTransitionT = 0;
     }
+  }
+
+  /**
+   * set us to be idle.
+   * cancels any act ions or transitions.
+   */
+  forceIdle() {
+    const {fox} = this.scene;
+    fox.phase = 'idle';
+    fox.phaseT = 0;
+    fox.poseBlend = 0;
+    fox.stretchBlend = 0;
+    fox.spinAngle = 0;
+    fox.tailWag = 0;
   }
 
   /**

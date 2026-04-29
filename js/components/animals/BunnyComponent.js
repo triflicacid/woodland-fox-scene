@@ -1,4 +1,4 @@
-import {prob} from '@/utils';
+import {clamp, eo, lerp, prob} from '@/utils';
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";
@@ -60,7 +60,7 @@ export class BunnyComponent extends DrawComponent {
       // easter ended - hop off
       bunny.phase = 'hopping_out';
       bunny.phaseT = 0;
-      this.scene.startHop(bunny.x, this.W + 90, 130);
+      this.startHop(bunny.x, this.W + 90, 130);
     }
 
     // birthday - bunny hops in and bobs along
@@ -70,10 +70,10 @@ export class BunnyComponent extends DrawComponent {
         bunny.phaseT = 0;
         bunny.x = -80;
         bunny.hop.arc = 0;
-        this.scene.startHop(-80, this.scene.fox.x - 100, 135);
+        this.startHop(-80, fox.x - 100, 135);
       } else if (bunny.phase === 'hopping_in' || bunny.phase === 'birthday_bob') {
         // once arrived, lock into birthday bob
-        if (bunny.phase === 'hopping_in' && this.scene.tickHop()) {
+        if (bunny.phase === 'hopping_in' && this.tickHop()) {
           bunny.phase = 'birthday_bob';
           bunny.phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.start'));
@@ -88,19 +88,15 @@ export class BunnyComponent extends DrawComponent {
       // birthday ended - hop off
       bunny.phase = 'hopping_out';
       bunny.phaseT = 0;
-      this.scene.startHop(bunny.x, this.W + 90, 130);
+      this.startHop(bunny.x, this.W + 90, 130);
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.end'));
     }
 
     if (bunny.phase === 'hopping_in') {
-      if (this.scene.tickHop()) {
+      if (this.tickHop()) {
         bunny.hop.arc = 0;
         bunny.phase = 'fox_waking';
         bunny.phaseT = 0;
-        fox.phase = 'bunny_standup';
-        fox.phaseT = 0;
-        fox.poseBlend = 0;
-        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox stirs...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.prepare'));
       }
 
@@ -123,9 +119,6 @@ export class BunnyComponent extends DrawComponent {
       if (bunny.phaseT >= 160) {
         bunny.phase = 'fox_sleep';
         bunny.phaseT = 0;
-        fox.phase = 'bunny_curling';
-        fox.phaseT = 0;
-        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
@@ -133,12 +126,12 @@ export class BunnyComponent extends DrawComponent {
       if (bunny.phaseT >= 95) {
         bunny.phase = 'hopping_out';
         bunny.phaseT = 0;
-        this.scene.startHop(bunny.x, this.W + 90, 130);
+        this.startHop(bunny.x, this.W + 90, 130);
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The bunny hops off...'));
       }
 
     } else if (bunny.phase === 'hopping_out') {
-      if (this.scene.tickHop()) {
+      if (this.tickHop()) {
         bunny.phase = 'done';
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
         this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
@@ -395,5 +388,48 @@ export class BunnyComponent extends DrawComponent {
     });
 
     ctx.restore();
+  }
+
+  /**
+   * start the visitor scene, making the bunny enter into the scene
+   */
+  startVisitorScene() {
+    const {bunny} = this.scene;
+    if (bunny.phase !== 'off') return;
+
+    bunny.phase = 'hopping_in';
+    bunny.phaseT = 0;
+    bunny.x = -80;
+    bunny.hop.arc = 0;
+    this.startHop(-80, bunny.meetX, 135);
+    this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'enter'));
+  }
+
+  /**
+   * start a bunny hop from one x position to another
+   * @param {number} f - from x
+   * @param {number} t - to x
+   * @param {number} fr - frame duration of hop
+   */
+  startHop(f, t, fr) {
+    const hop = this.scene.bunny.hop;
+    hop.from = f;
+    hop.to = t;
+    hop.frame = fr;
+    hop.t = 0;
+  }
+
+  /**
+   * advance the bunny hop by one frame
+   * @returns {boolean} true when the hop is complete
+   */
+  tickHop() {
+    const {bunny} = this.scene;
+    const hop = bunny.hop;
+    hop.t++;
+    const p = clamp(hop.t / hop.frame, 0, 1);
+    hop.arc = (p * Math.max(1, Math.round(Math.abs(hop.to - hop.from) / 55))) % 1;
+    bunny.x = lerp(hop.from, hop.to, eo(p));
+    return p >= 1;
   }
 }
