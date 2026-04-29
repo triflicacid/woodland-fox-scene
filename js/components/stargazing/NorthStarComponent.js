@@ -10,6 +10,12 @@ export class NorthStarComponent extends DrawComponent {
   x = 360;
   y = 28;
 
+  static COMPONENT_NAME = 'NorthStarComponent';
+
+  getName() {
+    return NorthStarComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     const {stargazing, weather, season} = this.scene;
     return (weather === 'clear' || weather === 'wind') && (stargazing || season === 'winter');
