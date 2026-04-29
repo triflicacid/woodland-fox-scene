@@ -47,18 +47,8 @@ export class SceneState {
     // birds/owl state
     this.owlForced = false;
 
-    this.puddleLevel = 0;
-
     // tree definitions
     this.trees = TREE_DEFS;
-
-    // ground decoration
-    this.puddles = Array.from({length: 5}, (_, i) => ({
-      x: 120 + i * 110,
-      y: H * 0.68 + rnd(H * 0.1),
-      rx: 0, maxRx: 20 + rnd(25),
-      ry: 0, maxRy: 5 + rnd(4),
-    }));
 
     // the bonfire
     this.bonfire = {

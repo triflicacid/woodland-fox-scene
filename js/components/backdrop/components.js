@@ -40,8 +40,8 @@ export class GroundBackdropComponents extends ComponentGroup {
       new FallenLeavesComponent(eventBus, scene, ctx, W, H),
       new SnowDriftsComponent(eventBus, scene, ctx, W, H),
       new SpringFlowersComponent(eventBus, scene, ctx, W, H),
-      new PuddlesComponent(eventBus, scene, ctx, W, H),
-      new WormsComponent(eventBus, scene, ctx, W, H),
+      this._puddles = new PuddlesComponent(eventBus, scene, ctx, W, H),
+      new WormsComponent(eventBus, scene, ctx, W, H, this._puddles),
       new GrassComponent(eventBus, scene, ctx, W, H),
     ];
   }
