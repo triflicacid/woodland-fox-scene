@@ -2,6 +2,7 @@ import {clamp, eo, lerp, prob} from '@/utils';
 import {PROBABILITY} from '@/config';
 import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
+import {Subscriptions} from "@/core/Subscriptions";
 
 /**
  * render a hedgehog which occasionally walks into frame
@@ -13,6 +14,7 @@ export class HedgehogComponent extends DrawComponent {
     phase: 'off',
     phaseT: 0,
   };
+  _bunnyActive = false;
   /** @type{MusicalNotesComponent} */
   _notes;
 
@@ -33,6 +35,18 @@ export class HedgehogComponent extends DrawComponent {
 
   getName() {
     return HedgehogComponent.COMPONENT_NAME;
+  }
+
+  initialise() {
+    this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
+      if (character === 'bunny') {
+        if (action === 'enter') {
+          this._bunnyActive = true;
+        } else if (action === 'exit') {
+          this._bunnyActive = false;
+        }
+      }
+    }));
   }
 
   tick() {
@@ -65,7 +79,7 @@ export class HedgehogComponent extends DrawComponent {
     }
 
     // spontaneous arrival in autumn
-    if (hog.phase === 'off' && prob(PROBABILITY.HEDGEHOG) && bunny.phase === 'off' && season === 'autumn') {
+    if (hog.phase === 'off' && !this._bunnyActive && prob(PROBABILITY.HEDGEHOG) && season === 'autumn') {
       hog.phase = 'in';
       hog.phaseT = 0;
       hog.x = -60;

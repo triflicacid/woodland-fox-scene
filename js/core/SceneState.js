@@ -44,16 +44,6 @@ export class SceneState {
       y: 0.64 * this.H,
     };
 
-    // bunny state
-    this.bunny = {
-      x: -80,
-      meetX: this.fox.x - 80,
-      y: this.fox.y,
-      phase: 'off',
-      phaseT: 0,
-      hop: {arc: 0, from: -80, to: -80, frame: 1, t: 0},
-    };
-
     // birds/owl state
     this.owlForced = false;
 

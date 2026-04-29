@@ -48,6 +48,7 @@ export class FoxComponent extends DrawComponent {
   _eyeTransitionT = -1;
   _singingMouthT = 0;
   _quiverT = -1; // -1 = not quivering, 0+ = quiver timer
+  _facingLeft = false;
   /** @type{MusicalNotesComponent} */
   _notes;
 
@@ -136,10 +137,12 @@ export class FoxComponent extends DrawComponent {
         this._phase = 'bunny_standup';
         this._phaseT = 0;
         this._poseBlend = 0;
+        this._facingLeft = true;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox stirs...'));
       } else if (action === 'nuzzle.end') {
         this._phase = 'bunny_curling';
         this._phaseT = 0;
+        this._facingLeft = false;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
       }
     }
@@ -340,7 +343,7 @@ export class FoxComponent extends DrawComponent {
    */
   draw() {
     const {ctx} = this;
-    const {bunny, season, weather, frame, todBlend} = this.scene;
+    const {season, weather, frame, todBlend} = this.scene;
 
     let fx = this._x;
     if (this._phase === 'wander_out' || this._phase === 'wander_sniff' || this._phase === 'wander_in') {
@@ -363,9 +366,7 @@ export class FoxComponent extends DrawComponent {
     if (this._spinAngle !== 0) ctx.scale(Math.cos(this._spinAngle), 1 - Math.abs(Math.sin(this._spinAngle)) * 0.08);
 
     const b = this._poseBlend;
-    const wanderLeft = !(this._phase === 'wander_out' || this._phase === 'wander_sniff');
-    const facingLeft = bunny.phase === 'fox_waking' || bunny.phase === 'nuzzle' || bunny.phase === 'fox_sleep';
-    const fl = facingLeft || wanderLeft;
+    const fl = this._facingLeft || !(this._phase === 'wander_out' || this._phase === 'wander_sniff');
 
     if (b < 0.01) {
       this._drawCurled(frame, season, weather, todBlend);
