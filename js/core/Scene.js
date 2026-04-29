@@ -80,11 +80,11 @@ export class Scene {
 
     // store the handle for the drawing loop
     /** @type {number | undefined} */
-    this._handle = undefined;
+    this.handle = undefined;
     // also store playing flag
-    this._active = false;
+    this.active = false;
     /** @type{string | null} */
-    this._activeTab = null;
+    this.activeTab = null;
 
     // store the event bus for this scene
     this.eventBus = new EventBus();
@@ -94,7 +94,7 @@ export class Scene {
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, this.state, [
       new EventListenerComponent(this.eventBus, this.state),
-      this._shake = new ScreenShakeComponent(this.eventBus, this.state, this.ctx, W, H),
+      this.shake = new ScreenShakeComponent(this.eventBus, this.state, this.ctx, W, H),
       new TimeOfDayComponent(this.eventBus, this.state),
 
       new SkyBackdropComponents(this.eventBus, this.state, this.ctx, W, H),
@@ -160,7 +160,7 @@ export class Scene {
       this._musicalNotes,
       new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new ScreenShakeRestoreComponent(this.eventBus, this.state, this.ctx, W, H, this._shake),
+      new ScreenShakeRestoreComponent(this.eventBus, this.state, this.ctx, W, H, this.shake),
     ]);
     this._aurora = requireNonNull(this._components.getComponent(AuroraComponent.COMPONENT_NAME));
   }
@@ -189,11 +189,11 @@ export class Scene {
    * start the rendering loop.
    */
   start() {
-    if (this._active) {
+    if (this.active) {
       throw new Error("Scene is already active");
     }
-    this._handle = requestAnimationFrame(this._loop);
-    this._active = true;
+    this.handle = requestAnimationFrame(this._loop);
+    this.active = true;
   }
 
   /**
@@ -201,10 +201,10 @@ export class Scene {
    */
   stop() {
     console.warn("Stopping scene.");
-    this._active = false;
-    if (this._handle !== undefined) {
-      cancelAnimationFrame(this._handle);
-      this._handle = undefined;
+    this.active = false;
+    if (this.handle !== undefined) {
+      cancelAnimationFrame(this.handle);
+      this.handle = undefined;
     }
   }
 
@@ -212,7 +212,7 @@ export class Scene {
    * run one frame: clear, tick, draw all components, then request next frame.
    */
   _loop() {
-    if (!this._active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
+    if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
 
     const {ctx, state} = this;
     ctx.clearRect(0, 0, CANVAS.WIDTH, CANVAS.HEIGHT);
@@ -221,7 +221,7 @@ export class Scene {
     this._components.tick();
     this._components.draw();
 
-    this._handle = requestAnimationFrame(this._loop);
+    this.handle = requestAnimationFrame(this._loop);
   }
 
   /**
@@ -258,7 +258,7 @@ export class Scene {
     const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
 
     // clicking active tab deselects it
-    const newTab = this._activeTab === tab ? null : tab;
+    const newTab = this.activeTab === tab ? null : tab;
 
     tabs.forEach(t => {
       document.getElementById(`tab-${t}`).classList.toggle('btn-active', t === newTab);
@@ -266,7 +266,7 @@ export class Scene {
     });
 
     localStorage.setItem('activeTab', newTab ?? '');
-    this._activeTab = newTab;
+    this.activeTab = newTab;
   }
 
   /**

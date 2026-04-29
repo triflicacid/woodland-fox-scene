@@ -6,8 +6,8 @@ import {Subscriptions} from "@/core/Subscriptions";
  * render fireflies during nighttime
  */
 export class FirefliesComponent extends DrawComponent {
-  _min = 18;
-  _max = 64;
+  min = 18;
+  max = 64;
   /** @type{Array<Object>} */
   fireflies = [];
 
@@ -35,7 +35,7 @@ export class FirefliesComponent extends DrawComponent {
 
     const {W, H} = this;
     const t = Math.abs(this.scene.moonPhase - 4) / 4; // 0 at full, 1 at new
-    const length = Math.round(this._min + (this._max - this._min) * t * t);
+    const length = Math.round(this.min + (this.max - this.min) * t * t);
 
     this.fireflies = Array.from({length}, () => ({
       x: 80 + rnd(W - 160),

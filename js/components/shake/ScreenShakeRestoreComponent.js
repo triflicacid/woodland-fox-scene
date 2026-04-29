@@ -16,7 +16,7 @@ export class ScreenShakeRestoreComponent extends DrawComponent {
    */
   constructor(eventBus, scene, ctx, W, H, shake) {
     super(eventBus, scene, ctx, W, H);
-    this._shake = shake;
+    this.shake = shake;
   }
 
   static COMPONENT_NAME = 'ScreenShakeRestoreComponent';
@@ -26,11 +26,11 @@ export class ScreenShakeRestoreComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return this._shake._didSave;
+    return this.shake.didSave;
   }
 
   draw() {
     this.ctx.restore();
-    this._shake._didSave = false;
+    this.shake.didSave = false;
   }
 }

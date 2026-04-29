@@ -10,7 +10,7 @@ export const BALLOON_PALETTE = ['#ff3333', '#ffcc00', '#3399ff', '#ff66cc', '#33
  */
 export class BalloonsComponent extends DrawComponent {
   /** @type {Array<Object>} */
-  _balloons = [];
+  balloons = [];
 
   static COMPONENT_NAME = "BalloonsComponent";
 
@@ -24,7 +24,7 @@ export class BalloonsComponent extends DrawComponent {
   }
 
   initialise() {
-    this._balloons = this.scene.trees.flatMap((tr, i) => {
+    this.balloons = this.scene.trees.flatMap((tr, i) => {
       const count = tr.balloonCount ?? 0;
       return Array.from({length: count}, (_, j) => ({
         treeIdx: i,
@@ -42,7 +42,7 @@ export class BalloonsComponent extends DrawComponent {
     const {ctx} = this;
     const {weather, frame, trees, season, specialEvent} = this.scene;
 
-    this._balloons.forEach(b => {
+    this.balloons.forEach(b => {
       const tr = trees[b.treeIdx];
       const top = getTreeTopPos(tr, weather, season, specialEvent, frame, this.H);
       const bob = Math.sin(frame * b.bobSpeed + b.bobPhase) * 4;

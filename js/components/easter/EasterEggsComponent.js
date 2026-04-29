@@ -34,7 +34,7 @@ const CLUSTERS = [
  */
 export class EasterEggsComponent extends DrawComponent {
   /** @type {Array<Object>} */
-  _eggs = [];
+  eggs = [];
 
   static COMPONENT_NAME = "EasterEggsComponent";
 
@@ -43,7 +43,7 @@ export class EasterEggsComponent extends DrawComponent {
   }
 
   initialise() {
-    this._eggs = CLUSTERS.flatMap(([cx, cyF, count]) =>
+    this.eggs = CLUSTERS.flatMap(([cx, cyF, count]) =>
         Array.from({length: count}, () => {
           const pattern = prob(0.33) ? 'dots' : prob(0.5) ? 'lines' : 'plain';
           const col = PASTEL_COLS[Math.floor(rnd(PASTEL_COLS.length))];
@@ -73,7 +73,7 @@ export class EasterEggsComponent extends DrawComponent {
 
   draw() {
     const {ctx, H} = this;
-    this._eggs.forEach(e => {
+    this.eggs.forEach(e => {
       const y = H * e.yFrac;
       ctx.save();
       ctx.translate(e.x, y);

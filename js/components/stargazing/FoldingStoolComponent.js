@@ -5,9 +5,9 @@ import {DrawComponent} from '@/core/DrawComponent';
  */
 export class FoldingStoolComponent extends DrawComponent {
   // offset from fox
-  _offsetX = 160;
-  _offsetY = 72;
-  _scale = 1.2;
+  offsetX = 160;
+  offsetY = 72;
+  scale = 1.2;
 
   static COMPONENT_NAME = 'FoldingStoolComponent';
 
@@ -22,12 +22,12 @@ export class FoldingStoolComponent extends DrawComponent {
   draw() {
     const {ctx} = this;
     const {fox} = this.scene;
-    const x = fox.x + this._offsetX;
-    const y = fox.y + this._offsetY;
+    const x = fox.x + this.offsetX;
+    const y = fox.y + this.offsetY;
 
     ctx.save();
     ctx.translate(x, y);
-    ctx.scale(this._scale, this._scale);
+    ctx.scale(this.scale, this.scale);
     this._drawStool();
     ctx.restore();
   }

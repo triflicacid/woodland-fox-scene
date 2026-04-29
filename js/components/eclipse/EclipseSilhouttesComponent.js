@@ -8,7 +8,7 @@ import {Subscriptions} from "@/core/Subscriptions";
  */
 export class EclipseSilhouettesComponent extends DrawComponent {
   /** @type {Array<Object>} */
-  _silhouettes = [];
+  silhouettes = [];
 
   static COMPONENT_NAME = "EclipseSilhouettesComponent";
 
@@ -35,7 +35,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
 
   _generateSilhouettes() {
     const length = 5 + Math.floor(rnd(6));
-    this._silhouettes = Array.from({length}, (_, i) => {
+    this.silhouettes = Array.from({length}, (_, i) => {
       const type = randomMonster();
       return {
         x: 60 + i * 110 + rndf(30),
@@ -52,7 +52,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
 
   tick() {
     const {W} = this;
-    this._silhouettes.forEach(s => {
+    this.silhouettes.forEach(s => {
       s.x += s.vx;
       if (s.x > W + 80) s.x = -80;
       if (s.x < -80) s.x = W + 80;
@@ -62,7 +62,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
   draw() {
     const {ctx} = this;
     const {frame} = this.scene;
-    this._silhouettes.forEach(s => {
+    this.silhouettes.forEach(s => {
       ctx.save();
       ctx.translate(s.x, s.y);
       ctx.scale(s.scale * (s.vx < 0 ? -1 : 1), s.scale);

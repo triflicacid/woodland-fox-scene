@@ -6,7 +6,7 @@ import {clamp, rnd} from "@/utils";
  */
 export class HeartsComponent extends DrawComponent {
   /** @type{Array<Object>} */
-  _hearts = [];
+  hearts = [];
 
   static COMPONENT_NAME = "HeartsComponent";
 
@@ -15,11 +15,11 @@ export class HeartsComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return this._hearts.length > 0;
+    return this.hearts.length > 0;
   }
 
   tick() {
-    this._hearts = this._hearts.filter(h => {
+    this.hearts = this.hearts.filter(h => {
       h.y += h.vy;
       h.life++;
       return h.life < 65;
@@ -27,7 +27,7 @@ export class HeartsComponent extends DrawComponent {
   }
 
   draw() {
-    this._hearts.forEach(h => {
+    this.hearts.forEach(h => {
       const a = clamp(1 - h.life / 60, 0, 1);
       this._drawHeart(h.x, h.y, 6 + h.life * 0.09, a);
     });
@@ -61,7 +61,7 @@ export class HeartsComponent extends DrawComponent {
    * @param{number} y
    */
   spawn(x, y) {
-    this._hearts.push({
+    this.hearts.push({
       x,
       y,
       vy: -0.55 - rnd(0.45),
@@ -73,6 +73,6 @@ export class HeartsComponent extends DrawComponent {
    * Remove all heart particles
    */
   clear() {
-    this._hearts.length = 0;
+    this.hearts.length = 0;
   }
 }

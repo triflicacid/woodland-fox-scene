@@ -9,8 +9,8 @@ import {PROBABILITY} from "@/config";
  */
 export class EclipseMonstersComponent extends DrawComponent {
   /** @type {Array<Object>} */
-  _monsters = [];
-  _spawnCooldown = 0;
+  monsters = [];
+  spawnCooldown = 0;
 
   static COMPONENT_NAME = "EclipseMonstersComponent";
 
@@ -24,14 +24,14 @@ export class EclipseMonstersComponent extends DrawComponent {
 
   tick() {
     const {W} = this;
-    this._spawnCooldown--;
+    this.spawnCooldown--;
 
-    if (this._spawnCooldown <= 0 && prob(PROBABILITY.ECLIPSE.MONSTER_SPAWN)) {
+    if (this.spawnCooldown <= 0 && prob(PROBABILITY.ECLIPSE.MONSTER_SPAWN)) {
       this.summon();
-      this._spawnCooldown = 100 + Math.floor(rnd(150));
+      this.spawnCooldown = 100 + Math.floor(rnd(150));
     }
 
-    this._monsters = this._monsters.filter(m => {
+    this.monsters = this.monsters.filter(m => {
       m.x += m.vx;
       return m.x > -100 && m.x < W + 100;
     });
@@ -41,7 +41,7 @@ export class EclipseMonstersComponent extends DrawComponent {
     const {ctx} = this;
     const {frame} = this.scene;
 
-    this._monsters
+    this.monsters
         .sort((a, b) => a.y - b.y)
         .forEach(m => {
           ctx.save();
@@ -60,7 +60,7 @@ export class EclipseMonstersComponent extends DrawComponent {
   summon(type = undefined, form = undefined) {
     if (type === undefined) type = randomMonster();
     const fromRight = prob(0.5);
-    this._monsters.push({
+    this.monsters.push({
       x: fromRight ? this.W + 60 : -60,
       y: this.H * 0.62,
       vx: fromRight ? -(0.6 + rnd(0.5)) : (0.6 + rnd(0.5)),

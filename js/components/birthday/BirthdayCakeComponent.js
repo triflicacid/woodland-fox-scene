@@ -9,12 +9,12 @@ const SPRINKLE_COLS = ['#ff88cc', '#88ccff', '#ffcc44', '#88ffcc', '#cc88ff', '#
  */
 export class BirthdayCakeComponent extends DrawComponent {
   // offset from fox
-  _offsetX = 55;
-  _offsetY = 115;
-  _age = 20;
+  offsetX = 55;
+  offsetY = 115;
+  age = 20;
   // define `wm` width multiplier. `w` will be calculated in `initialise`
   /** @type{Array<{w:number, wm: number, h:number, col:string, dec:string, trim:string}>} */
-  _tiers = [
+  tiers = [
     {wm: 1, h: 18, col: '#f5f0ea', dec: '#ff88cc', trim: '#ff66aa'},
     {wm: 0.75, h: 16, col: '#f5f0ea', dec: '#88ccff', trim: '#44aaff'},
     {wm: 0.55, h: 14, col: '#f5f0ea', dec: '#ffcc44', trim: '#ffaa00'},
@@ -27,13 +27,13 @@ export class BirthdayCakeComponent extends DrawComponent {
   }
 
   initialise() {
-    const digits = String(this._age).split('');
+    const digits = String(this.age).split('');
     const spacing = 18;
     const digitW = 14; // rough width of each digit including padding
     const minW = 36; // minimum half-width regardless of digits
     const requiredHW = Math.max(minW, (digits.length * (spacing + digitW)) / 2 + 10);
 
-    this._tiers.forEach(tier => {
+    this.tiers.forEach(tier => {
       tier.w = tier.wm * requiredHW;
     })
   }
@@ -45,8 +45,8 @@ export class BirthdayCakeComponent extends DrawComponent {
   draw() {
     const {ctx} = this;
     const {fox, frame} = this.scene;
-    const x = fox.x + this._offsetX;
-    const y = fox.y + this._offsetY;
+    const x = fox.x + this.offsetX;
+    const y = fox.y + this.offsetY;
 
     ctx.save();
     ctx.translate(x, y);
@@ -61,14 +61,14 @@ export class BirthdayCakeComponent extends DrawComponent {
   _drawCake(frame) {
     let tierY = 0;
 
-    this._tiers.forEach((tier, i) => {
+    this.tiers.forEach((tier, i) => {
       this._drawTier(tier, tierY, frame, i);
       tierY -= tier.h;
     });
 
     // draw digits first, so sticks are covered by cake
-    const topTier = this._tiers[this._tiers.length - 1];
-    this._drawDigitCandles(this._age, tierY, topTier.w, frame);
+    const topTier = this.tiers[this.tiers.length - 1];
+    this._drawDigitCandles(this.age, tierY, topTier.w, frame);
 
     // cream dollops on rim of top tier
     this._drawCreamDollops(topTier.w, tierY, frame);

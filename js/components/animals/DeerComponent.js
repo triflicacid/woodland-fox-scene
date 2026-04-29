@@ -8,11 +8,11 @@ import {Subscriptions} from "@/core/Subscriptions";
  * render a deer which sometimes walks into frame
  */
 export class DeerComponent extends DrawComponent {
-  _bunnyActive = false;
+  bunnyActive = false;
   /** @type{Object} */
   deer;
   /** @type{MusicalNotesComponent} */
-  _notes;
+  notes;
 
   /**
    * @param {EventBus} eventBus
@@ -24,7 +24,7 @@ export class DeerComponent extends DrawComponent {
    */
   constructor(eventBus, scene, ctx, W, H, notes) {
     super(eventBus, scene, ctx, W, H);
-    this._notes = notes;
+    this.notes = notes;
   }
 
   static COMPONENT_NAME = "DeerComponent";
@@ -45,9 +45,9 @@ export class DeerComponent extends DrawComponent {
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
       if (character === 'bunny') {
         if (action === 'enter') {
-          this._bunnyActive = true;
+          this.bunnyActive = true;
         } else if (action === 'exit') {
-          this._bunnyActive = false;
+          this.bunnyActive = false;
         }
       }
     }));
@@ -74,7 +74,7 @@ export class DeerComponent extends DrawComponent {
         }
       }
       if (deer.phase === 'birthday_bob' && prob(PROBABILITY.DEER_SPAWN_NOTE)) {
-        this._notes.spawnNote(deer.x - 50, this.H * deer.y_fraction - 84);
+        this.notes.spawnNote(deer.x - 50, this.H * deer.y_fraction - 84);
       }
       return;
     } else if (deer.phase === 'birthday_bob') {
@@ -85,7 +85,7 @@ export class DeerComponent extends DrawComponent {
 
     if (deer.phase === 'off') {
       const atTransition = Math.abs(this.scene.todBlend - 0.5) < 0.15;
-      if (atTransition && deer.cooldown <= 0 && !this._bunnyActive && prob(PROBABILITY.DEER)) {
+      if (atTransition && deer.cooldown <= 0 && !this.bunnyActive && prob(PROBABILITY.DEER)) {
         deer.phase = 'entering';
         deer.phaseT = 0;
         deer.x = this.W + 80;

@@ -25,9 +25,9 @@ const WANDER_ZONES = [
  */
 export class ChicksComponent extends DrawComponent {
   /** @type {Array<Object>} wandering chicks */
-  _wanderers = [];
+  wanderers = [];
   /** @type {Array<Object>} pecking chicks */
-  _peckers = [];
+  peckers = [];
   forced = false;
 
   static COMPONENT_NAME = "ChicksComponent";
@@ -41,7 +41,7 @@ export class ChicksComponent extends DrawComponent {
   }
 
   initialise() {
-    this._wanderers = WANDER_ZONES.map(([x, yF], i) => ({
+    this.wanderers = WANDER_ZONES.map(([x, yF], i) => ({
       x,
       yF,
       vx: (0.3 + rnd(0.3)) * (prob(0.5) ? 1 : -1),
@@ -50,7 +50,7 @@ export class ChicksComponent extends DrawComponent {
       facingRight: prob(0.5),
     }));
 
-    this._peckers = PECK_ZONES.map(([x, yF], i) => ({
+    this.peckers = PECK_ZONES.map(([x, yF], i) => ({
       x,
       yF,
       peckPhase: rnd(Math.PI * 2),
@@ -62,7 +62,7 @@ export class ChicksComponent extends DrawComponent {
   tick() {
     const {W} = this;
 
-    this._wanderers.forEach(c => {
+    this.wanderers.forEach(c => {
       // turn randomly or at canvas edges
       c.turnTimer--;
       if (c.turnTimer <= 0 || c.x < WANDER_WIDTH || c.x > W - WANDER_WIDTH) {
@@ -74,7 +74,7 @@ export class ChicksComponent extends DrawComponent {
     });
 
     // peckers just advance their peck animation phase
-    this._peckers.forEach(c => {
+    this.peckers.forEach(c => {
       c.peckPhase += c.peckSpeed;
     });
   }
@@ -85,13 +85,13 @@ export class ChicksComponent extends DrawComponent {
 
     // sort, render highest-first for perspective
     const all = [
-      ...this._wanderers.map(c => ({
+      ...this.wanderers.map(c => ({
         ...c,
         pecking: false,
         peckAmt: 0,
         y: H * c.yF + Math.sin(frame * 0.18 + c.phase) * 1.5 // slight waddle bob
       })),
-      ...this._peckers.map(c => ({
+      ...this.peckers.map(c => ({
         ...c,
         pecking: true,
         peckAmt: Math.max(0, Math.sin(c.peckPhase)) * 6, // head dips down

@@ -7,7 +7,7 @@ import {Subscriptions} from "@/core/Subscriptions";
  */
 export class WormsComponent extends DrawComponent {
   /** @type{Array<Object>} */
-  _worms = [];
+  worms = [];
 
   static COMPONENT_NAME = "WormsComponent";
 
@@ -28,14 +28,14 @@ export class WormsComponent extends DrawComponent {
   _generateWorms() {
     const {weather, season, puddles} = this.scene;
 
-    this._worms.length = 0;
+    this.worms.length = 0;
 
     if (weather !== 'rain' && weather !== 'storm') return;
     if (season !== 'spring' && season !== 'summer') return;
 
     const k = weather === 'storm' ? 3 : 1;
 
-    this._worms = Array.from({length: k + rnd(4)}, (_, i) => {
+    this.worms = Array.from({length: k + rnd(4)}, (_, i) => {
       // get a random puddle
       const pd = rndchoice(puddles);
 
@@ -60,7 +60,7 @@ export class WormsComponent extends DrawComponent {
     const {ctx} = this;
     const {frame} = this.scene;
 
-    this._worms.forEach(w => {
+    this.worms.forEach(w => {
       const alpha = w.alpha(this.scene.puddleLevel);
       const wormX = w.x(frame);
       const wormY = w.y(frame);

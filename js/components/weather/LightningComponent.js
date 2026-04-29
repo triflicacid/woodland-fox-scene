@@ -8,7 +8,7 @@ import {Events} from "@/core/Events";
  */
 export class LightningComponent extends DrawComponent {
   /** @type{Array<Object>} */
-  _bolts = [];
+  bolts = [];
 
   static COMPONENT_NAME = "LightningComponent";
 
@@ -22,15 +22,15 @@ export class LightningComponent extends DrawComponent {
 
   draw() {
     const {ctx, W, H} = this;
-    if (!this._bolts.length) return;
+    if (!this.bolts.length) return;
 
     // single canvas flash driven by the brightest active bolt
-    const maxFade = Math.max(...this._bolts.map(b => 1 - b.t / 8));
-    const hasSuper = this._bolts.some(b => b.superBolt);
+    const maxFade = Math.max(...this.bolts.map(b => 1 - b.t / 8));
+    const hasSuper = this.bolts.some(b => b.superBolt);
     ctx.fillStyle = `rgba(200,220,255,${(hasSuper ? 0.25 : 0.15) * maxFade})`;
     ctx.fillRect(0, 0, W, H);
 
-    this._bolts.forEach(bolt => {
+    this.bolts.forEach(bolt => {
       const fade = 1 - bolt.t / 8;
 
       // core bolt
@@ -68,12 +68,12 @@ export class LightningComponent extends DrawComponent {
         lx += rndf(spread);
         ly += 20 + rnd(20);
       }
-      this._bolts.push({path, t: 0, superBolt});
+      this.bolts.push({path, t: 0, superBolt});
       this.eventBus.dispatch(Events.lightningStrike(this.getName(), superBolt));
     }
 
     // advance all bolts, remove expired ones
-    this._bolts.forEach(b => b.t++);
-    this._bolts = this._bolts.filter(b => b.t < 8);
+    this.bolts.forEach(b => b.t++);
+    this.bolts = this.bolts.filter(b => b.t < 8);
   }
 }
