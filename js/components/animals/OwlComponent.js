@@ -14,6 +14,7 @@ export class OwlComponent extends DrawComponent {
     blinkT: -1,
     treeIdx: 2,
   };
+  forced = false;
 
   static COMPONENT_NAME = "OwlComponent";
 
@@ -23,7 +24,7 @@ export class OwlComponent extends DrawComponent {
 
   isEnabled() {
     const {season, weather} = this.scene;
-    return this.scene.owlForced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
+    return this.forced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
   }
 
   tick() {
@@ -151,5 +152,20 @@ export class OwlComponent extends DrawComponent {
     ctx.stroke();
 
     ctx.restore();
+  }
+
+  /**
+   * is this component currently forced?
+   */
+  isForced() {
+    return this.forced;
+  }
+
+  /**
+   * set whether this owl are forced or not
+   * @param {boolean} forced
+   */
+  setForced(forced) {
+    this.forced = forced;
   }
 }

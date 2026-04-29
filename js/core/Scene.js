@@ -138,10 +138,10 @@ export class Scene {
       new WindComponent(this.eventBus, this.state, this.ctx, W, H),
       new FogOverlayComponent(this.eventBus, this.state, this.ctx, W, H),
 
-      new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._bats = new BatsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._birds = new BirdsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._eclipseMonsters = new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
-      new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._owl = new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
       this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H, this._bonfire.getPosition()),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
@@ -459,9 +459,11 @@ export class Scene {
     // animal / reaction summon buttons
     document.getElementById('btn-deer').addEventListener('click', () => this._deer.summon());
     document.getElementById('btn-hog').addEventListener('click', () => this._hedgehog.summon());
-    document.getElementById('btn-owl').addEventListener('click', function () {
-      state.owlForced = !state.owlForced;
-      this.classList.toggle('btn-active');
+    document.getElementById('btn-owl').addEventListener('click', e => {
+      // TODO separate into two buttons
+      this._owl.setForced(!this._owl.isForced());
+      this._bats.setForced(!this._bats.isForced());
+      e.target.classList.toggle('btn-active', this._owl.isForced());
     });
     document.getElementById('btn-yawn').addEventListener('click', () => this._fox.triggerYawn());
     document.getElementById('btn-ear').addEventListener('click', () => this._fox.triggerEarTwitch());

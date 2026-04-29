@@ -44,9 +44,6 @@ export class SceneState {
       y: 0.64 * this.H,
     };
 
-    // birds/owl state
-    this.owlForced = false;
-
     // tree definitions
     this.trees = TREE_DEFS;
 

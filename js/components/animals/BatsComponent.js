@@ -7,6 +7,7 @@ import {prob, rnd} from "@/utils";
 export class BatsComponent extends DrawComponent {
   /** @type{Array<Object>} */
   bats;
+  forced = false;
 
   static COMPONENT_NAME = "BatsComponent";
 
@@ -27,7 +28,7 @@ export class BatsComponent extends DrawComponent {
 
   isEnabled() {
     // nigh-time and no special event (only events in autumn are loud)
-    return this.scene.owlForced || (this.scene.season === 'autumn' && this.scene.todBlend < 0.4 && this.scene.specialEvent === null)
+    return this.forced || (this.scene.season === 'autumn' && this.scene.todBlend < 0.4 && this.scene.specialEvent === null)
   }
 
   tick() {
@@ -87,5 +88,20 @@ export class BatsComponent extends DrawComponent {
     ctx.closePath();
     ctx.fill();
     ctx.restore();
+  }
+
+  /**
+   * is this component currently forced?
+   */
+  isForced() {
+    return this.forced;
+  }
+
+  /**
+   * set whether bats are forced or not
+   * @param {boolean} forced
+   */
+  setForced(forced) {
+    this.forced = forced;
   }
 }
