@@ -312,6 +312,12 @@ export class Scene {
     const guyBtn = document.getElementById('btn-guy-fawkes');
     guyBtn.disabled = state.specialEvent !== 'bonfire';
 
+    const owlButton = document.getElementById('btn-owl');
+    owlButton.classList.toggle('btn-active', this._owl.isForced());
+
+    const batsButton = document.getElementById('btn-bats');
+    batsButton.classList.toggle('btn-active', this._bats.isForced());
+
     const chicksBtn = document.getElementById('btn-chicks');
     chicksBtn.classList.toggle('btn-active', this._chicks.isForced());
 
@@ -460,10 +466,12 @@ export class Scene {
     document.getElementById('btn-deer').addEventListener('click', () => this._deer.summon());
     document.getElementById('btn-hog').addEventListener('click', () => this._hedgehog.summon());
     document.getElementById('btn-owl').addEventListener('click', e => {
-      // TODO separate into two buttons
       this._owl.setForced(!this._owl.isForced());
+      e.target.classList.toggle('btn-active', this._owl.isEnabled());
+    });
+    document.getElementById('btn-bats').addEventListener('click', e => {
       this._bats.setForced(!this._bats.isForced());
-      e.target.classList.toggle('btn-active', this._owl.isForced());
+      e.target.classList.toggle('btn-active', this._bats.isForced());
     });
     document.getElementById('btn-yawn').addEventListener('click', () => this._fox.triggerYawn());
     document.getElementById('btn-ear').addEventListener('click', () => this._fox.triggerEarTwitch());

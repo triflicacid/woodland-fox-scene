@@ -182,6 +182,11 @@ button:disabled {
     background: linear-gradient(135deg, #504030, #282010);
 }
 
+#btn-bats {
+    color: #e0d0f8;
+    background: linear-gradient(135deg, #2a1a40, #120818);
+}
+
 #btn-yawn {
     color: #2a0800;
     background: linear-gradient(135deg, #f09060, #a04020);
