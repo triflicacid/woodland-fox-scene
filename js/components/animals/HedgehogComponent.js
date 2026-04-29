@@ -6,6 +6,13 @@ import {Subscriptions} from "@/core/Subscriptions";
 
 const OFFSCREEN_BOUNDARY = 25;
 
+const HOG_PHASES = {
+  in: {f: 200},
+  sniff: {f: 180},
+  out: {f: 160},
+  birthday_bob: {f: Infinity}
+};
+
 /**
  * render a hedgehog which occasionally walks into frame
  */
@@ -55,17 +62,19 @@ export class HedgehogComponent extends DrawComponent {
 
   tick() {
     const {fox, season, frame} = this.scene;
+    const cfg = HOG_PHASES[this.phase];
+    const t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
 
     if (this.scene.specialEvent === 'birthday') {
       if (this.phase === 'off') {
         this.phase = 'in';
         this.phaseT = 0;
-        this.x = -60;
+        this.x = -OFFSCREEN_BOUNDARY;
       } else if (this.phase === 'in') {
         const targetX = fox.x - 190;
-        this.x = lerp(-60, targetX, eo(clamp(this.phaseT / 300, 0, 1)));
+        this.x = lerp(-OFFSCREEN_BOUNDARY, targetX, eo(t));
         this.phaseT++;
-        if (this.phaseT >= 300) {
+        if (this.phaseT >= cfg.f) {
           this.phase = 'birthday_bob';
           this.phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sing.start'));
@@ -92,8 +101,8 @@ export class HedgehogComponent extends DrawComponent {
 
     this.phaseT++;
     if (this.phase === 'in') {
-      this.x = lerp(-OFFSCREEN_BOUNDARY, this.sniffX, eo(clamp(this.phaseT / 300, 0, 1)));
-      if (this.phaseT >= 320) {
+      this.x = lerp(-OFFSCREEN_BOUNDARY, this.sniffX, eo(t));
+      if (this.phaseT >= cfg.f) {
         this.phase = 'sniff';
         this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.start'));
@@ -101,15 +110,15 @@ export class HedgehogComponent extends DrawComponent {
 
     } else if (this.phase === 'sniff') {
       this.x = this.sniffX + Math.sin(frame * 0.08) * 5;
-      if (this.phaseT > 180) {
+      if (this.phaseT >= cfg.f) {
         this.phase = 'out';
         this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.end'));
       }
 
     } else if (this.phase === 'out') {
-      this.x = lerp(this.sniffX, this.W + OFFSCREEN_BOUNDARY, eo(clamp(this.phaseT / 280, 0, 1)));
-      if (this.phaseT >= 280) {
+      this.x = lerp(this.sniffX, this.W + OFFSCREEN_BOUNDARY, eo(t));
+      if (this.phaseT >= cfg.f) {
         this.phase = 'off';
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'exit'));
       }
