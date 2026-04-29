@@ -20,6 +20,12 @@ export class CupcakesComponent extends DrawComponent {
     {x: 520, yFrac: 0.843, scale: 0.85, cupCol: '#ff8844', pattern: 'plain', accentCol: '#ff5500', hasCandle: true},
   ];
 
+  static COMPONENT_NAME = 'CupcakesComponent';
+
+  getName() {
+    return CupcakesComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     // attach pre-generated sprinkle positions to each cupcake def
     this._cupcakes.forEach(def => {

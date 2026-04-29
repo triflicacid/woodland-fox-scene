@@ -20,6 +20,12 @@ export class BirthdayCakeComponent extends DrawComponent {
     {wm: 0.55, h: 14, col: '#f5f0ea', dec: '#ffcc44', trim: '#ffaa00'},
   ];
 
+  static COMPONENT_NAME = 'BirthdayCakeComponent';
+
+  getName() {
+    return BirthdayCakeComponent.COMPONENT_NAME;
+  }
+
   initialise() {
     const digits = String(this._age).split('');
     const spacing = 18;

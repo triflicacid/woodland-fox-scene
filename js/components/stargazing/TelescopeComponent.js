@@ -18,6 +18,12 @@ export class TelescopeComponent extends DrawComponent {
   _panXTimer = 0;
   tripodFeet = [[-22, 28], [0, 32], [22, 28]];
 
+  static COMPONENT_NAME = 'TelescopeComponent';
+
+  getName() {
+    return TelescopeComponent.COMPONENT_NAME;
+  }
+
   isEnabled() {
     return this.scene.stargazing;
   }
