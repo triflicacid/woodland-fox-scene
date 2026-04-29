@@ -144,7 +144,7 @@ export class Scene {
       this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
       this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
-      new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes, this._hearts),
+      this._bunny = new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes, this._hearts),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
       this._deer = new DeerComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       new EasterEggsComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -357,15 +357,8 @@ export class Scene {
       const cx = (e.clientX - rect.left) * (W / rect.width);
       const cy = (e.clientY - rect.top) * (H / rect.height);
 
-      let fx = state.fox.x;
-      const wandering = ['wander_out', 'wander_sniff', 'wander_in'].includes(state.fox.phase);
-      if (wandering) fx = state.fox.wanderX;
-
-      if (Math.abs(cx - fx) < 46 && Math.abs(cy - (state.fox.y - 15)) < 32) {
-        if (state.fox.phase === 'idle' && state.fox.poseBlend < 0.05 && state.bunny.phase === 'off') {
-          this._fox.triggerGrumble();
-        }
-        return;
+      if (this._fox.containsPoint(cx, cy)) {
+        this._fox.click();
       }
 
       // click on a tree top to startle a bird
@@ -384,45 +377,28 @@ export class Scene {
 
     // main wake button
     document.getElementById('btn')?.addEventListener('click', () => {
-      // TODO move into FoxComponent
-      if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
-      state.fox.phase = 'standup';
-      state.fox.phaseT = 0;
+      if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Waking up...';
+      this._fox.startWakeUpScene();
     });
 
     // wander button
     document.getElementById('btn-wander')?.addEventListener('click', () => {
-      // TODO move into FoxComponent
-      if (state.bunny.phase !== 'off' && state.bunny.phase !== 'done') return;
-      state.fox.phase = 'wander_out';
-      state.fox.phaseT = 0;
-      state.fox.poseBlend = 1;
-      state.fox.wanderX = state.fox.x;
+      if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
       this.statusEl.textContent = 'Off for a little wander...';
+      this._fox.startWanderScene();
     });
 
     // visitor button (bunny)
     document.getElementById('btn-bunny')?.addEventListener('click', () => {
-      // TODO move into BunnyComponent
-      const {fox, bunny} = state;
-      fox.phase = 'idle';
-      fox.phaseT = 0;
-      fox.poseBlend = 0;
-      fox.stretchBlend = 0;
-      fox.spinAngle = 0;
-      fox.tailWag = 0;
-      this._hearts.clear();
-      bunny.phase = 'hopping_in';
-      bunny.phaseT = 0;
-      bunny.x = -80;
-      bunny.hop.arc = 0;
-      state.startHop(-80, bunny.meetX, 135);
+      if (this._bunny.isEnabled()) return; // exit if doing something
       this._setButtonsDisabled(true);
+      this._fox.forceIdle();
+      this._hearts.clear();
+      this._bunny.startVisitorScene();
       this.statusEl.textContent = 'Something stirs in the trees...';
-      this.eventBus.dispatch(Events.characterAction('Scene', 'bunny', 'enter'));
     });
 
     // season buttons

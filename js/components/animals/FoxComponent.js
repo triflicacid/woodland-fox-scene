@@ -5,20 +5,6 @@ import {Events} from "@/core/Events";
 import {Subscriptions} from "@/core/Subscriptions";
 
 /**
- * fox appearance and position config.
- */
-export const FOX = {
-  /** default x position on canvas */
-  X: 350,
-  /** y position (fraction of canvas height) */
-  Y_FRACTION: 0.64,
-  /** fox curled body half-width for click detection */
-  CLICK_RADIUS_X: 46,
-  /** fox curled body half-height for click detection */
-  CLICK_RADIUS_Y: 32,
-};
-
-/**
  * phase durations in frames.
  */
 export const FOX_PHASES = {
@@ -41,6 +27,27 @@ export const FOX_PHASES = {
  * it also handles the bunny interaction sequence.
  */
 export class FoxComponent extends DrawComponent {
+  _x = 0
+  _y = 0;
+  _phase = 'idle';
+  _phaseT = 0;
+  _poseBlend = 0;
+  _stretchBlend = 0;
+  _spinAngle = 0;
+  _tailWag = 0;
+  _wanderX = 0;
+  _rainTuck = 0;
+  _breathT = 0;
+  _yawnT = -1;
+  _grumbleT = -1;
+  _earTwitchT = -1;
+  _earTwitchSide = 0;
+  _snowLevel = 0;
+  _shiverT = 0;
+  _asleep = true; // used for Zs and default eye state (open/closed)
+  _eyeTransitionT = -1;
+  _singingMouthT = 0;
+  _quiverT = -1; // -1 = not quivering, 0+ = quiver timer
   /** @type{MusicalNotesComponent} */
   _notes;
 
@@ -63,11 +70,30 @@ export class FoxComponent extends DrawComponent {
     return FoxComponent.COMPONENT_NAME;
   }
 
+  /**
+   * get current X position
+   */
+  getX() {
+    const wandering = ['wander_out', 'wander_sniff', 'wander_in'].includes(this._phase);
+    return wandering ? this._wanderX : this._x;
+  }
+
+  /**
+   * get current Y position
+   */
+  getY() {
+    return this._y;
+  }
+
   initialise() {
+    this._x = this.scene.fox.x;
+    this._y = this.scene.fox.y;
+    this._wanderX = this._x;
+    
     this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
       if (loud && prob(PROBABILITY.FIREWORK_BANG_REACTION)) {
-        this.scene.fox.earTwitchT = 0;
-        this.scene.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        this._earTwitchT = 0;
+        this._earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
           this._triggerEyeTransition();
         }
@@ -75,215 +101,234 @@ export class FoxComponent extends DrawComponent {
     }));
     this.eventBus.subscribe(Subscriptions.onLightningStrike(this.getName(), ({superBolt}) => {
       if (superBolt && prob(PROBABILITY.SUPER_BOLT_REACTION)) {
-        this.scene.fox.earTwitchT = 0;
-        this.scene.fox.earTwitchSide = prob(0.5) ? 1 : -1;
+        this._earTwitchT = 0;
+        this._earTwitchSide = prob(0.5) ? 1 : -1;
         if (prob(PROBABILITY.STARTLE_TRIGGERS_EYE)) {
           this._triggerEyeTransition();
         }
       }
     }));
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
-      if (character !== 'guyfawkes') return;
-      if (action === 'watch.start') {
-        this.scene.fox.asleep = false;
-        this.scene.fox.eyeTransitionT = 0;
-      } else if (action === 'watch.end') {
-        this.scene.fox.asleep = true;
-        this.scene.fox.eyeTransitionT = 0;
-      }
+      this._onCharacterAction(character, action);
     }));
     this.eventBus.subscribe(Subscriptions.onMothronDive(this.getName(), () => {
       this._triggerEyeTransition();
-      this.scene.fox.quiverT = 0;
+      this._quiverT = 0;
     }));
   }
 
-  tick() {
-    const {fox} = this.scene;
+  /**
+   * event handler for a character action
+   * @param {string} character
+   * @param {string} action
+   */
+  _onCharacterAction(character, action) {
+    if (character === 'guyfawkes') {
+      if (action === 'watch.start') {
+        this._asleep = false;
+        this._eyeTransitionT = 0;
+      } else if (action === 'watch.end') {
+        this._asleep = true;
+        this._eyeTransitionT = 0;
+      }
+    } else if (character === 'bunny') {
+      if (action === 'nuzzle.prepare') {
+        this._phase = 'bunny_standup';
+        this._phaseT = 0;
+        this._poseBlend = 0;
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox stirs...'));
+      } else if (action === 'nuzzle.end') {
+        this._phase = 'bunny_curling';
+        this._phaseT = 0;
+        this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox drifts off...'));
+      }
+    }
+  }
 
+  tick() {
     // birthday management
     if (this.scene.specialEvent === 'birthday') {
-      if (fox.phase === 'idle') {
+      if (this._phase === 'idle') {
         // skip the wake sequence entirely - go straight to singing
-        fox.phase = 'singing';
-        fox.poseBlend = 1;
-        fox.asleep = false;
-        fox.singingMouthT = this.scene.frame;
+        this._phase = 'singing';
+        this._poseBlend = 1;
+        this._asleep = false;
+        this._singingMouthT = this.scene.frame;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sing.start'));
-      } else if (fox.phase === 'singing') {
-        fox.singingMouthT = this.scene.frame;
+      } else if (this._phase === 'singing') {
+        this._singingMouthT = this.scene.frame;
 
         if (prob(PROBABILITY.FOX_SPAWN_NOTE)) {
-          this._notes.spawnNote(fox.x - 35, fox.y - 95);
+          this._notes.spawnNote(this._x - 35, this._y - 95);
         }
       }
-    } else if (fox.phase === 'singing') {
-      fox.phase = 'curling';
-      fox.phaseT = 0;
-      fox.asleep = true;
-      fox.singingMouthT = undefined;
+    } else if (this._phase === 'singing') {
+      this._phase = 'curling';
+      this._phaseT = 0;
+      this._asleep = true;
+      this._singingMouthT = undefined;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sing.end'));
     }
 
     // eclipse management
     if (this.scene.specialEvent === 'eclipse') {
-      if (fox.phase === 'idle') {
-        fox.phase = 'eclipse_watch';
-        fox.poseBlend = 1;
-        fox.asleep = false;
-        fox.quiverT = 0;
+      if (this._phase === 'idle') {
+        this._phase = 'eclipse_watch';
+        this._poseBlend = 1;
+        this._asleep = false;
+        this._quiverT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The sky darkens... the fox stirs nervously...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'eclipse_watch.start'));
       }
-    } else if (fox.phase === 'eclipse_watch') {
-      fox.phase = 'curling';
-      fox.phaseT = 0;
-      fox.asleep = true;
+    } else if (this._phase === 'eclipse_watch') {
+      this._phase = 'curling';
+      this._phaseT = 0;
+      this._asleep = true;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'eclipse_watch.end'));
     }
 
     // passive idle behaviours
-    if (fox.phase === 'idle' && fox.poseBlend < 0.01) {
-      if (fox.asleep && fox.yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
-        fox.yawnT = 0;
+    if (this._phase === 'idle' && this._poseBlend < 0.01) {
+      if (this._asleep && this._yawnT < 0 && prob(PROBABILITY.FOX_YAWN)) {
+        this._yawnT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'yawn'));
       }
-      if (fox.yawnT >= 0) {
-        fox.yawnT++;
-        if (fox.yawnT >= 80) fox.yawnT = -1;
+      if (this._yawnT >= 0) {
+        this._yawnT++;
+        if (this._yawnT >= 80) this._yawnT = -1;
       }
-      if (fox.earTwitchT < 0 && prob(PROBABILITY.EAR_TWITCH)) {
-        fox.earTwitchT = 0;
-        fox.earTwitchSide = prob(0.5) ? 1 : -1;
+      if (this._earTwitchT < 0 && prob(PROBABILITY.EAR_TWITCH)) {
+        this._earTwitchT = 0;
+        this._earTwitchSide = prob(0.5) ? 1 : -1;
       }
-      if (fox.earTwitchT >= 0) {
-        fox.earTwitchT++;
-        if (fox.earTwitchT >= 20) fox.earTwitchT = -1;
+      if (this._earTwitchT >= 0) {
+        this._earTwitchT++;
+        if (this._earTwitchT >= 20) this._earTwitchT = -1;
       }
     }
 
     // randomly blink if awake
-    if (!fox.asleep && fox.eyeTransitionT < 0 && prob(PROBABILITY.FOX_BLINK)) {
+    if (!this._asleep && this._eyeTransitionT < 0 && prob(PROBABILITY.FOX_BLINK)) {
       this._triggerEyeTransition();
     }
 
     // countdown the grumble animation
-    if (fox.grumbleT >= 0) {
-      fox.grumbleT++;
-      if (fox.grumbleT >= 40) fox.grumbleT = -1;
+    if (this._grumbleT >= 0) {
+      this._grumbleT++;
+      if (this._grumbleT >= 40) this._grumbleT = -1;
     }
 
     // countdown the eye transition animation
-    if (fox.eyeTransitionT >= 0) {
-      fox.eyeTransitionT++;
-      if (fox.eyeTransitionT >= 50) fox.eyeTransitionT = -1;
+    if (this._eyeTransitionT >= 0) {
+      this._eyeTransitionT++;
+      if (this._eyeTransitionT >= 50) this._eyeTransitionT = -1;
     }
 
     // countdown the quiver animation
-    if (fox.quiverT >= 0) {
-      fox.quiverT++;
-      if (fox.quiverT >= 60) fox.quiverT = -1;
+    if (this._quiverT >= 0) {
+      this._quiverT++;
+      if (this._quiverT >= 60) this._quiverT = -1;
     }
 
     // early return (after this line we process event sequences)
-    if (fox.phase === 'idle' || fox.phase === 'singing' || fox.phase === 'eclipse_watch') return;
+    if (this._phase === 'idle' || this._phase === 'singing' || this._phase === 'eclipse_watch') return;
 
-    fox.phaseT++;
-    const cfg = FOX_PHASES[fox.phase];
+    this._phaseT++;
+    const cfg = FOX_PHASES[this._phase];
     if (!cfg) return;
-    const t = clamp(fox.phaseT / cfg.f, 0, 1);
+    const t = clamp(this._phaseT / cfg.f, 0, 1);
 
-    if (fox.phase === 'standup') {
-      fox.poseBlend = eio(t);
-      fox.stretchBlend = 0;
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'stretch';
-        fox.phaseT = 0;
+    if (this._phase === 'standup') {
+      this._poseBlend = eio(t);
+      this._stretchBlend = 0;
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'stretch';
+        this._phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wake'));
       }
 
-    } else if (fox.phase === 'stretch') {
-      fox.poseBlend = 1;
-      fox.stretchBlend = Math.sin(t * Math.PI);
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'shake';
-        fox.phaseT = 0;
-        fox.stretchBlend = 0;
+    } else if (this._phase === 'stretch') {
+      this._poseBlend = 1;
+      this._stretchBlend = Math.sin(t * Math.PI);
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'shake';
+        this._phaseT = 0;
+        this._stretchBlend = 0;
       }
 
-    } else if (fox.phase === 'shake') {
-      fox.poseBlend = 1;
-      fox.tailWag = Math.sin(fox.phaseT * 0.25) * 0.55;
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'spin';
-        fox.phaseT = 0;
-        fox.tailWag = 0;
+    } else if (this._phase === 'shake') {
+      this._poseBlend = 1;
+      this._tailWag = Math.sin(this._phaseT * 0.25) * 0.55;
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'spin';
+        this._phaseT = 0;
+        this._tailWag = 0;
       }
 
-    } else if (fox.phase === 'spin') {
-      fox.poseBlend = 1;
-      fox.spinAngle = eio(t) * Math.PI * 2;
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'curling';
-        fox.phaseT = 0;
-        fox.spinAngle = 0;
+    } else if (this._phase === 'spin') {
+      this._poseBlend = 1;
+      this._spinAngle = eio(t) * Math.PI * 2;
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'curling';
+        this._phaseT = 0;
+        this._spinAngle = 0;
       }
 
-    } else if (fox.phase === 'curling') {
-      fox.poseBlend = 1 - eio(t);
-      if (fox.phaseT >= cfg.f) {
+    } else if (this._phase === 'curling') {
+      this._poseBlend = 1 - eio(t);
+      if (this._phaseT >= cfg.f) {
         if (this.scene.specialEvent === 'birthday') {
           // skip idle, go straight to singing
-          fox.phase = 'singing';
-          fox.poseBlend = 1;
-          fox.asleep = false;
+          this._phase = 'singing';
+          this._poseBlend = 1;
+          this._asleep = false;
         } else if (this.scene.specialEvent === 'eclipse') {
-          fox.phase = 'eclipse_watch';
-          fox.poseBlend = 1;
-          fox.asleep = false;
+          this._phase = 'eclipse_watch';
+          this._poseBlend = 1;
+          this._asleep = false;
         } else {
-          fox.phase = 'idle';
-          fox.poseBlend = 0;
+          this._phase = 'idle';
+          this._poseBlend = 0;
           this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
           this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'sleep'));
         }
       }
 
-    } else if (fox.phase === 'bunny_standup') {
-      fox.poseBlend = eio(t);
-      fox.stretchBlend = 0;
-      if (fox.phaseT >= cfg.f) fox.phase = 'idle';
+    } else if (this._phase === 'bunny_standup') {
+      this._poseBlend = eio(t);
+      this._stretchBlend = 0;
+      if (this._phaseT >= cfg.f) this._phase = 'idle';
 
-    } else if (fox.phase === 'bunny_curling') {
-      fox.poseBlend = 1 - eio(t);
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'idle';
-        fox.poseBlend = 0;
+    } else if (this._phase === 'bunny_curling') {
+      this._poseBlend = 1 - eio(t);
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'idle';
+        this._poseBlend = 0;
       }
 
-    } else if (fox.phase === 'wander_out') {
-      fox.poseBlend = 1;
-      fox.wanderX = lerp(fox.x, fox.x + 180, eo(t));
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'wander_sniff';
-        fox.phaseT = 0;
+    } else if (this._phase === 'wander_out') {
+      this._poseBlend = 1;
+      this._wanderX = lerp(this._x, this._x + 180, eo(t));
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'wander_sniff';
+        this._phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wander.start'));
       }
 
-    } else if (fox.phase === 'wander_sniff') {
-      fox.wanderX = fox.x + 180 + Math.sin(fox.phaseT * 0.05) * 15;
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'wander_in';
-        fox.phaseT = 0;
+    } else if (this._phase === 'wander_sniff') {
+      this._wanderX = this._x + 180 + Math.sin(this._phaseT * 0.05) * 15;
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'wander_in';
+        this._phaseT = 0;
       }
 
-    } else if (fox.phase === 'wander_in') {
-      fox.wanderX = lerp(fox.x + 180, fox.x, eo(t));
-      if (fox.phaseT >= cfg.f) {
-        fox.phase = 'curling';
-        fox.phaseT = 0;
-        fox.wanderX = fox.x;
+    } else if (this._phase === 'wander_in') {
+      this._wanderX = lerp(this._x + 180, this._x, eo(t));
+      if (this._phaseT >= cfg.f) {
+        this._phase = 'curling';
+        this._phaseT = 0;
+        this._wanderX = this._x;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Back home, curling up...'));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'wander.end'));
       }
@@ -295,59 +340,59 @@ export class FoxComponent extends DrawComponent {
    */
   draw() {
     const {ctx} = this;
-    const {fox, bunny, season, weather, frame, todBlend} = this.scene;
+    const {bunny, season, weather, frame, todBlend} = this.scene;
 
-    let fx = fox.x;
-    if (fox.phase === 'wander_out' || fox.phase === 'wander_sniff' || fox.phase === 'wander_in') {
-      fx = fox.wanderX;
+    let fx = this._x;
+    if (this._phase === 'wander_out' || this._phase === 'wander_sniff' || this._phase === 'wander_in') {
+      fx = this._wanderX;
     }
 
     // shiver in cold weather while asleep
-    const shivering = fox.poseBlend < 0.05 &&
+    const shivering = this._poseBlend < 0.05 &&
         (season === 'winter' || weather === 'storm' || weather === 'rain' || weather === 'snow');
-    if (shivering) fox.shiverT++;
-    const sx = shivering ? Math.sin(fox.shiverT * 1.9) * 0.6 : 0;
-    const sy = shivering ? Math.sin(fox.shiverT * 2.7) * 0.3 : 0;
+    if (shivering) this._shiverT++;
+    const sx = shivering ? Math.sin(this._shiverT * 1.9) * 0.6 : 0;
+    const sy = shivering ? Math.sin(this._shiverT * 2.7) * 0.3 : 0;
 
     // snow accumulation on sleeping fox
-    if (weather === 'snow' && fox.poseBlend < 0.05) fox.snowLevel = Math.min(1, fox.snowLevel + 0.00025);
-    else fox.snowLevel = Math.max(0, fox.snowLevel - 0.0012);
+    if (weather === 'snow' && this._poseBlend < 0.05) this._snowLevel = Math.min(1, this._snowLevel + 0.00025);
+    else this._snowLevel = Math.max(0, this._snowLevel - 0.0012);
 
     ctx.save();
-    ctx.translate(fx + sx, fox.y + sy);
-    if (fox.spinAngle !== 0) ctx.scale(Math.cos(fox.spinAngle), 1 - Math.abs(Math.sin(fox.spinAngle)) * 0.08);
+    ctx.translate(fx + sx, this._y + sy);
+    if (this._spinAngle !== 0) ctx.scale(Math.cos(this._spinAngle), 1 - Math.abs(Math.sin(this._spinAngle)) * 0.08);
 
-    const b = fox.poseBlend;
-    const wanderLeft = !(fox.phase === 'wander_out' || fox.phase === 'wander_sniff');
+    const b = this._poseBlend;
+    const wanderLeft = !(this._phase === 'wander_out' || this._phase === 'wander_sniff');
     const facingLeft = bunny.phase === 'fox_waking' || bunny.phase === 'nuzzle' || bunny.phase === 'fox_sleep';
     const fl = facingLeft || wanderLeft;
 
     if (b < 0.01) {
-      this._drawCurled(fox, frame, season, weather, todBlend);
+      this._drawCurled(frame, season, weather, todBlend);
     } else if (b > 0.99) {
-      this._drawStanding(fox, fl);
+      this._drawStanding(fl);
     } else {
       ctx.save();
       ctx.globalAlpha = 1 - b;
-      this._drawCurled(fox, frame, season, weather, todBlend);
+      this._drawCurled(frame, season, weather, todBlend);
       ctx.restore();
       ctx.save();
       ctx.globalAlpha = b;
-      this._drawStanding(fox, fl);
+      this._drawStanding(fl);
       ctx.restore();
     }
     ctx.restore();
 
     // winter breath puff
     if (season === 'winter' && b < 0.05) {
-      fox.breathT++;
-      if (fox.breathT % 90 < 22) {
-        const bt = (fox.breathT % 90) / 22;
+      this._breathT++;
+      if (this._breathT % 90 < 22) {
+        const bt = (this._breathT % 90) / 22;
         ctx.save();
         ctx.globalAlpha = 0.25 * (1 - bt);
         ctx.fillStyle = '#ddeeff';
         ctx.beginPath();
-        ctx.arc(fx - 40 + bt * 10, fox.y - 22 - bt * 7, 2 + bt * 5, 0, Math.PI * 2);
+        ctx.arc(fx - 40 + bt * 10, this._y - 22 - bt * 7, 2 + bt * 5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }
@@ -356,21 +401,20 @@ export class FoxComponent extends DrawComponent {
 
   /**
    * draw the fox in its curled sleeping pose.
-   * @param {Object} fox - fox state
    * @param {number} frame
    * @param {string} season
    * @param {string} weather
    * @param {number} todBlend
    */
-  _drawCurled(fox, frame, season, weather, todBlend) {
+  _drawCurled(frame, season, weather, todBlend) {
     const {ctx} = this;
     const tuck = (weather === 'rain' || weather === 'storm') ? 1 : 0;
-    fox.rainTuck = lerp(fox.rainTuck, tuck, 0.05);
-    const bob = Math.sin(frame * 0.038) * lerp(1.4, 0.25, fox.rainTuck);
+    this._rainTuck = lerp(this._rainTuck, tuck, 0.05);
+    const bob = Math.sin(frame * 0.038) * lerp(1.4, 0.25, this._rainTuck);
 
     ctx.save();
     ctx.translate(0, bob);
-    ctx.scale(1 + fox.rainTuck * 0.04, 1 - fox.rainTuck * 0.03);
+    ctx.scale(1 + this._rainTuck * 0.04, 1 - this._rainTuck * 0.03);
 
     // drop shadow
     blob(ctx, () => ctx.ellipse(2, 6, 42, 9, 0, 0, Math.PI * 2), 'rgba(0,0,0,0.18)');
@@ -439,8 +483,8 @@ export class FoxComponent extends DrawComponent {
     ctx.fill();
 
     // near ear (with optional twitch)
-    const earOff = fox.earTwitchT >= 0
-        ? Math.sin(fox.earTwitchT * 0.4) * 3 * fox.earTwitchSide : 0;
+    const earOff = this._earTwitchT >= 0
+        ? Math.sin(this._earTwitchT * 0.4) * 3 * this._earTwitchSide : 0;
     ctx.fillStyle = '#e06828';
     ctx.beginPath();
     ctx.moveTo(-20, -35 + hb);
@@ -506,7 +550,7 @@ export class FoxComponent extends DrawComponent {
       ctx.fill();
       ctx.restore();
       ctx.restore();
-    } else if (fox.yawnT >= 0 && fox.yawnT < 80) {
+    } else if (this._yawnT >= 0 && this._yawnT < 80) {
       // squinting during yawn
       ctx.beginPath();
       ctx.arc(-22, -26 + hb, 4, Math.PI * 0.1, Math.PI * 0.65);
@@ -521,8 +565,8 @@ export class FoxComponent extends DrawComponent {
     // yawn: squinting eye, open mouth, and rising 'a' bubble
     ctx.strokeStyle = '#4a1804';
     ctx.lineWidth = 1.5;
-    if (fox.yawnT >= 0 && fox.yawnT < 80) {
-      const yt = fox.yawnT / 80;
+    if (this._yawnT >= 0 && this._yawnT < 80) {
+      const yt = this._yawnT / 80;
       const mo = Math.sin(yt * Math.PI) * 7; // mouth open amount
       // squinting eye during yawn (done in eyeOpen if-else)
       // open mouth cavity
@@ -544,8 +588,8 @@ export class FoxComponent extends DrawComponent {
     }
 
     // grumble exclamation
-    if (fox.grumbleT >= 0) {
-      const gt = fox.grumbleT / 40;
+    if (this._grumbleT >= 0) {
+      const gt = this._grumbleT / 40;
       ctx.save();
       ctx.globalAlpha = Math.sin(gt * Math.PI) * 0.9;
       ctx.fillStyle = '#ff4444';
@@ -555,7 +599,7 @@ export class FoxComponent extends DrawComponent {
     }
 
     // zzz sleep indicators (when asleep and at night)
-    if (todBlend < 0.5 && fox.phase === 'idle' && fox.asleep) {
+    if (todBlend < 0.5 && this._phase === 'idle' && this._asleep) {
       ['z', 'z', 'Z'].forEach((z, i) => {
         ctx.globalAlpha = 0.45 + 0.3 * Math.sin(frame * 0.04 + i * 0.9 + Math.PI);
         ctx.fillStyle = 'rgba(180,210,255,0.9)';
@@ -566,7 +610,7 @@ export class FoxComponent extends DrawComponent {
     }
 
     // snow piling up on sleeping fox
-    if (fox.snowLevel > 0.02) {
+    if (this._snowLevel > 0.02) {
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(-40, 0);
@@ -574,12 +618,12 @@ export class FoxComponent extends DrawComponent {
       ctx.lineTo(26, 0);
       ctx.closePath();
       ctx.clip();
-      const d = fox.snowLevel * 15;
+      const d = this._snowLevel * 15;
       ctx.fillStyle = 'rgba(255,255,255,0.93)';
       ctx.beginPath();
       ctx.moveTo(-42, -44);
       for (let sx = -42; sx <= 32; sx += 5) {
-        const lump = Math.sin(sx * 0.42 + frame * 0.01) * 1.8 * fox.snowLevel;
+        const lump = Math.sin(sx * 0.42 + frame * 0.01) * 1.8 * this._snowLevel;
         ctx.lineTo(sx, -44 + d * (0.15 + 0.85 * ((sx + 42) / 74)) + lump);
       }
       ctx.lineTo(32, 4);
@@ -595,12 +639,11 @@ export class FoxComponent extends DrawComponent {
   /**
    * draw the fox in its standing pose, used during waking/greeting animations.
    * canonical orientation is facing left; facingLeft=false flips to face right.
-   * @param {Object} fox
    * @param {boolean} facingLeft
    */
-  _drawStanding(fox, facingLeft) {
+  _drawStanding(facingLeft) {
     const {ctx} = this;
-    const s = fox.stretchBlend;
+    const s = this._stretchBlend;
     const legLen = 34 + s * 14;
     const nk = s * 8;
 
@@ -608,8 +651,8 @@ export class FoxComponent extends DrawComponent {
     if (!facingLeft) ctx.scale(-1, 1);
 
     // birthday sway - whole body rocks side to side
-    if (fox.singingMouthT !== undefined) {
-      const sway = Math.sin(fox.singingMouthT * 0.07) * 6;
+    if (this._singingMouthT !== undefined) {
+      const sway = Math.sin(this._singingMouthT * 0.07) * 6;
       ctx.translate(sway, 0);
       ctx.rotate(sway * 0.012);
     }
@@ -620,7 +663,7 @@ export class FoxComponent extends DrawComponent {
     // tail with optional wag rotation
     ctx.save();
     ctx.translate(24, -18);
-    ctx.rotate(fox.tailWag);
+    ctx.rotate(this._tailWag);
     blob(ctx, () => {
       ctx.moveTo(0, 2);
       ctx.bezierCurveTo(28, -2, 40, -24, 30, -48);
@@ -747,8 +790,8 @@ export class FoxComponent extends DrawComponent {
     ctx.fill();
 
     // birthday singing mouth
-    if (fox.singingMouthT !== undefined) {
-      const mouthOpen = Math.abs(Math.sin(fox.singingMouthT * 0.12)) * 6;
+    if (this._singingMouthT !== undefined) {
+      const mouthOpen = Math.abs(Math.sin(this._singingMouthT * 0.12)) * 6;
       ctx.fillStyle = '#5a0800';
       ctx.beginPath();
       ctx.ellipse(-28, hy + 4, 5, mouthOpen * 0.6 + 1, -0.1, 0, Math.PI * 2);
@@ -762,10 +805,10 @@ export class FoxComponent extends DrawComponent {
     }
 
     // scared quiver lines when eclipse_watch
-    if (fox.quiverT >= 0) {
-      const qt = fox.quiverT / 60;
+    if (this._quiverT >= 0) {
+      const qt = this._quiverT / 60;
       const alpha = Math.sin(qt * Math.PI) * 0.8;
-      const jitter = Math.sin(fox.quiverT * 1.8) * 2.5;
+      const jitter = Math.sin(this._quiverT * 1.8) * 2.5;
 
       ctx.save();
       ctx.globalAlpha = alpha;
@@ -783,7 +826,7 @@ export class FoxComponent extends DrawComponent {
       ];
 
       lines.forEach((l, i) => {
-        const wobble = Math.sin(fox.quiverT * 0.6 + i) * 0.3;
+        const wobble = Math.sin(this._quiverT * 0.6 + i) * 0.3;
         const a = l.angle + wobble;
         const sx = l.ox + jitter * (i % 2 === 0 ? 1 : -1);
         ctx.beginPath();
@@ -808,13 +851,12 @@ export class FoxComponent extends DrawComponent {
    * @returns {number}
    */
   _eyeOpenAmount() {
-    const {fox} = this.scene;
-    if (fox.eyeTransitionT < 0) {
-      return fox.asleep ? 0 : 1;
+    if (this._eyeTransitionT < 0) {
+      return this._asleep ? 0 : 1;
     }
-    const t = clamp(fox.eyeTransitionT / 50, 0, 1);
+    const t = clamp(this._eyeTransitionT / 50, 0, 1);
     const curve = Math.sin(t * Math.PI); // bell curve - peaks at 0.5
-    return fox.asleep
+    return this._asleep
         ? curve          // asleep: transitions open then back closed
         : 1 - curve;     // awake: transitions closed then back open (blink)
   }
@@ -823,20 +865,31 @@ export class FoxComponent extends DrawComponent {
    * trigger an eye transition (either opening or closing)
    */
   _triggerEyeTransition() {
-    const {fox} = this.scene;
-    if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
-      fox.eyeTransitionT = 0;
+    if (this._phase === 'idle' && this._poseBlend < 0.05) {
+      this._eyeTransitionT = 0;
     }
+  }
+
+  /**
+   * set us to be idle.
+   * cancels any act ions or transitions.
+   */
+  forceIdle() {
+    this._phase = 'idle';
+    this._phaseT = 0;
+    this._poseBlend = 0;
+    this._stretchBlend = 0;
+    this._spinAngle = 0;
+    this._tailWag = 0;
   }
 
   /**
    * trigger the fox grumble animation
    */
   triggerGrumble() {
-    const {fox} = this.scene;
-    fox.grumbleT = 0;
-    fox.earTwitchT = 0;
-    fox.earTwitchSide = 1;
+    this._grumbleT = 0;
+    this._earTwitchT = 0;
+    this._earTwitchSide = 1;
     this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox grumbles sleeply...'));
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'grumble'));
   }
@@ -845,9 +898,8 @@ export class FoxComponent extends DrawComponent {
    * trigger the fox yawn animation if idle
    */
   triggerYawn() {
-    const {fox} = this.scene;
-    if (fox.phase === 'idle' && fox.poseBlend < 0.05) {
-      fox.yawnT = 0;
+    if (this._phase === 'idle' && this._poseBlend < 0.05) {
+      this._yawnT = 0;
       this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox has a big yawn...'));
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'yawn'));
     }
@@ -857,10 +909,47 @@ export class FoxComponent extends DrawComponent {
    * trigger the fox ear-twitch animation
    */
   triggerEarTwitch() {
-    const {fox} = this.scene;
-    fox.earTwitchT = 0;
-    fox.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
+    this._earTwitchT = 0;
+    this._earTwitchSide = Math.random() < 0.5 ? 1 : -1;
     this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox\'s ear twitches...'));
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
+  }
+
+  /**
+   * start the wake-up-and-stretch scene
+   */
+  startWakeUpScene() {
+    if (this._phase !== 'idle') return;
+    this._phase = 'standup';
+    this._phaseT = 0;
+  }
+
+  /**
+   * start the wander scene
+   */
+  startWanderScene() {
+    if (this._phase !== 'idle') return;
+    this._phase = 'wander_out';
+    this._phaseT = 0;
+    this._poseBlend = 1;
+    this._wanderX = this._x;
+  }
+
+  /**
+   * do we contain the given co-ordinates?
+   * @param {number} cx - canvas x
+   * @param {number} cy - canvas y
+   */
+  containsPoint(cx, cy) {
+    return Math.abs(cx - this.getX()) < 46 && Math.abs(cy - (this.getY() - 15)) < 32;
+  }
+
+  /**
+   * register a click on the fox
+   */
+  click() {
+    if (this._phase === 'idle' && this._poseBlend < 0.05) {
+      this.triggerGrumble();
+    }
   }
 }

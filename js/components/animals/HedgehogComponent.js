@@ -45,7 +45,7 @@ export class HedgehogComponent extends DrawComponent {
         hog.phaseT = 0;
         hog.x = -60;
       } else if (hog.phase === 'in') {
-        const targetX = this.scene.fox.x - 190;
+        const targetX = fox.x - 190;
         hog.x = lerp(-60, targetX, eo(clamp(hog.phaseT / 300, 0, 1)));
         hog.phaseT++;
         if (hog.phaseT >= 300) {

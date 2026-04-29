@@ -1,6 +1,5 @@
 import {PALETTES} from '@/config';
-import {clamp, eo, lerp, rnd} from '@/utils';
-import {FOX} from "@/components/animals/FoxComponent";
+import {rnd} from '@/utils';
 import {TREE_DEFS} from "@/components/TreeComponent";
 
 /**
@@ -39,36 +38,17 @@ export class SceneState {
     // global animation frame counter
     this.frame = 0;
 
-    // fox state
+    // fox position (default, not updated)
     this.fox = {
-      x: FOX.X,
-      y: H * FOX.Y_FRACTION,
-      phase: 'idle',
-      phaseT: 0,
-      poseBlend: 0,
-      stretchBlend: 0,
-      spinAngle: 0,
-      tailWag: 0,
-      wanderX: FOX.X,
-      rainTuck: 0,
-      breathT: 0,
-      yawnT: -1,
-      grumbleT: -1,
-      earTwitchT: -1,
-      earTwitchSide: 0,
-      snowLevel: 0,
-      shiverT: 0,
-      asleep: true, // used for Zs and default eye state (open/closed)
-      eyeTransitionT: -1,
-      singingMouthT: 0,
-      quiverT: -1, // -1 = not quivering, 0+ = quiver timer
+      x: 350,
+      y: 0.64 * this.H,
     };
 
     // bunny state
     this.bunny = {
       x: -80,
-      meetX: FOX.X - 80,
-      y: H * FOX.Y_FRACTION,
+      meetX: this.fox.x - 80,
+      y: this.fox.y,
       phase: 'off',
       phaseT: 0,
       hop: {arc: 0, from: -80, to: -80, frame: 1, t: 0},
@@ -153,32 +133,6 @@ export class SceneState {
     this.season = s;
     if (this.weather === 'snow' && s !== 'winter') this.weather = 'clear';
     this.savePref();
-  }
-
-  /**
-   * start a bunny hop from one x position to another.
-   * @param {number} f - from x
-   * @param {number} t - to x
-   * @param {number} fr - frame duration of hop
-   */
-  startHop(f, t, fr) {
-    this.bunny.hop.from = f;
-    this.bunny.hop.to = t;
-    this.bunny.hop.frame = fr;
-    this.bunny.hop.t = 0;
-  }
-
-  /**
-   * advance the bunny hop by one frame.
-   * @returns {boolean} true when the hop is complete
-   */
-  tickHop() {
-    const hop = this.bunny.hop;
-    hop.t++;
-    const p = clamp(hop.t / hop.frame, 0, 1);
-    hop.arc = (p * Math.max(1, Math.round(Math.abs(hop.to - hop.from) / 55))) % 1;
-    this.bunny.x = lerp(hop.from, hop.to, eo(p));
-    return p >= 1;
   }
 
   /**
