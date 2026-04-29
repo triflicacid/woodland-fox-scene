@@ -54,11 +54,21 @@ tick()         // called every frame before draw - update internal state
 draw()         // called every frame - paint to ctx
 ```
 
+Note that it is also *crucial* to override `getName()` as this will be used to get the component's name.
+Conventionally, this is done by declaring a static `COMPONENT_NAME` and returning `ClassName.COMPONENT_NAME`.
+We hardcode this instead of `this.constructor.name` to prevent issues when the class' name is changed unexpectedly, e.g. due to obfuscation.
+
 A typical component looks like this:
 
 ```js
 export class SnowflakesComponent extends DrawComponent {
   _flakes = [];
+  
+  static COMPONENT_NAME = "SnowflakesComponent";
+  
+  getName() {
+    return SnowflakesComponent.COMPONENT_NAME;
+  }
 
   initialise() {
     this._flakes = Array.from({length: 80}, () => ({ x: rnd(this.W), y: rnd(this.H), ... }));
