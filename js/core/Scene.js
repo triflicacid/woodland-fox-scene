@@ -90,6 +90,7 @@ export class Scene {
     this.eventBus = new EventBus();
 
     this._musicalNotes = new MusicalNotesComponent(this.eventBus, this.state, this.ctx, W, H);
+    this._bonfire = new BonfireComponent(this.eventBus, this.state, this.ctx, W, H);
 
     /** @type {ComponentGroup} */
     this._components = new ComponentGroup(this.eventBus, this.state, [
@@ -142,7 +143,7 @@ export class Scene {
       this._eclipseMonsters = new EclipseMonstersComponent(this.eventBus, this.state, this.ctx, W, H),
       new OwlComponent(this.eventBus, this.state, this.ctx, W, H),
       this._mothron = new MothronComponent(this.eventBus, this.state, this.ctx, W, H),
-      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._guyFawkes = new GuyFawkesComponent(this.eventBus, this.state, this.ctx, W, H, this._bonfire.getPosition()),
       this._fox = new FoxComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes),
       this._bunny = new BunnyComponent(this.eventBus, this.state, this.ctx, W, H, this._musicalNotes, this._hearts),
       new GhostsComponent(this.eventBus, this.state, this.ctx, W, H),
@@ -158,7 +159,7 @@ export class Scene {
       new TelescopeComponent(this.eventBus, this.state, this.ctx, W, H),
       this._chicks = new ChicksComponent(this.eventBus, this.state, this.ctx, W, H),
       this._musicalNotes,
-      new BonfireComponent(this.eventBus, this.state, this.ctx, W, H),
+      this._bonfire,
 
       new ScreenShakeRestoreComponent(this.eventBus, this.state, this.ctx, W, H, this.shake),
     ]);

@@ -50,12 +50,6 @@ export class SceneState {
     // tree definitions
     this.trees = TREE_DEFS;
 
-    // the bonfire
-    this.bonfire = {
-      x: 220,
-      y_fraction: 0.72,
-    };
-
     this.clearInvalidStates();
   }
 
