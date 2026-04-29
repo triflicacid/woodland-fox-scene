@@ -17,11 +17,26 @@ const PHASES = {
  * only active during bonfire night special event.
  */
 export class GuyFawkesComponent extends DrawComponent {
+  /** @type{Position} */
+  bonfire;
   phase = 'off';
   phaseT = 0;
   x = 0;
   fromRight = false;
   cooldown = 0;
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {Position} bonfire position of the bonfire
+   */
+  constructor(eventBus, scene, ctx, W, H, bonfire) {
+    super(eventBus, scene, ctx, W, H);
+    this.bonfire = bonfire;
+  }
 
   static COMPONENT_NAME = "GuyFawkesComponent";
 
@@ -56,7 +71,7 @@ export class GuyFawkesComponent extends DrawComponent {
     this.phaseT++;
     const cfg = PHASES[this.phase];
     const t = clamp(this.phaseT / cfg.f, 0, 1);
-    const targetX = this.scene.bonfire.x + (this.fromRight ? 90 : -90);
+    const targetX = this.bonfire.x + (this.fromRight ? 90 : -90);
     const startX = this.fromRight ? this.W + 40 : -40;
     const exitX = this.fromRight ? -40 : this.W + 40;
 

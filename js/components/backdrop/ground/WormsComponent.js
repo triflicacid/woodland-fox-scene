@@ -6,8 +6,23 @@ import {Subscriptions} from "@/core/Subscriptions";
  * wiggling worms near puddles when raining
  */
 export class WormsComponent extends DrawComponent {
+  /** @type{PuddlesComponent} */
+  puddles;
   /** @type{Array<Object>} */
   worms = [];
+
+  /**
+   * @param {EventBus} eventBus
+   * @param {SceneState} scene
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {number} W - canvas width
+   * @param {number} H - canvas height
+   * @param {PuddlesComponent} puddles
+   */
+  constructor(eventBus, scene, ctx, W, H, puddles) {
+    super(eventBus, scene, ctx, W, H);
+    this.puddles = puddles;
+  }
 
   static COMPONENT_NAME = "WormsComponent";
 
@@ -26,7 +41,7 @@ export class WormsComponent extends DrawComponent {
    * generate the _worms array
    */
   _generateWorms() {
-    const {weather, season, puddles} = this.scene;
+    const {weather, season} = this.scene;
 
     this.worms.length = 0;
 
@@ -37,7 +52,7 @@ export class WormsComponent extends DrawComponent {
 
     this.worms = Array.from({length: k + rnd(4)}, (_, i) => {
       // get a random puddle
-      const pd = rndchoice(puddles);
+      const pd = this.puddles.getRandomPuddle();
 
       const p = prob(0.5);
       return {
@@ -53,15 +68,16 @@ export class WormsComponent extends DrawComponent {
 
   isEnabled() {
     // only appear once puddles are established
-    return this.scene.puddleLevel > 0.3;
+    return this.puddles.getPuddleLevel() > 0.3;
   }
 
   draw() {
     const {ctx} = this;
     const {frame} = this.scene;
+    const puddleLevel = this.puddles.getPuddleLevel();
 
     this.worms.forEach(w => {
-      const alpha = w.alpha(this.scene.puddleLevel);
+      const alpha = w.alpha(puddleLevel);
       const wormX = w.x(frame);
       const wormY = w.y(frame);
       const wiggle = w.wiggle(frame);

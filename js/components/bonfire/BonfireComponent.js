@@ -1,10 +1,13 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {rnd, rndf} from '@/utils';
+import {Position} from "@/core/Position";
 
 /**
  * draws an animated bonfire with flickering flames and heavy smoke
  */
 export class BonfireComponent extends DrawComponent {
+  x = 0;
+  y = 0;
   /** @type {Array<Object>} */
   smoke = [];
 
@@ -15,13 +18,17 @@ export class BonfireComponent extends DrawComponent {
   }
 
   initialise() {
-    this.smoke = Array.from({length: 20}, (_, i) =>
-        this._makeSmoke(i * 3)
-    );
+    this.x = 220;
+    this.y = this.H * 0.72;
+    this.smoke = Array.from({length: 20}, (_, i) => this._makeSmoke(i * 3));
   }
 
   isEnabled() {
     return this.scene.specialEvent === 'bonfire';
+  }
+
+  getPosition() {
+    return new Position(this.x, this.y);
   }
 
   tick() {
@@ -38,9 +45,8 @@ export class BonfireComponent extends DrawComponent {
   }
 
   draw() {
+    const {x, y} = this;
     const {frame, weather} = this.scene;
-    const x = this.scene.bonfire.x;
-    const y = this.H * this.scene.bonfire.y_fraction;
 
     const flameScale = this._getFlameScale();
 
@@ -357,8 +363,8 @@ export class BonfireComponent extends DrawComponent {
   _makeSmoke(life = 0) {
     const grey = 40 + Math.floor(rnd(40));
     return {
-      x: this.scene.bonfire.x + rndf(4),
-      y: this.H * this.scene.bonfire.y_fraction - 40,
+      x: this.x + rndf(4),
+      y: this.y - 40,
       vx: rndf(0.6) + 0.3,
       vy: -(0.8 + rnd(0.8)),
       size: 8 + rnd(6),

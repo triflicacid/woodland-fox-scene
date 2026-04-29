@@ -1,26 +1,39 @@
-import {clamp, lerp, prob, rndf} from "@/utils";
+import {clamp, lerp, prob, rnd, rndchoice, rndf} from "@/utils";
 import {DrawComponent} from "@/core/DrawComponent";
 
 /**
  * render assorted puddles when raining
  */
 export class PuddlesComponent extends DrawComponent {
+  puddleLevel = 0;
+  /** @type{Array<object>} */
+  puddles;
+
   static COMPONENT_NAME = "PuddlesComponent";
 
   getName() {
     return PuddlesComponent.COMPONENT_NAME;
   }
 
+  initialise() {
+    this.puddles = Array.from({length: 5}, (_, i) => ({
+      x: 120 + i * 110,
+      y: this.H * 0.68 + rnd(this.H * 0.1),
+      rx: 0, maxRx: 20 + rnd(25),
+      ry: 0, maxRy: 5 + rnd(4),
+    }));
+  }
+
   draw() {
     const {ctx} = this;
-    const {weather, todBlend, puddles} = this.scene;
+    const {weather, todBlend} = this.scene;
     const growing = weather === 'rain' || weather === 'storm';
 
-    this.scene.puddleLevel = clamp(this.scene.puddleLevel + (growing ? 0.004 : -0.002), 0, 1);
+    this.puddleLevel = clamp(this.puddleLevel + (growing ? 0.004 : -0.002), 0, 1);
 
-    puddles.forEach(pd => {
-      pd.rx = lerp(0, pd.maxRx, this.scene.puddleLevel);
-      pd.ry = lerp(0, pd.maxRy, this.scene.puddleLevel);
+    this.puddles.forEach(pd => {
+      pd.rx = lerp(0, pd.maxRx, this.puddleLevel);
+      pd.ry = lerp(0, pd.maxRy, this.puddleLevel);
       if (pd.rx < 1) return;
       const pg = ctx.createRadialGradient(pd.x, pd.y, 0, pd.x, pd.y, pd.rx);
       const c = todBlend > 0.5 ? 'rgba(120,160,200,' : 'rgba(20,40,80,';
@@ -41,5 +54,20 @@ export class PuddlesComponent extends DrawComponent {
         ctx.stroke();
       }
     });
+  }
+
+  /**
+   * return a random puddle
+   * @returns object puddle object
+   */
+  getRandomPuddle() {
+    return rndchoice(this.puddles);
+  }
+
+  /**
+   * get the current puddle level
+   */
+  getPuddleLevel() {
+    return this.puddleLevel;
   }
 }
