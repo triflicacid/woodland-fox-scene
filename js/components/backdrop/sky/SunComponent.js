@@ -13,7 +13,7 @@ export class SunComponent extends DrawComponent {
 
   isEnabled() {
     const {weather, specialEvent} = this.scene;
-    return this.scene.isDay() && (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
+    return this.scene.timeOfDay === 'day' && (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
   }
 
   draw() {

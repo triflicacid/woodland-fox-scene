@@ -82,8 +82,8 @@ export class ConstellationsComponent extends DrawComponent {
   }
 
   isEnabled() {
-    const {stargazing, weather} = this.scene;
-    return stargazing && this.scene.isNight() && (weather === 'clear' || weather === 'wind');
+    const {weather} = this.scene;
+    return this.scene.stargazing && this.scene.timeOfDay === 'night' && (weather === 'clear' || weather === 'wind');
   }
 
   draw() {

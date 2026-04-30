@@ -48,18 +48,6 @@ export class SceneState {
     this.clearInvalidStates();
   }
 
-  isNight() {
-    return this.todBlend < 0.3;
-  }
-
-  isTwilight() {
-    return this.todBlend >= 0.3 && this.todBlend < 0.85;
-  }
-
-  isDay() {
-    return this.todBlend >= 0.85;
-  }
-
   /**
    * return the palette for the current season.
    * @returns {Object}
@@ -107,20 +95,20 @@ export class SceneState {
    */
   clearInvalidStates() {
     // special events
-    if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.isNight())) {
+    if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.isNight())) {
+    } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.isNight())) {
+    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'eclipse' && !this.isDay()) {
+    } else if (this.specialEvent === 'eclipse' && this.timeOfDay !== 'day') {
       this.specialEvent = null;
     }
 
     // stargazing
-    if (this.stargazing && (!this.isDay() || this.specialEvent !== null)) {
+    if (this.stargazing && (this.timeOfDay !== 'night' || this.specialEvent !== null)) {
       this.stargazing = false;
     }
   }

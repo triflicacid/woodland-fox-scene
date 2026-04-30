@@ -1,5 +1,5 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {clamp} from "@/utils";
+import {clamp, eio} from "@/utils";
 
 /**
  * render the moon in the sky.
@@ -13,7 +13,7 @@ export class MoonComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return this.scene.isNight();
+    return this.scene.timeOfDay === 'night' || this.scene.timeOfDay === 'twilight';
   }
 
   draw() {
@@ -36,7 +36,7 @@ export class MoonComponent extends DrawComponent {
    */
   _drawMoon(td, frame, phase) {
     const {ctx} = this;
-    const ma = clamp(1 - td * 1.5, 0, 1);
+    const ma = clamp(eio(1 - td * 2), 0, 1);
     if (ma <= 0.02) return;
 
     const cx = 580, cy = 55, r = 22;

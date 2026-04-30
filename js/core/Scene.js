@@ -288,7 +288,7 @@ export class Scene {
     auroraBtn.classList.toggle('btn-active', this._aurora.on);
 
     const halloweenBtn = document.getElementById('btn-halloween');
-    halloweenBtn.disabled = !(state.season === 'autumn' && state.isNight());
+    halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
     halloweenBtn.classList.toggle('btn-active', state.specialEvent === 'halloween');
 
     const christmasBtn = document.getElementById('btn-christmas');
@@ -334,7 +334,7 @@ export class Scene {
 
     const stargazeBtn = document.getElementById('btn-stargaze');
     if (stargazeBtn) {
-      const canStargaze = state.isNight()
+      const canStargaze = state.timeOfDay === 'night'
           && (state.weather === 'clear' || state.weather === 'wind')
           && !this._aurora.on;
       stargazeBtn.disabled = !canStargaze;
@@ -342,7 +342,7 @@ export class Scene {
     }
 
     const eclipseBtn = document.getElementById('btn-eclipse');
-    eclipseBtn.disabled = state.isNight();
+    eclipseBtn.disabled = state.timeOfDay === 'night';
     eclipseBtn.classList.toggle('btn-active', state.specialEvent === 'eclipse');
 
     this._updateTabSummaries();
@@ -567,7 +567,7 @@ export class Scene {
 
     const todSummary = [
       todEmoji[state.timeOfDay],
-      state.isNight() ? moonEmoji[state.moonPhase] : '',
+      state.timeOfDay === 'night' ? moonEmoji[state.moonPhase] : '',
     ].filter(Boolean).join(' ');
 
     const weatherSummary = [
