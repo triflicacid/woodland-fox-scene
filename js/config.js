@@ -75,6 +75,18 @@ export const PALETTES = {
 };
 
 /**
+ * time-of-day values
+ */
+export const TOD_BLEND = {
+  day: 1.0,
+  twilight: 0.66,
+  dawn: 0.33,
+  night: 0.0
+};
+
+export const TABS = ['season', 'tod', 'weather', 'events', 'animals', 'fox'];
+
+/**
  * phases of the moon.
  * internally we use numbers, but emojis here makes it more obvious what they mean.
  * @type {string[]}

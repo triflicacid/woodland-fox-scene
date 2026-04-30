@@ -1,4 +1,4 @@
-import {PALETTES} from '@/config';
+import {PALETTES, TOD_BLEND} from '@/config';
 import {rnd} from '@/utils';
 import {TREE_DEFS} from "@/components/TreeComponent";
 
@@ -19,6 +19,7 @@ export class SceneState {
     this.season = localStorage.getItem('season') || 'summer';
     /** @type{string} */
     this.timeOfDay = localStorage.getItem('tod') || 'night';
+    this.todBlend = this.todTarget = TOD_BLEND[this.timeOfDay];
     /** @type{string} */
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
@@ -31,9 +32,6 @@ export class SceneState {
 
     // prevent invalid combos on first load
     if (this.weather === 'snow' && this.season !== 'winter') this.weather = 'clear';
-
-    this.todBlend = this.timeOfDay === 'day' ? 1 : 0;
-    this.todTarget = this.timeOfDay === 'day' ? 1 : 0;
 
     // global animation frame counter
     this.frame = 0;
@@ -50,19 +48,16 @@ export class SceneState {
     this.clearInvalidStates();
   }
 
-  /**
-   * are we currently in night-time?
-   */
   isNight() {
-    return this.todBlend < 0.8;
+    return this.todBlend < 0.3;
   }
 
-  /**
-   * are we currently in day-time?
-   * (note the overlap with `isNight`; this is because we also count transitioning)
-   */
+  isTwilight() {
+    return this.todBlend >= 0.3 && this.todBlend < 0.85;
+  }
+
   isDay() {
-    return this.todBlend > 0.2;
+    return this.todBlend >= 0.85;
   }
 
   /**
@@ -91,7 +86,7 @@ export class SceneState {
    */
   setTOD(v) {
     this.timeOfDay = v;
-    this.todTarget = v === 'day' ? 1 : 0;
+    this.todTarget = TOD_BLEND[v];
     this.savePref();
   }
 
@@ -111,20 +106,20 @@ export class SceneState {
    */
   clearInvalidStates() {
     // special events
-    if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+    if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.isNight())) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
+    } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.isNight())) {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'day')) {
+    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.isNight())) {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'eclipse' && this.timeOfDay !== 'day') {
+    } else if (this.specialEvent === 'eclipse' && !this.isDay()) {
       this.specialEvent = null;
     }
 
     // stargazing
-    if (this.stargazing && (this.timeOfDay !== 'night' || this.specialEvent !== null)) {
+    if (this.stargazing && (!this.isDay() || this.specialEvent !== null)) {
       this.stargazing = false;
     }
   }

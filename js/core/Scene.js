@@ -1,4 +1,4 @@
-import {CANVAS, MOON_PHASES} from '@/config';
+import {CANVAS, MOON_PHASES, TABS} from '@/config';
 import {SceneState} from './SceneState.js';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/TreeComponent';
@@ -240,11 +240,10 @@ export class Scene {
    * initialise tab switching and restore last active tab.
    */
   _initTabs() {
-    const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
-    const saved = localStorage.getItem('activeTab') ?? 'world';
+    const saved = localStorage.getItem('activeTab') ?? TABS[0];
     this._setActiveTab(saved === '' ? null : saved);
 
-    tabs.forEach(tab => {
+    TABS.forEach(tab => {
       document.getElementById(`tab-${tab}`).addEventListener('click', () => {
         this._setActiveTab(tab);
       });
@@ -256,12 +255,10 @@ export class Scene {
    * @param {string} tab
    */
   _setActiveTab(tab) {
-    const tabs = ['world', 'weather', 'events', 'animals', 'fox'];
-
     // clicking active tab deselects it
     const newTab = this.activeTab === tab ? null : tab;
 
-    tabs.forEach(t => {
+    TABS.forEach(t => {
       document.getElementById(`tab-${t}`).classList.toggle('btn-active', t === newTab);
       document.getElementById(`tab-panel-${t}`).classList.toggle('tab-active', t === newTab);
     });
@@ -277,7 +274,7 @@ export class Scene {
     const {state} = this;
     ['spring', 'summer', 'autumn', 'winter'].forEach(s =>
         document.getElementById('btn-' + s).classList.toggle('btn-active', state.season === s));
-    ['day', 'night'].forEach(s =>
+    ['day', 'twilight', 'night', 'dawn'].forEach(s =>
         document.getElementById('btn-' + s).classList.toggle('btn-active', state.timeOfDay === s));
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(s =>
         document.getElementById('btn-' + s).classList.toggle('btn-active', state.weather === s));
@@ -291,7 +288,7 @@ export class Scene {
     auroraBtn.classList.toggle('btn-active', this._aurora.on);
 
     const halloweenBtn = document.getElementById('btn-halloween');
-    halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
+    halloweenBtn.disabled = !(state.season === 'autumn' && state.isNight());
     halloweenBtn.classList.toggle('btn-active', state.specialEvent === 'halloween');
 
     const christmasBtn = document.getElementById('btn-christmas');
@@ -337,7 +334,7 @@ export class Scene {
 
     const stargazeBtn = document.getElementById('btn-stargaze');
     if (stargazeBtn) {
-      const canStargaze = state.timeOfDay === 'night'
+      const canStargaze = state.isNight()
           && (state.weather === 'clear' || state.weather === 'wind')
           && !this._aurora.on;
       stargazeBtn.disabled = !canStargaze;
@@ -345,7 +342,7 @@ export class Scene {
     }
 
     const eclipseBtn = document.getElementById('btn-eclipse');
-    eclipseBtn.disabled = state.timeOfDay === 'night';
+    eclipseBtn.disabled = state.isNight();
     eclipseBtn.classList.toggle('btn-active', state.specialEvent === 'eclipse');
 
     this._updateTabSummaries();
@@ -419,16 +416,12 @@ export class Scene {
         }));
 
     // time of day buttons
-    document.getElementById('btn-day').addEventListener('click', () => {
-      state.setTOD('day');
-      state.clearInvalidStates();
-      this._refreshUI();
-    });
-    document.getElementById('btn-night').addEventListener('click', () => {
-      state.setTOD('night');
-      state.clearInvalidStates();
-      this._refreshUI();
-    });
+    ['day', 'twilight', 'night', 'dawn'].forEach(t =>
+        document.getElementById('btn-' + t).addEventListener('click', () => {
+          state.setTOD(t);
+          state.clearInvalidStates();
+          this._refreshUI();
+        }));
 
     // weather buttons
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(w =>
@@ -568,14 +561,13 @@ export class Scene {
     const {state} = this;
 
     const seasonEmoji = {spring: '🌸', summer: '🌿', autumn: '🍂', winter: '❄️'};
-    const todEmoji = {day: '☀️', night: '🌙'};
+    const todEmoji = {day: '☀️', twilight: '🌇', night: '🌙', dawn: '🌅'};
     const weatherEmoji = {clear: '✨', rain: '🌧', wind: '🍃', fog: '🌫', snow: '🌨', storm: '⛈'};
     const moonEmoji = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
 
-    const worldSummary = [
-      seasonEmoji[state.season],
+    const todSummary = [
       todEmoji[state.timeOfDay],
-      state.timeOfDay === 'night' ? moonEmoji[state.moonPhase] : '',
+      state.isNight() ? moonEmoji[state.moonPhase] : '',
     ].filter(Boolean).join(' ');
 
     const weatherSummary = [
@@ -591,7 +583,8 @@ export class Scene {
     const eventsSummary = state.specialEvent ? (eventEmoji[state.specialEvent] ?? '') : '';
 
     const summaries = {
-      world: worldSummary,
+      season: seasonEmoji[state.season],
+      tod: todSummary,
       weather: weatherSummary,
       events: eventsSummary,
       animals: '',
@@ -599,7 +592,8 @@ export class Scene {
     };
 
     const labels = {
-      world: '🌍 World',
+      season: '🌍 Season',
+      tod: '🕐 Time',
       weather: '🌦 Weather',
       events: '🎉 Events',
       animals: '🐾 Animals',
@@ -608,7 +602,6 @@ export class Scene {
 
     Object.entries(summaries).forEach(([tab, summary]) => {
       const btn = document.getElementById(`tab-${tab}`);
-      if (!btn) return;
       btn.textContent = summary
           ? `${labels[tab]}  ${summary}`
           : labels[tab];

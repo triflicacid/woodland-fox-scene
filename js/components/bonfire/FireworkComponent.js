@@ -21,7 +21,7 @@ export class FireworksComponent extends DrawComponent {
 
   isEnabled() {
     return this.scene.weather !== 'storm'
-        && this.scene.timeOfDay === 'night'
+        && this.scene.isNight()
         && (this.scene.specialEvent === 'bonfire' || this.scene.specialEvent === 'birthday');
   }
 
