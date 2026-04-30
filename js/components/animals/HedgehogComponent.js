@@ -4,16 +4,24 @@ import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {Subscriptions} from "@/core/Subscriptions";
 
+const OFFSCREEN_BOUNDARY = 25;
+
+const HOG_PHASES = {
+  in: {f: 200},
+  sniff: {f: 180},
+  out: {f: 160},
+  birthday_bob: {f: Infinity}
+};
+
 /**
  * render a hedgehog which occasionally walks into frame
  */
 export class HedgehogComponent extends DrawComponent {
-  hog = {
-    x: -60,
-    y_fraction: 0.62,
-    phase: 'off',
-    phaseT: 0,
-  };
+  phase = 'off';
+  phaseT = 0;
+  x = -OFFSCREEN_BOUNDARY;
+  y = 0;
+  sniffX = 0;
   bunnyActive = false;
   /** @type{MusicalNotesComponent} */
   notes;
@@ -38,6 +46,9 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   initialise() {
+    this.y = this.H * 0.62;
+    this.sniffX = this.scene.fox.x + 100;
+
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
       if (character === 'bunny') {
         if (action === 'enter') {
@@ -50,81 +61,82 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   tick() {
-    const {hog} = this;
-    const {fox, bunny, season, frame} = this.scene;
+    const {fox, season, frame} = this.scene;
+    const cfg = HOG_PHASES[this.phase];
+    const t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
 
     if (this.scene.specialEvent === 'birthday') {
-      if (hog.phase === 'off') {
-        hog.phase = 'in';
-        hog.phaseT = 0;
-        hog.x = -60;
-      } else if (hog.phase === 'in') {
+      if (this.phase === 'off') {
+        this.phase = 'in';
+        this.phaseT = 0;
+        this.x = -OFFSCREEN_BOUNDARY;
+      } else if (this.phase === 'in') {
         const targetX = fox.x - 190;
-        hog.x = lerp(-60, targetX, eo(clamp(hog.phaseT / 300, 0, 1)));
-        hog.phaseT++;
-        if (hog.phaseT >= 300) {
-          hog.phase = 'birthday_bob';
-          hog.phaseT = 0;
+        this.x = lerp(-OFFSCREEN_BOUNDARY, targetX, eo(t));
+        this.phaseT++;
+        if (this.phaseT >= cfg.f) {
+          this.phase = 'birthday_bob';
+          this.phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sing.start'));
         }
       }
-      if (hog.phase === 'birthday_bob' && prob(PROBABILITY.HEDGEHOG_SPAWN_NOTE)) {
-        this.notes.spawnNote(hog.x + 38, this.H * hog.y_fraction - 30);
+      if (this.phase === 'birthday_bob' && prob(PROBABILITY.HEDGEHOG_SPAWN_NOTE)) {
+        this.notes.spawnNote(this.x + 38, this.y - 30);
       }
       return; // early return
-    } else if (hog.phase === 'birthday_bob') {
-      hog.phase = 'out';
-      hog.phaseT = 0;
+    } else if (this.phase === 'birthday_bob') {
+      this.phase = 'out';
+      this.phaseT = 0;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sing.end'));
     }
 
     // spontaneous arrival in autumn
-    if (hog.phase === 'off' && !this.bunnyActive && prob(PROBABILITY.HEDGEHOG) && season === 'autumn') {
-      hog.phase = 'in';
-      hog.phaseT = 0;
-      hog.x = -60;
+    if (this.phase === 'off' && !this.bunnyActive && prob(PROBABILITY.HEDGEHOG) && season === 'autumn') {
+      this.phase = 'in';
+      this.phaseT = 0;
+      this.x = -OFFSCREEN_BOUNDARY;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'enter'));
     }
-    if (hog.phase === 'off') return;
+    if (this.phase === 'off') return;
 
-    hog.phaseT++;
-    if (hog.phase === 'in') {
-      hog.x = lerp(-60, fox.x - 90, eo(clamp(hog.phaseT / 300, 0, 1)));
-      if (hog.phaseT >= 320) {
-        hog.phase = 'sniff';
-        hog.phaseT = 0;
+    this.phaseT++;
+    if (this.phase === 'in') {
+      this.x = lerp(-OFFSCREEN_BOUNDARY, this.sniffX, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'sniff';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.start'));
       }
 
-    } else if (hog.phase === 'sniff') {
-      hog.x = fox.x - 90 + Math.sin(frame * 0.04) * 8;
-      if (hog.phaseT > 180) {
-        hog.phase = 'out';
-        hog.phaseT = 0;
+    } else if (this.phase === 'sniff') {
+      this.x = this.sniffX + Math.sin(frame * 0.08) * 5;
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'out';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'sniff.end'));
       }
 
-    } else if (hog.phase === 'out') {
-      hog.x = lerp(fox.x - 90, this.W + 80, eo(clamp(hog.phaseT / 280, 0, 1)));
-      if (hog.phaseT >= 280) {
-        hog.phase = 'off';
+    } else if (this.phase === 'out') {
+      this.x = lerp(this.sniffX, this.W + OFFSCREEN_BOUNDARY, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'off';
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'exit'));
       }
     }
   }
 
   draw() {
-    const {ctx, hog} = this;
-    if (hog.phase === 'off') {
+    const {ctx} = this;
+    if (this.phase === 'off') {
       return;
     }
     const isBirthday = this.scene.specialEvent === 'birthday';
 
     const {frame} = this.scene;
     const bob = isBirthday ? Math.sin(this.scene.frame * 0.1 + 0.5) * 3 : 0;
-    const x = hog.x;
-    const y = this.H * hog.y_fraction - 5 + bob;
-    const facingRight = hog.phase === 'in' || isBirthday || hog.phase === 'out';
+    const x = this.x;
+    const y = this.y - 5 + bob;
+    const facingRight = this.phase === 'in' || isBirthday || this.phase === 'out';
     const waddle = Math.sin(frame * 0.14) * 2.5;
 
     ctx.save();
@@ -227,11 +239,21 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   /**
+   * set us to be off.
+   * cancels any act ions or transitions.
+   */
+  forceOff() {
+    this.phase = 'off';
+    this.phaseT = 0;
+  }
+
+  /**
    * summon the hedgehog immediately (called by the summon button)
    */
   summon() {
-    this.hog.phase = 'in';
-    this.hog.phaseT = 0;
-    this.hog.x = -60;
+    if (this.phase !== 'off') return;
+    this.phase = 'in';
+    this.phaseT = 0;
+    this.x = -OFFSCREEN_BOUNDARY;
   }
 }

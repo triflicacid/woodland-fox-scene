@@ -7,7 +7,7 @@ import {Subscriptions} from "@/core/Subscriptions";
 /**
  * phase durations in frames.
  */
-export const FOX_PHASES = {
+const FOX_PHASES = {
   standup: {f: 80},
   stretch: {f: 80},
   shake: {f: 90},
