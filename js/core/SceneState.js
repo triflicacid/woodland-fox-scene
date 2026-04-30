@@ -19,7 +19,7 @@ export class SceneState {
     this.season = localStorage.getItem('season') || 'summer';
     /** @type{string} */
     this.timeOfDay = localStorage.getItem('tod') || 'night';
-    this.todBlend = this.todTarget = TOD_BLEND[this.timeOfDay];
+    this.todBlend = this.todTarget = this.prevTimeOfDay = TOD_BLEND[this.timeOfDay];
     /** @type{string} */
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
@@ -85,6 +85,7 @@ export class SceneState {
    * @param {string} v - 'day' or 'night'
    */
   setTOD(v) {
+    this.prevTimeOfDay = this.timeOfDay;
     this.timeOfDay = v;
     this.todTarget = TOD_BLEND[v];
     this.savePref();
