@@ -4,6 +4,15 @@ import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {Subscriptions} from "@/core/Subscriptions";
 
+const OFFSCREEN_BOUNDARY = 45;
+
+const DEER_PHASES = {
+  entering: {f: 150},
+  grazing: {f: 300},
+  leaving: {f: 180},
+  birthday_bob: {f: Infinity},
+};
+
 /**
  * render a deer which sometimes walks into frame
  */
@@ -35,7 +44,7 @@ export class DeerComponent extends DrawComponent {
 
   initialise() {
     this.deer = {
-      x: this.W + 80,
+      x: this.W + OFFSCREEN_BOUNDARY,
       y_fraction: 0.62,
       phase: 'off',
       phaseT: 0,
@@ -55,19 +64,21 @@ export class DeerComponent extends DrawComponent {
 
   tick() {
     const {deer} = this;
+    let cfg = DEER_PHASES[deer.phase];
+    let t = cfg ? clamp(deer.phaseT / cfg.f, 0, 1) : NaN;
     deer.cooldown--;
 
     if (this.scene.specialEvent === 'birthday') {
       if (deer.phase === 'off') {
         deer.phase = 'entering';
         deer.phaseT = 0;
-        deer.x = this.W + 80;
+        deer.x = this.W + OFFSCREEN_BOUNDARY;
         deer.cooldown = 0;
       } else if (deer.phase === 'entering') {
         const targetX = this.W * 0.78;
-        deer.x = lerp(this.W + 80, targetX, eo(clamp(deer.phaseT / 150, 0, 1)));
+        deer.x = lerp(this.W + 80, targetX, eo(t));
         deer.phaseT++;
-        if (deer.phaseT >= 150) {
+        if (deer.phaseT >= cfg.f) {
           deer.phase = 'birthday_bob';
           deer.phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'sing.start'));
@@ -90,6 +101,8 @@ export class DeerComponent extends DrawComponent {
         deer.phaseT = 0;
         deer.x = this.W + 80;
         deer.cooldown = 2400;
+        cfg = DEER_PHASES.entering;
+        t = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'enter'));
       }
     }
@@ -99,8 +112,8 @@ export class DeerComponent extends DrawComponent {
     const gx = this.W * 0.72;
 
     if (deer.phase === 'entering') {
-      deer.x = lerp(this.W + 80, gx, eo(clamp(deer.phaseT / 150, 0, 1)));
-      if (deer.phaseT >= 150) {
+      deer.x = lerp(this.W + 80, gx, eo(t));
+      if (deer.phaseT >= cfg.f) {
         deer.phase = 'grazing';
         deer.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'graze.start'));
@@ -108,17 +121,17 @@ export class DeerComponent extends DrawComponent {
 
     } else if (deer.phase === 'grazing') {
       deer.x = gx + Math.sin(this.scene.frame * 0.008) * 8;
-      if (deer.phaseT > 300) {
+      if (deer.phaseT > cfg.f) {
         deer.phase = 'leaving';
         deer.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'graze.end'));
       }
 
     } else if (deer.phase === 'leaving') {
-      deer.x = lerp(gx, this.W + 80, eo(clamp(deer.phaseT / 120, 0, 1)));
-      if (deer.phaseT >= 120) {
+      deer.x = lerp(gx, this.W + OFFSCREEN_BOUNDARY, eo(t));
+      if (deer.phaseT >= cfg.f) {
         deer.phase = 'off';
-        deer.x = this.W + 80;
+        deer.x = this.W + OFFSCREEN_BOUNDARY;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'exit'));
       }
     }
