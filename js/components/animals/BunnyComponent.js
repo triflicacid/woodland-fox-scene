@@ -3,6 +3,20 @@ import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";
 
+const BUNNY_PHASES = {
+  hopping_in: {f: 135},
+  fox_waking: {f: 90},
+  nuzzle: {f: 160},
+  fox_sleep: {f: 95},
+  hopping_out: {f: 130},
+  easter_bob: {f: Infinity},
+  birthday_bob: {f: Infinity},
+};
+
+// heart spawning happens in the `nuzzle` phase, so should not exceed that value
+const BUNNY_NUZZLE_HEART_FRAMES = 140;
+const BUNNY_NUZZLE_HEART_INTERVAL = 20;
+
 /**
  * render bunny which hops to greet the fox.
  * handles spawning heart particles during Visitor scene.
@@ -60,6 +74,7 @@ export class BunnyComponent extends DrawComponent {
   tick() {
     const {fox, specialEvent} = this.scene;
     this.phaseT++;
+    const cfg = BUNNY_PHASES[this.phase];
 
     // easter management
     if (specialEvent === 'easter') {
@@ -76,7 +91,7 @@ export class BunnyComponent extends DrawComponent {
       // easter ended - hop off
       this.phase = 'hopping_out';
       this.phaseT = 0;
-      this.startHop(this.x, this.W + 90, 130);
+      this.startHop(this.x, this.W + 90, cfg.hopping_out.f);
     }
 
     // birthday - bunny hops in and bobs along
@@ -86,7 +101,7 @@ export class BunnyComponent extends DrawComponent {
         this.phaseT = 0;
         this.x = -80;
         this.hop.arc = 0;
-        this.startHop(-80, fox.x - 100, 135);
+        this.startHop(-80, fox.x - 100, BUNNY_PHASES.hopping_in.f);
       } else if (this.phase === 'hopping_in' || this.phase === 'birthday_bob') {
         // once arrived, lock into birthday bob
         if (this.phase === 'hopping_in' && this.tickHop()) {
@@ -104,7 +119,7 @@ export class BunnyComponent extends DrawComponent {
       // birthday ended - hop off
       this.phase = 'hopping_out';
       this.phaseT = 0;
-      this.startHop(this.x, this.W + 90, 130);
+      this.startHop(this.x, this.W + 90, BUNNY_PHASES.hopping_out.f);
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.end'));
     }
 
@@ -117,7 +132,7 @@ export class BunnyComponent extends DrawComponent {
       }
 
     } else if (this.phase === 'fox_waking') {
-      if (this.phaseT >= 90) {
+      if (this.phaseT >= cfg.f) {
         this.phase = 'nuzzle';
         this.phaseT = 0;
         this.eventBus.dispatch(Events.statusText(this.getName(), 'They touch noses...'));
@@ -127,19 +142,19 @@ export class BunnyComponent extends DrawComponent {
     } else if (this.phase === 'nuzzle') {
       this.hop.arc = 0;
       // spawn heart particles periodically
-      if (this.phaseT % 20 === 0 && this.phaseT < 140) {
+      if (this.phaseT % BUNNY_NUZZLE_HEART_INTERVAL === 0 && this.phaseT < BUNNY_NUZZLE_HEART_FRAMES) {
         const noseX = (this.x + 35 + fox.x - 34) / 2;
         this.hearts.spawn(noseX + (Math.random() - 0.5) * 20, this.y - 72);
       }
 
-      if (this.phaseT >= 160) {
+      if (this.phaseT >= cfg.f) {
         this.phase = 'fox_sleep';
         this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'nuzzle.end'));
       }
 
     } else if (this.phase === 'fox_sleep') {
-      if (this.phaseT >= 95) {
+      if (this.phaseT >= cfg.f) {
         this.phase = 'hopping_out';
         this.phaseT = 0;
         this.startHop(this.x, this.W + 90, 130);
