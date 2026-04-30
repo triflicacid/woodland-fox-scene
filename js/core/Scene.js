@@ -506,6 +506,7 @@ export class Scene {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
       state.savePref();
+      this._deer.forceOff();
       this._hedgehog.forceOff();
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
