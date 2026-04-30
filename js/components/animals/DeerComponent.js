@@ -281,9 +281,19 @@ export class DeerComponent extends DrawComponent {
   }
 
   /**
+   * set us to be off.
+   * cancels any act ions or transitions.
+   */
+  forceOff() {
+    this.deer.phase = 'off';
+    this.deer.phaseT = 0;
+  }
+
+  /**
    * summon the deer immediately (called by the summon button).
    */
   summon() {
+    if (this.deer.phase !== 'off') return;
     this.deer.phase = 'entering';
     this.deer.phaseT = 0;
     this.deer.x = this.W + 80;
