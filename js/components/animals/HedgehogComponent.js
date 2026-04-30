@@ -62,8 +62,8 @@ export class HedgehogComponent extends DrawComponent {
 
   tick() {
     const {fox, season, frame} = this.scene;
-    const cfg = HOG_PHASES[this.phase];
-    const t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
+    let cfg = HOG_PHASES[this.phase];
+    let t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
 
     if (this.scene.specialEvent === 'birthday') {
       if (this.phase === 'off') {
@@ -95,6 +95,8 @@ export class HedgehogComponent extends DrawComponent {
       this.phase = 'in';
       this.phaseT = 0;
       this.x = -OFFSCREEN_BOUNDARY;
+      cfg = HOG_PHASES.in;
+      t = 0;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'hedgehog', 'enter'));
     }
     if (this.phase === 'off') return;
