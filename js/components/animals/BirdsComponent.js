@@ -142,9 +142,9 @@ export class BirdsComponent extends DrawComponent {
    * @returns {boolean}
    */
   _areBirdsActive() {
-    const {season, todBlend, weather, specialEvent} = this.scene;
+    const {season, weather, specialEvent} = this.scene;
     if (season === 'winter') return false;
-    if (todBlend <= 0.4) return false;
+    if (!this.scene.isDay()) return false;
     if (weather === 'storm') return false;
     if (specialEvent === 'eclipse') return false;
     return true;
