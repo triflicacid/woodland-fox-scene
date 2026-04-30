@@ -24,6 +24,29 @@ export class SkyBackdropComponent extends DrawComponent {
     ctx.fillStyle = skyN;
     ctx.fillRect(0, 0, W, H);
 
+    // effects for time of day
+    if (this.scene.timeOfDay === 'dawn') {
+      const dawnSky = ctx.createLinearGradient(0, 0, 0, H * 0.7);
+      dawnSky.addColorStop(0, '#1a1030');
+      dawnSky.addColorStop(0.4, '#5a2040');
+      dawnSky.addColorStop(0.7, '#c05030');
+      dawnSky.addColorStop(1, '#e08040');
+      ctx.globalAlpha = 0.75;
+      ctx.fillStyle = dawnSky;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    } else if (this.scene.timeOfDay === 'twilight') {
+      const twilightSky = ctx.createLinearGradient(0, 0, 0, H * 0.7);
+      twilightSky.addColorStop(0, '#0a0818');
+      twilightSky.addColorStop(0.3, '#1a0a30');
+      twilightSky.addColorStop(0.6, '#5a1a30');
+      twilightSky.addColorStop(1, '#a03820');
+      ctx.globalAlpha = 0.8;
+      ctx.fillStyle = twilightSky;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+
     // day sky overlay
     if (weather !== 'storm' && weather !== 'rain') {
       const skyD = ctx.createLinearGradient(0, 0, 0, H * 0.7);

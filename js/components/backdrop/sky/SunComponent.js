@@ -12,39 +12,46 @@ export class SunComponent extends DrawComponent {
   }
 
   isEnabled() {
-    const {weather, specialEvent} = this.scene;
-    return this.scene.timeOfDay === 'day' && (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
+    const {weather, specialEvent, timeOfDay} = this.scene;
+    return (timeOfDay === 'day' || timeOfDay === 'dawn') &&
+        (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
   }
 
   draw() {
     const {ctx} = this;
-    const {season, weather, frame, todBlend: td, specialEvent} = this.scene;
+    const {season, weather, frame, todBlend: td, specialEvent, timeOfDay} = this.scene;
     const sa = clamp((td - 0.2) / 0.6, 0, 1);
-    const sunX = season === 'autumn' ? 120 : season === 'winter' ? 160 : 550;
-    const sunY = season === 'winter' ? 90 : 65;
+
+    const isDawn = timeOfDay === 'dawn';
+
+    // dawn: sun sits low on the horizon, warm orange
+    const sunX = isDawn ? 180 : (season === 'autumn' ? 120 : season === 'winter' ? 160 : 550);
+    const sunY = isDawn ? this.H * 0.52 : (season === 'winter' ? 90 : 65);
 
     if (specialEvent === 'eclipse') {
       this._drawEclipse(sunX, sunY, frame, sa);
       return;
     }
 
+    const sunCol = isDawn ? '#ff9944' : (season === 'autumn' ? '#f0a030' : season === 'winter' ? '#dde8f0' : '#fffad0');
+    const glowCol = isDawn ? '#ff660088' : '#ffe87888';
+
     ctx.save();
-    ctx.globalAlpha = sa;
-    ctx.shadowBlur = 60;
-    ctx.shadowColor = '#ffe87888';
-    ctx.fillStyle = season === 'autumn' ? '#f0a030' : season === 'winter' ? '#dde8f0' : '#fffad0';
+    ctx.globalAlpha = isDawn ? 0.9 : sa;
+    ctx.shadowBlur = isDawn ? 80 : 60;
+    ctx.shadowColor = glowCol;
+    ctx.fillStyle = sunCol;
     ctx.beginPath();
     ctx.arc(sunX, sunY, 26, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.globalAlpha = sa * 0.15;
+    ctx.globalAlpha = (isDawn ? 0.9 : sa) * 0.15;
     ctx.beginPath();
     ctx.arc(sunX, sunY, 44, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
 
-    // sun beams if super sunny
-    if (season === 'summer' && weather === 'clear') {
+    if (season === 'summer' && weather === 'clear' && !isDawn) {
       ctx.strokeStyle = 'rgba(255,250,180,0.08)';
       ctx.lineWidth = 18;
       ctx.globalAlpha = sa;
