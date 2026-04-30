@@ -3,6 +3,12 @@ import {DrawComponent} from "@/core/DrawComponent";
 import {Events} from "@/core/Events";
 import {PROBABILITY} from "@/config";
 
+const OFFSCREEN_BOUNDARY = 25;
+
+const MEET_FOX_OFFSET = -100;
+const SING_FOX_OFFSET = -90;
+const EASTER_BOB_FOX_OFFSET = -100;
+
 const BUNNY_PHASES = {
   hopping_in: {f: 135},
   fox_waking: {f: 90},
@@ -22,15 +28,15 @@ const BUNNY_NUZZLE_HEART_INTERVAL = 20;
  * handles spawning heart particles during Visitor scene.
  */
 export class BunnyComponent extends DrawComponent {
-  x = -80;
+  x = -OFFSCREEN_BOUNDARY;
   meetX = 0;
   y = 0;
   phase = 'off';
   phaseT = 0;
   hop = {
     arc: 0,
-    from: -80,
-    to: -80,
+    from: -OFFSCREEN_BOUNDARY,
+    to: -OFFSCREEN_BOUNDARY,
     frame: 1,
     t: 0
   };
@@ -67,7 +73,7 @@ export class BunnyComponent extends DrawComponent {
   }
 
   initialise() {
-    this.meetX = this.scene.fox.x - 80;
+    this.meetX = this.scene.fox.x + MEET_FOX_OFFSET;
     this.y = this.scene.fox.y;
   }
 
@@ -80,18 +86,18 @@ export class BunnyComponent extends DrawComponent {
     if (specialEvent === 'easter') {
       if (this.phase === 'off') {
         this.phase = 'easter_bob';
-        this.x = fox.x - 100;
+        this.x = fox.x + EASTER_BOB_FOX_OFFSET;
         this.y = fox.y;
         this.phaseT = 0;
       } else if (this.phase === 'easter_bob') {
-        this.x = (fox.x - 100) + Math.sin(this.scene.frame * 0.015) * 13;
+        this.x = (fox.x + EASTER_BOB_FOX_OFFSET) + Math.sin(this.scene.frame * 0.015) * 13;
       }
       return;
     } else if (this.phase === 'easter_bob') {
       // easter ended - hop off
       this.phase = 'hopping_out';
       this.phaseT = 0;
-      this.startHop(this.x, this.W + 90, cfg.hopping_out.f);
+      this.startHop(this.x, this.W + OFFSCREEN_BOUNDARY, cfg.hopping_out.f);
     }
 
     // birthday - bunny hops in and bobs along
@@ -99,9 +105,9 @@ export class BunnyComponent extends DrawComponent {
       if (this.phase === 'off') {
         this.phase = 'hopping_in';
         this.phaseT = 0;
-        this.x = -80;
+        this.x = -OFFSCREEN_BOUNDARY;
         this.hop.arc = 0;
-        this.startHop(-80, fox.x - 100, BUNNY_PHASES.hopping_in.f);
+        this.startHop(-OFFSCREEN_BOUNDARY, fox.x + SING_FOX_OFFSET, BUNNY_PHASES.hopping_in.f);
       } else if (this.phase === 'hopping_in' || this.phase === 'birthday_bob') {
         // once arrived, lock into birthday bob
         if (this.phase === 'hopping_in' && this.tickHop()) {
@@ -119,7 +125,7 @@ export class BunnyComponent extends DrawComponent {
       // birthday ended - hop off
       this.phase = 'hopping_out';
       this.phaseT = 0;
-      this.startHop(this.x, this.W + 90, BUNNY_PHASES.hopping_out.f);
+      this.startHop(this.x, this.W + OFFSCREEN_BOUNDARY, BUNNY_PHASES.hopping_out.f);
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'sing.end'));
     }
 
@@ -157,7 +163,7 @@ export class BunnyComponent extends DrawComponent {
       if (this.phaseT >= cfg.f) {
         this.phase = 'hopping_out';
         this.phaseT = 0;
-        this.startHop(this.x, this.W + 90, 130);
+        this.startHop(this.x, this.W + OFFSCREEN_BOUNDARY, BUNNY_PHASES.hopping_out.f);
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'exiting'));
         this.eventBus.dispatch(Events.statusText(this.getName(), 'The bunny hops off...'));
       }
@@ -430,9 +436,9 @@ export class BunnyComponent extends DrawComponent {
 
     this.phase = 'hopping_in';
     this.phaseT = 0;
-    this.x = -80;
+    this.x = -OFFSCREEN_BOUNDARY;
     this.hop.arc = 0;
-    this.startHop(-80, this.meetX, 135);
+    this.startHop(-OFFSCREEN_BOUNDARY, this.meetX, BUNNY_PHASES.hopping_in.f);
     this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'enter'));
   }
 
