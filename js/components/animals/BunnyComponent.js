@@ -49,7 +49,7 @@ export class BunnyComponent extends DrawComponent {
   isEnabled() {
     const specialEvent = this.scene.specialEvent;
     if (specialEvent === 'birthday' || specialEvent === 'easter') return true;
-    return !(this.phase === 'off' || this.phase === 'done');
+    return this.phase !== 'off';
   }
 
   initialise() {
@@ -63,7 +63,7 @@ export class BunnyComponent extends DrawComponent {
 
     // easter management
     if (specialEvent === 'easter') {
-      if (this.phase === 'off' || this.phase === 'done') {
+      if (this.phase === 'off') {
         this.phase = 'easter_bob';
         this.x = fox.x - 100;
         this.y = fox.y;
@@ -81,7 +81,7 @@ export class BunnyComponent extends DrawComponent {
 
     // birthday - bunny hops in and bobs along
     if (this.scene.specialEvent === 'birthday') {
-      if (this.phase === 'off' || this.phase === 'done') {
+      if (this.phase === 'off') {
         this.phase = 'hopping_in';
         this.phaseT = 0;
         this.x = -80;
@@ -149,7 +149,7 @@ export class BunnyComponent extends DrawComponent {
 
     } else if (this.phase === 'hopping_out') {
       if (this.tickHop()) {
-        this.phase = 'done';
+        this.phase = 'off';
         this.eventBus.dispatch(Events.statusText(this.getName(), 'Curled up, fast asleep...'));
         this.eventBus.dispatch(Events.setMainButtons(this.getName(), true));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'bunny', 'exit'));
