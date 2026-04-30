@@ -239,9 +239,19 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   /**
+   * set us to be off.
+   * cancels any act ions or transitions.
+   */
+  forceOff() {
+    this.phase = 'off';
+    this.phaseT = 0;
+  }
+
+  /**
    * summon the hedgehog immediately (called by the summon button)
    */
   summon() {
+    if (this.phase !== 'off') return;
     this.phase = 'in';
     this.phaseT = 0;
     this.x = -OFFSCREEN_BOUNDARY;
