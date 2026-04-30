@@ -17,9 +17,12 @@ const DEER_PHASES = {
  * render a deer which sometimes walks into frame
  */
 export class DeerComponent extends DrawComponent {
+  x = 0;
+  y = 0;
+  phase = 'off';
+  phaseT = 0;
+  cooldown = 0;
   bunnyActive = false;
-  /** @type{Object} */
-  deer;
   /** @type{MusicalNotesComponent} */
   notes;
 
@@ -43,13 +46,8 @@ export class DeerComponent extends DrawComponent {
   }
 
   initialise() {
-    this.deer = {
-      x: this.W + OFFSCREEN_BOUNDARY,
-      y_fraction: 0.62,
-      phase: 'off',
-      phaseT: 0,
-      cooldown: 0,
-    };
+    this.x = this.W + OFFSCREEN_BOUNDARY;
+    this.y = this.H * 0.62;
 
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
       if (character === 'bunny') {
@@ -63,92 +61,91 @@ export class DeerComponent extends DrawComponent {
   }
 
   tick() {
-    const {deer} = this;
-    let cfg = DEER_PHASES[deer.phase];
-    let t = cfg ? clamp(deer.phaseT / cfg.f, 0, 1) : NaN;
-    deer.cooldown--;
+    let cfg = DEER_PHASES[this.phase];
+    let t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
+    this.cooldown--;
 
     if (this.scene.specialEvent === 'birthday') {
-      if (deer.phase === 'off') {
-        deer.phase = 'entering';
-        deer.phaseT = 0;
-        deer.x = this.W + OFFSCREEN_BOUNDARY;
-        deer.cooldown = 0;
-      } else if (deer.phase === 'entering') {
+      if (this.phase === 'off') {
+        this.phase = 'entering';
+        this.phaseT = 0;
+        this.x = this.W + OFFSCREEN_BOUNDARY;
+        this.cooldown = 0;
+      } else if (this.phase === 'entering') {
         const targetX = this.W * 0.78;
-        deer.x = lerp(this.W + 80, targetX, eo(t));
-        deer.phaseT++;
-        if (deer.phaseT >= cfg.f) {
-          deer.phase = 'birthday_bob';
-          deer.phaseT = 0;
+        this.x = lerp(this.W + 80, targetX, eo(t));
+        this.phaseT++;
+        if (this.phaseT >= cfg.f) {
+          this.phase = 'birthday_bob';
+          this.phaseT = 0;
           this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'sing.start'));
         }
       }
-      if (deer.phase === 'birthday_bob' && prob(PROBABILITY.DEER_SPAWN_NOTE)) {
-        this.notes.spawnNote(deer.x - 50, this.H * deer.y_fraction - 84);
+      if (this.phase === 'birthday_bob' && prob(PROBABILITY.DEER_SPAWN_NOTE)) {
+        this.notes.spawnNote(this.x - 50, this.y - 84);
       }
       return;
-    } else if (deer.phase === 'birthday_bob') {
-      deer.phase = 'leaving';
-      deer.phaseT = 0;
+    } else if (this.phase === 'birthday_bob') {
+      this.phase = 'leaving';
+      this.phaseT = 0;
       this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'sing.end'));
     }
 
-    if (deer.phase === 'off') {
+    if (this.phase === 'off') {
       const atTransition = Math.abs(this.scene.todBlend - 0.5) < 0.15;
-      if (atTransition && deer.cooldown <= 0 && !this.bunnyActive && prob(PROBABILITY.DEER)) {
-        deer.phase = 'entering';
-        deer.phaseT = 0;
-        deer.x = this.W + 80;
-        deer.cooldown = 2400;
+      if (atTransition && this.cooldown <= 0 && !this.bunnyActive && prob(PROBABILITY.DEER)) {
+        this.phase = 'entering';
+        this.phaseT = 0;
+        this.x = this.W + 80;
+        this.cooldown = 2400;
         cfg = DEER_PHASES.entering;
         t = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'enter'));
       }
     }
-    if (deer.phase === 'off') return;
+    if (this.phase === 'off') return;
 
-    deer.phaseT++;
+    this.phaseT++;
     const gx = this.W * 0.72;
 
-    if (deer.phase === 'entering') {
-      deer.x = lerp(this.W + 80, gx, eo(t));
-      if (deer.phaseT >= cfg.f) {
-        deer.phase = 'grazing';
-        deer.phaseT = 0;
+    if (this.phase === 'entering') {
+      this.x = lerp(this.W + OFFSCREEN_BOUNDARY, gx, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'grazing';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'graze.start'));
       }
 
-    } else if (deer.phase === 'grazing') {
-      deer.x = gx + Math.sin(this.scene.frame * 0.008) * 8;
-      if (deer.phaseT > cfg.f) {
-        deer.phase = 'leaving';
-        deer.phaseT = 0;
+    } else if (this.phase === 'grazing') {
+      this.x = gx + Math.sin(this.scene.frame * 0.008) * 8;
+      if (this.phaseT > cfg.f) {
+        this.phase = 'leaving';
+        this.phaseT = 0;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'graze.end'));
       }
 
-    } else if (deer.phase === 'leaving') {
-      deer.x = lerp(gx, this.W + OFFSCREEN_BOUNDARY, eo(t));
-      if (deer.phaseT >= cfg.f) {
-        deer.phase = 'off';
-        deer.x = this.W + OFFSCREEN_BOUNDARY;
+    } else if (this.phase === 'leaving') {
+      this.x = lerp(gx, this.W + OFFSCREEN_BOUNDARY, eo(t));
+      if (this.phaseT >= cfg.f) {
+        this.phase = 'off';
+        this.x = this.W + OFFSCREEN_BOUNDARY;
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'deer', 'exit'));
       }
     }
   }
 
   draw() {
-    const {ctx, deer} = this;
-    if (deer.phase === 'off') {
+    const {ctx} = this;
+    if (this.phase === 'off') {
       return;
     }
 
     const {frame} = this.scene;
-    const x = deer.x;
-    const bob = deer.phase === 'birthday_bob' ? Math.sin(this.scene.frame * 0.1) * 4 : 0;
-    const y = this.H * deer.y_fraction - 28 + bob;
-    const grazing = deer.phase === 'grazing';
-    const facingRight = deer.phase === 'leaving';
+    const x = this.x;
+    const bob = this.phase === 'birthday_bob' ? Math.sin(this.scene.frame * 0.1) * 4 : 0;
+    const y = this.y - 28 + bob;
+    const grazing = this.phase === 'grazing';
+    const facingRight = this.phase === 'leaving';
     const graze = grazing ? Math.sin(frame * 0.04) * 0.18 : 0;
     const lb = Math.sin(frame * 0.09) * 2.5;
     const sc = '#6a4020';
@@ -298,18 +295,18 @@ export class DeerComponent extends DrawComponent {
    * cancels any act ions or transitions.
    */
   forceOff() {
-    this.deer.phase = 'off';
-    this.deer.phaseT = 0;
+    this.phase = 'off';
+    this.phaseT = 0;
   }
 
   /**
    * summon the deer immediately (called by the summon button).
    */
   summon() {
-    if (this.deer.phase !== 'off') return;
-    this.deer.phase = 'entering';
-    this.deer.phaseT = 0;
-    this.deer.x = this.W + 80;
-    this.deer.cooldown = 2400;
+    if (this.phase !== 'off') return;
+    this.phase = 'entering';
+    this.phaseT = 0;
+    this.x = this.W + OFFSCREEN_BOUNDARY;
+    this.cooldown = 2400;
   }
 }
