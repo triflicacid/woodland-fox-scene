@@ -78,9 +78,9 @@ export const PALETTES = {
  * time-of-day values
  */
 export const TOD_BLEND = {
+  dawn: 0.66,
   day: 1.0,
-  twilight: 0.66,
-  dawn: 0.33,
+  twilight: 0.33,
   night: 0.0
 };
 
