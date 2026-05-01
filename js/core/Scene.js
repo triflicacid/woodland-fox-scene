@@ -56,6 +56,7 @@ import {ScreenShakeRestoreComponent} from "@/components/shake/ScreenShakeRestore
 import {EclipseSilhouettesComponent} from "@/components/eclipse/EclipseSilhouttesComponent";
 import {BirthdayCakeComponent} from "@/components/birthday/BirthdayCakeComponent";
 import {CupcakesComponent} from "@/components/birthday/CupcakesComponent";
+import {SaveState} from "@/core/SaveState";
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -77,6 +78,7 @@ export class Scene {
 
     // central mutable state
     this.state = new SceneState(W, H);
+    this.saveState = new SaveState();
 
     // store the handle for the drawing loop
     /** @type {number | undefined} */
@@ -171,6 +173,7 @@ export class Scene {
    */
   initialise() {
     Events.registerAll(this.eventBus);
+    this._initSaveState();
     this._initTabs();
     this._setupCanvasEvents();
     this._refreshUI();
@@ -237,15 +240,78 @@ export class Scene {
   }
 
   /**
+   * register providers to `this.saveState` and load in values
+   */
+  _initSaveState() {
+    const state = this.state;
+    this.saveState
+        .register({
+          key: 'active_tab',
+          save: () => this.activeTab,
+          load: v => this._setActiveTab(v),
+          defaultValue: TABS[0],
+        })
+        .register({
+          key: 'season',
+          save: () => state.season,
+          load: v => state.changeSeason(v),
+          defaultValue: 'summer',
+        })
+        .register({
+          key: 'tod',
+          save: () => state.timeOfDay,
+          load: v => state.setTOD(v),
+          defaultValue: 'night',
+        })
+        .register({
+          key: 'weather',
+          save: () => state.weather,
+          load: v => state.weather = v,
+          defaultValue: 'clear',
+        }).register({
+          key: 'special_event',
+          save: () => state.specialEvent,
+          load: v => state.specialEvent = v,
+          defaultValue: null,
+        }).register({
+          key: 'moon_phase',
+          save: () => state.moonPhase,
+          load: v => state.moonPhase = v,
+          defaultValue: 4,
+        }).register({
+          key: 'stargazing',
+          save: () => state.stargazing,
+          load: v => state.stargazing = v,
+          defaultValue: false,
+        }).register({
+          key: 'owl',
+          save: () => this._owl.isForced(),
+          load: v => this._owl.setForced(v),
+          defaultValue: false,
+        }).register({
+          key: 'bats',
+          save: () => this._bats.isForced(),
+          load: v => this._bats.setForced(v),
+          defaultValue: false,
+        }).register({
+          key: 'aurora',
+          save: () => this._aurora.on,
+          load: v => this._aurora.on = v,
+          defaultValue: false,
+        });
+
+    this.saveState.load();
+    state.clearInvalidStates();
+  }
+
+  /**
    * initialise tab switching and restore last active tab.
    */
   _initTabs() {
-    const saved = localStorage.getItem('activeTab') ?? TABS[0];
-    this._setActiveTab(saved === '' ? null : saved);
-
     TABS.forEach(tab => {
       document.getElementById(`tab-${tab}`).addEventListener('click', () => {
         this._setActiveTab(tab);
+        this.saveState.save('active_tab');
       });
     });
   }
@@ -257,14 +323,12 @@ export class Scene {
   _setActiveTab(tab) {
     // clicking active tab deselects it
     const newTab = this.activeTab === tab ? null : tab;
+    this.activeTab = newTab;
 
     TABS.forEach(t => {
       document.getElementById(`tab-${t}`).classList.toggle('btn-active', t === newTab);
       document.getElementById(`tab-panel-${t}`).classList.toggle('tab-active', t === newTab);
     });
-
-    localStorage.setItem('activeTab', newTab ?? '');
-    this.activeTab = newTab;
   }
 
   /**
@@ -412,6 +476,7 @@ export class Scene {
           state.changeSeason(s);
           state.clearInvalidStates();
           this.eventBus.dispatch(Events.seasonChange("Scene", oldSeason, state));
+          this.saveState.save();
           this._refreshUI();
         }));
 
@@ -420,6 +485,7 @@ export class Scene {
         document.getElementById('btn-' + t).addEventListener('click', () => {
           state.setTOD(t);
           state.clearInvalidStates();
+          this.saveState.save();
           this._refreshUI();
         }));
 
@@ -430,7 +496,7 @@ export class Scene {
           const oldWeather = state.weather;
           state.weather = w;
           state.clearInvalidStates();
-          state.savePref();
+          this.saveState.save();
           this._refreshUI();
           this.eventBus.dispatch(Events.weatherChange("Scene", oldWeather, state));
         }));
@@ -441,17 +507,17 @@ export class Scene {
       this._aurora.toggle();
       if (this._aurora.on && state.stargazing) {
         state.stargazing = false; // supress stargazing
-        state.savePref();
       }
+      this.saveState.save('aurora', 'stargazing');
       this._refreshUI();
     });
     // stargazing toggle
     document.getElementById('btn-stargaze').addEventListener('click', () => {
       state.stargazing = !state.stargazing;
-      state.savePref();
       if (state.stargazing && this._aurora.on) {
         this._aurora.on = false; // supress aurora
       }
+      this.saveState.save('aurora', 'stargazing');
       this._refreshUI();
     });
 
@@ -460,10 +526,12 @@ export class Scene {
     document.getElementById('btn-hog').addEventListener('click', () => this._hedgehog.summon());
     document.getElementById('btn-owl').addEventListener('click', e => {
       this._owl.setForced(!this._owl.isForced());
+      this.saveState.save('owl');
       e.target.classList.toggle('btn-active', this._owl.isEnabled());
     });
     document.getElementById('btn-bats').addEventListener('click', e => {
       this._bats.setForced(!this._bats.isForced());
+      this.saveState.save('bats');
       e.target.classList.toggle('btn-active', this._bats.isForced());
     });
     document.getElementById('btn-yawn').addEventListener('click', () => this._fox.triggerYawn());
@@ -471,43 +539,44 @@ export class Scene {
     document.getElementById('btn-grumble').addEventListener('click', () => this._fox.triggerGrumble());
     document.getElementById('btn-chicks').addEventListener('click', e => {
       this._chicks.setForced(!this._chicks.isForced());
+      this.saveState.save('chicks');
       e.target.classList.toggle('btn-active', this._chicks.isForced());
     });
 
     document.getElementById('btn-halloween').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'halloween' ? null : 'halloween';
-      state.savePref();
+      this.saveState.save('special_event');
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-christmas').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'christmas' ? null : 'christmas';
-      state.savePref();
+      this.saveState.save('special_event');
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-bonfire').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'bonfire' ? null : 'bonfire';
-      state.savePref();
+      this.saveState.save('special_event');
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-birthday').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'birthday' ? null : 'birthday';
-      state.savePref();
       this._deer.forceOff();
       this._hedgehog.forceOff();
+      this.saveState.save('special_event');
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this._refreshUI();
     });
     document.getElementById('btn-easter').addEventListener('click', () => {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'easter' ? null : 'easter';
-      state.savePref();
+      this.saveState.save('special_event');
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
       this.eventBus.dispatch(Events.statusText('Scene', 'Happy Easter!'));
       this._refreshUI();
@@ -517,7 +586,7 @@ export class Scene {
       document.getElementById(`btn-phase-${i}`).addEventListener('click', () => {
         const oldMoonPhase = state.moonPhase;
         state.moonPhase = i;
-        state.savePref();
+        this.saveState.save('moon_phase');
         this.eventBus.dispatch(Events.moonPhaseChange("Scene", oldMoonPhase, state));
         this._refreshUI();
       });
@@ -546,7 +615,7 @@ export class Scene {
       const old = state.specialEvent;
       state.specialEvent = state.specialEvent === 'eclipse' ? null : 'eclipse';
       this.eventBus.dispatch(Events.specialEventChange('Scene', old, state));
-      state.savePref();
+      this.saveState.save('special_event');
       if (state.specialEvent === 'eclipse') {
         this.eventBus.dispatch(Events.statusText('Scene', 'The sky darkens as the moon devours the sun...'));
       }

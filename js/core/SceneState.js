@@ -7,6 +7,25 @@ import {TREE_DEFS} from "@/components/TreeComponent";
  * most state is kept to individual components unless it is needed by multiple.
  */
 export class SceneState {
+  /** @type{string} */
+  season;
+  /** @type{string} */
+  timeOfDay;
+  /** @type{string} */
+  prevTimeOfDay;
+  /** @type{number} */
+  todBlend;
+  /** @type{number} */
+  todTarget;
+  /** @type{string} */
+  weather;
+  /** @type{string | null} */
+  specialEvent;
+  /** @type{boolean} */
+  stargazing;
+  /** @type{number} */
+  moonPhase;
+
   /**
    * @param {number} W - canvas width
    * @param {number} H - canvas height
@@ -14,24 +33,6 @@ export class SceneState {
   constructor(W, H) {
     this.W = W;
     this.H = H;
-
-    /** @type{string} */
-    this.season = localStorage.getItem('season') || 'summer';
-    /** @type{string} */
-    this.timeOfDay = this.prevTimeOfDay = localStorage.getItem('tod') || 'night';
-    this.todBlend = this.todTarget = TOD_BLEND[this.timeOfDay];
-    /** @type{string} */
-    this.weather = localStorage.getItem('weather') || 'clear';
-    /** @type{string | null} */
-    this.specialEvent = localStorage.getItem('special_event') || null;
-    if (this.specialEvent === 'null') this.specialEvent = null;
-    /** @type{boolean} */
-    this.stargazing = localStorage.getItem('stargazing') === 'true';
-    /** @type{number} */
-    this.moonPhase = parseInt(localStorage.getItem('moon_phase') ?? '4'); // default full
-
-    // prevent invalid combos on first load
-    if (this.weather === 'snow' && this.season !== 'winter') this.weather = 'clear';
 
     // global animation frame counter
     this.frame = 0;
@@ -63,26 +64,18 @@ export class SceneState {
   }
 
   /**
-   * persist environment prefs to localStorage.
-   */
-  savePref() {
-    localStorage.setItem('season', this.season);
-    localStorage.setItem('tod', this.timeOfDay);
-    localStorage.setItem('weather', this.weather);
-    localStorage.setItem('special_event', this.specialEvent);
-    localStorage.setItem('moon_phase', this.moonPhase.toString());
-    localStorage.setItem('stargazing', this.stargazing.toString());
-  }
-
-  /**
    * change the time of day and start blend animation.
    * @param {string} v - 'day' or 'night'
    */
   setTOD(v) {
-    this.prevTimeOfDay = this.timeOfDay;
-    this.timeOfDay = v;
-    this.todTarget = TOD_BLEND[v];
-    this.savePref();
+    if (!this.timeOfDay) { // if no previous value, set them up
+      this.prevTimeOfDay = this.timeOfDay = v;
+      this.todBlend = this.todTarget = TOD_BLEND[v];
+    } else {
+      this.prevTimeOfDay = this.timeOfDay;
+      this.timeOfDay = v;
+      this.todTarget = TOD_BLEND[v];
+    }
   }
 
   /**
@@ -93,7 +86,6 @@ export class SceneState {
     if (s === this.season) return;
     this.season = s;
     if (this.weather === 'snow' && s !== 'winter') this.weather = 'clear';
-    this.savePref();
   }
 
   /**
@@ -116,6 +108,11 @@ export class SceneState {
     // stargazing
     if (this.stargazing && (this.timeOfDay !== 'night' || this.specialEvent !== null)) {
       this.stargazing = false;
+    }
+
+    // weather
+    if (this.weather === 'snow' && this.season !== 'winter') {
+      this.weather = 'clear';
     }
   }
 }
