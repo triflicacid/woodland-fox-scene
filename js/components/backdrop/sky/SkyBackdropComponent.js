@@ -1,9 +1,63 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {clamp} from "@/utils";
+import {clamp, rgb, sample, sampleCol} from "@/utils";
 
-/**
- * render the sky backdrop (no moons etc.)
- */
+// t=0 night, t=0.25 twilight, t=0.75 dawn, t=1 day
+const SKY_TOP = [
+  {t: 0.00, r: 10, g: 8, b: 24},  // night
+  {t: 0.20, r: 10, g: 8, b: 24},  // night hold
+  {t: 0.25, r: 26, g: 8, b: 40},  // twilight - deep indigo
+  {t: 0.50, r: 26, g: 16, b: 48},  // mid transition
+  {t: 0.75, r: 26, g: 16, b: 48},  // dawn - dark purple
+  {t: 0.88, r: 100, g: 60, b: 120}, // dawn brightening
+  {t: 1.00, r: 168, g: 216, b: 248}, // day (spring default)
+];
+
+const SKY_MID = [
+  {t: 0.00, r: 20, g: 16, b: 50},
+  {t: 0.20, r: 20, g: 16, b: 50},
+  {t: 0.25, r: 40, g: 16, b: 60},  // twilight mid
+  {t: 0.50, r: 60, g: 24, b: 56},
+  {t: 0.75, r: 90, g: 32, b: 64},  // dawn mid - warm purple
+  {t: 0.88, r: 180, g: 100, b: 80},  // warming
+  {t: 1.00, r: 216, g: 238, b: 255}, // day
+];
+
+const SKY_BOT = [
+  {t: 0.00, r: 30, g: 40, b: 30},  // night horizon
+  {t: 0.20, r: 30, g: 40, b: 30},
+  {t: 0.25, r: 100, g: 40, b: 24},  // twilight horizon - burnt orange
+  {t: 0.50, r: 140, g: 60, b: 30},
+  {t: 0.75, r: 192, g: 80, b: 48},  // dawn horizon - warm red-orange
+  {t: 0.88, r: 220, g: 160, b: 80},  // golden
+  {t: 1.00, r: 184, g: 232, b: 160}, // day (spring)
+];
+
+const GLOW_R = [
+  {t: 0.00, v: 0},
+  {t: 0.15, v: 0},
+  {t: 0.25, v: 0.45},  // twilight glow peak
+  {t: 0.50, v: 0.15},  // mid transition faint glow
+  {t: 0.75, v: 0.55},  // dawn glow peak
+  {t: 0.90, v: 0.1},
+  {t: 1.00, v: 0},
+];
+
+const GLOW_Y = [
+  {t: 0.00, v: 0.72},
+  {t: 0.25, v: 0.60},  // twilight - glow sits mid-low
+  {t: 0.50, v: 0.55},
+  {t: 0.75, v: 0.52},  // dawn - glow sits just above treeline
+  {t: 1.00, v: 0.72},
+];
+
+const GLOW_COL = [
+  {t: 0.00, r: 255, g: 90, b: 10},
+  {t: 0.25, r: 180, g: 60, b: 140}, // twilight - purple-pink
+  {t: 0.50, r: 255, g: 120, b: 40},
+  {t: 0.75, r: 255, g: 100, b: 30},  // dawn - warm orange
+  {t: 1.00, r: 255, g: 200, b: 80},
+];
+
 export class SkyBackdropComponent extends DrawComponent {
   static COMPONENT_NAME = "SkyBackdropComponent";
 
@@ -13,59 +67,42 @@ export class SkyBackdropComponent extends DrawComponent {
 
   draw() {
     const {ctx, W, H} = this;
-    const {weather, todBlend: td} = this.scene;
-    const p = this.scene.pal();
+    const {weather, todBlend: td, specialEvent} = this.scene;
 
-    // base night sky
-    const skyN = ctx.createLinearGradient(0, 0, 0, H * 0.7);
-    skyN.addColorStop(0, p.sky0);
-    skyN.addColorStop(0.5, p.sky1);
-    skyN.addColorStop(1, p.sky2);
-    ctx.fillStyle = skyN;
+    const top = sampleCol(td, SKY_TOP);
+    const mid = sampleCol(td, SKY_MID);
+    const bot = sampleCol(td, SKY_BOT);
+
+    const skyG = ctx.createLinearGradient(0, 0, 0, H * 0.7);
+    skyG.addColorStop(0, rgb(top));
+    skyG.addColorStop(0.5, rgb(mid));
+    skyG.addColorStop(1, rgb(bot));
+    ctx.fillStyle = skyG;
     ctx.fillRect(0, 0, W, H);
 
-    // effects for time of day
-    if (this.scene.timeOfDay === 'dawn') {
-      const dawnSky = ctx.createLinearGradient(0, 0, 0, H * 0.7);
-      dawnSky.addColorStop(0, '#1a1030');
-      dawnSky.addColorStop(0.4, '#5a2040');
-      dawnSky.addColorStop(0.7, '#c05030');
-      dawnSky.addColorStop(1, '#e08040');
-      ctx.globalAlpha = 0.75;
-      ctx.fillStyle = dawnSky;
-      ctx.fillRect(0, 0, W, H);
-      ctx.globalAlpha = 1;
-    } else if (this.scene.timeOfDay === 'twilight') {
-      const twilightSky = ctx.createLinearGradient(0, 0, 0, H * 0.7);
-      twilightSky.addColorStop(0, '#0a0818');
-      twilightSky.addColorStop(0.3, '#1a0a30');
-      twilightSky.addColorStop(0.6, '#5a1a30');
-      twilightSky.addColorStop(1, '#a03820');
-      ctx.globalAlpha = 0.8;
-      ctx.fillStyle = twilightSky;
-      ctx.fillRect(0, 0, W, H);
-      ctx.globalAlpha = 1;
+    // horizon glow band
+    const glowR = sample(td, GLOW_R);
+    if (glowR > 0.01 && weather !== 'storm' && weather !== 'rain') {
+      const glowY = sample(td, GLOW_Y);
+      const glowCol = sampleCol(td, GLOW_COL);
+      const hor = ctx.createLinearGradient(0, H * (glowY - 0.18), 0, H * (glowY + 0.1));
+      hor.addColorStop(0, rgb(glowCol, 0));
+      hor.addColorStop(0.4, rgb(glowCol, glowR));
+      hor.addColorStop(1, rgb(glowCol, 0));
+      ctx.fillStyle = hor;
+      ctx.fillRect(0, H * (glowY - 0.18), W, H * 0.28);
     }
 
-    // day sky overlay
-    if (weather !== 'storm' && weather !== 'rain') {
-      const skyD = ctx.createLinearGradient(0, 0, 0, H * 0.7);
-      skyD.addColorStop(0, p.daySky0);
-      skyD.addColorStop(0.5, p.daySky1);
-      skyD.addColorStop(1, p.daySky2);
-      ctx.globalAlpha = td;
-      ctx.fillStyle = skyD;
-      ctx.fillRect(0, 0, W, H);
-      ctx.globalAlpha = 1;
-    } else {
+    // storm/rain overlay
+    if (weather === 'storm' || weather === 'rain') {
       ctx.fillStyle = '#1a2030';
       ctx.globalAlpha = 0.85;
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = 1;
     }
 
-    // eclipse sky darkening - deep purple overlay
-    if (this.scene.specialEvent === 'eclipse') {
+    // eclipse darkening
+    if (specialEvent === 'eclipse') {
       const sa = clamp((td - 0.2) / 0.6, 0, 1);
       ctx.fillStyle = `rgba(10,4,20,${0.88 * sa})`;
       ctx.fillRect(0, 0, W, H);

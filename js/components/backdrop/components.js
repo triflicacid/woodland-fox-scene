@@ -2,7 +2,7 @@ import {ComponentGroup} from "@/core/ComponentGroup";
 import {StarsComponent} from "@/components/backdrop/sky/StarsComponent";
 import {MoonComponent} from "@/components/backdrop/sky/MoonComponent";
 import {SunComponent} from "@/components/backdrop/sky/SunComponent";
-import {DuskGlowComponent} from "@/components/backdrop/sky/DuskGlowComponent";
+import {HorizonGlowComponent} from "@/components/backdrop/sky/HorizonGlowComponent";
 import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 import {CloudsComponent} from "@/components/backdrop/sky/CloudsComponent";
 import {MistComponent} from "@/components/backdrop/sky/MistComponent";
@@ -70,7 +70,7 @@ export class SkyBackdropComponents extends ComponentGroup {
       new CometComponent(eventBus, scene, ctx, W, H),
       new MoonComponent(eventBus, scene, ctx, W, H),
       new SunComponent(eventBus, scene, ctx, W, H),
-      new DuskGlowComponent(eventBus, scene, ctx, W, H),
+      new HorizonGlowComponent(eventBus, scene, ctx, W, H),
       new AuroraComponent(eventBus, scene, ctx, W, H),
       new CloudsComponent(eventBus, scene, ctx, W, H),
       new MistComponent(eventBus, scene, ctx, W, H), // TODO ??
