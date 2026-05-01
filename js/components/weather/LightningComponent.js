@@ -9,6 +9,7 @@ import {Events} from "@/core/Events";
 export class LightningComponent extends DrawComponent {
   /** @type{Array<Object>} */
   bolts = [];
+  lighteningEndpointYM = 0.03;
 
   static COMPONENT_NAME = "LightningComponent";
 
@@ -63,7 +64,8 @@ export class LightningComponent extends DrawComponent {
       const spread = superBolt ? 70 : 40;
       const path = [];
       let lx = 200 + rnd(300), ly = 0;
-      while (ly < H * 0.65) {
+      const endY = this.scene.groundY + (this.H * this.lighteningEndpointYM);
+      while (ly < endY) {
         path.push([lx, ly]);
         lx += rndf(spread);
         ly += 20 + rnd(20);
