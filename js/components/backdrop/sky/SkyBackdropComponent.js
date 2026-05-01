@@ -35,9 +35,11 @@ const SKY_BOT = [
 const GLOW_R = [
   {t: 0.00, v: 0},
   {t: 0.15, v: 0},
-  {t: 0.25, v: 0.45},  // twilight glow peak
-  {t: 0.50, v: 0.15},  // mid transition faint glow
-  {t: 0.75, v: 0.55},  // dawn glow peak
+  {t: 0.25, v: 0.75},  // twilight glow peak
+  {t: 0.35, v: 0.15},
+  {t: 0.50, v: 0.10},  // mid transition faint
+  {t: 0.65, v: 0.15},
+  {t: 0.75, v: 0.85},  // dawn glow peak
   {t: 0.90, v: 0.1},
   {t: 1.00, v: 0},
 ];
@@ -51,10 +53,13 @@ const GLOW_Y = [
 ];
 
 const GLOW_COL = [
-  {t: 0.00, r: 255, g: 90, b: 10},
-  {t: 0.25, r: 180, g: 60, b: 140}, // twilight - purple-pink
+  {t: 0.00, r: 255, g: 90,  b: 10},
+  {t: 0.25, r: 240, g: 80,  b: 120}, // twilight - deeper purple-pink
+  {t: 0.35, r: 255, g: 120, b: 40},
   {t: 0.50, r: 255, g: 120, b: 40},
-  {t: 0.75, r: 255, g: 100, b: 30},  // dawn - warm orange
+  {t: 0.65, r: 255, g: 110, b: 20},
+  {t: 0.75, r: 255, g: 80,  b: 20},  // dawn - deeper orange-red
+  {t: 0.90, r: 255, g: 200, b: 80},
   {t: 1.00, r: 255, g: 200, b: 80},
 ];
 
@@ -70,7 +75,7 @@ export class SkyBackdropComponent extends DrawComponent {
 
   draw() {
     const {ctx, W, H} = this;
-    const {weather, todBlend: td, specialEvent} = this.scene;
+    const {weather, todBlend: td, specialEvent, groundY} = this.scene;
 
     const top = sampleCol(td, SKY_TOP);
     const mid = sampleCol(td, SKY_MID);
@@ -88,12 +93,12 @@ export class SkyBackdropComponent extends DrawComponent {
     if (glowR > 0.01 && weather !== 'storm' && weather !== 'rain') {
       const glowY = sample(td, GLOW_Y) + (SEASON_GLOW_OFFSET[this.scene.season] ?? 0);
       const glowCol = sampleCol(td, GLOW_COL);
-      const hor = ctx.createLinearGradient(0, H * (glowY - 0.18), 0, H * (glowY + 0.1));
+      const hor = ctx.createLinearGradient(0, H * (glowY - 0.15), 0, groundY);
       hor.addColorStop(0, rgb(glowCol, 0));
-      hor.addColorStop(0.4, rgb(glowCol, glowR));
-      hor.addColorStop(1, rgb(glowCol, 0));
+      hor.addColorStop(0.5, rgb(glowCol, glowR));
+      hor.addColorStop(1, rgb(glowCol, glowR));
       ctx.fillStyle = hor;
-      ctx.fillRect(0, H * (glowY - 0.18), W, H * 0.28);
+      ctx.fillRect(0, H * (glowY - 0.15), W, groundY - H * (glowY - 0.15));
     }
 
     // storm/rain overlay
