@@ -58,6 +58,9 @@ const GLOW_COL = [
   {t: 1.00, r: 255, g: 200, b: 80},
 ];
 
+// offset og transition during different seasons
+const SEASON_GLOW_OFFSET = {summer: -0.05, spring: 0, autumn: 0.03, winter: 0.06};
+
 export class SkyBackdropComponent extends DrawComponent {
   static COMPONENT_NAME = "SkyBackdropComponent";
 
@@ -83,7 +86,7 @@ export class SkyBackdropComponent extends DrawComponent {
     // horizon glow band
     const glowR = sample(td, GLOW_R);
     if (glowR > 0.01 && weather !== 'storm' && weather !== 'rain') {
-      const glowY = sample(td, GLOW_Y);
+      const glowY = sample(td, GLOW_Y) + (SEASON_GLOW_OFFSET[this.scene.season] ?? 0);
       const glowCol = sampleCol(td, GLOW_COL);
       const hor = ctx.createLinearGradient(0, H * (glowY - 0.18), 0, H * (glowY + 0.1));
       hor.addColorStop(0, rgb(glowCol, 0));
