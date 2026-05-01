@@ -25,7 +25,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
   _makeCanopyLeaf() {
     return {
       x: rnd(this.W),
-      y: this.H * 0.62,
+      y: this.scene.groundY,
       vx: rndf(1.5),
       vy: 0.3 + rnd(0.8),
       rot: rnd(Math.PI * 2),
@@ -55,7 +55,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
       l.x += l.vx + (weather === 'wind' ? 1.5 : 0);
       l.y += l.vy;
       l.rot += l.drot;
-      if (l.y > H * 0.63) {
+      if ((l.y - this.scene.groundY) / this.H > .15) {
         l.active = false;
         l.timer = rnd(120) | 0;
       }

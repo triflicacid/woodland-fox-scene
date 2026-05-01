@@ -12,7 +12,7 @@ export class GrassComponent extends DrawComponent {
   }
 
   draw() {
-    const {ctx, W, H} = this;
+    const {ctx, W, H, groundY: y} = this;
     const {season, weather, frame, specialEvent} = this.scene;
 
     if (season === 'winter') {
@@ -20,8 +20,8 @@ export class GrassComponent extends DrawComponent {
         ctx.strokeStyle = 'rgba(180,200,220,0.5)';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(gx, H * 0.62);
-        ctx.lineTo(gx, H * 0.62 - 12);
+        ctx.moveTo(gx, y);
+        ctx.lineTo(gx, y - 12);
         ctx.stroke();
       }
       return;

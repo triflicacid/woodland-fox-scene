@@ -3,6 +3,8 @@ import {prob, rnd} from '@/utils';
 import {drawMonster, randomMonster, randomMonsterForm} from "@/components/eclipse/drawMonsters";
 import {PROBABILITY} from "@/config";
 
+const OFFSCREEN_BOUNDARY = 30;
+
 /**
  * foreground walking monsters during solar eclipse.
  * drawn in front of trees, sorted by y for correct perspective.
@@ -33,7 +35,7 @@ export class EclipseMonstersComponent extends DrawComponent {
 
     this.monsters = this.monsters.filter(m => {
       m.x += m.vx;
-      return m.x > -100 && m.x < W + 100;
+      return m.x > -OFFSCREEN_BOUNDARY && m.x < W + OFFSCREEN_BOUNDARY;
     });
   }
 
@@ -61,8 +63,8 @@ export class EclipseMonstersComponent extends DrawComponent {
     if (type === undefined) type = randomMonster();
     const fromRight = prob(0.5);
     this.monsters.push({
-      x: fromRight ? this.W + 60 : -60,
-      y: this.H * 0.62,
+      x: fromRight ? this.W + OFFSCREEN_BOUNDARY : -OFFSCREEN_BOUNDARY,
+      y: this.scene.groundY,
       vx: fromRight ? -(0.6 + rnd(0.5)) : (0.6 + rnd(0.5)),
       type,
       form: form !== undefined ? form : randomMonsterForm(type),

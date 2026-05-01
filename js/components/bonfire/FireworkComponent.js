@@ -27,14 +27,14 @@ export class FireworksComponent extends DrawComponent {
 
   tick() {
     const {W, H} = this;
-    const {weather} = this.scene;
+    const {weather, groundY} = this.scene;
 
     // randomly launch a new rocket
     if (prob(PROBABILITY.FIREWORK_LAUNCH)) {
       const loud = prob(PROBABILITY.LOUD_FIREWORK);
       this.rockets.push({
         x: 100 + rnd(W - 200),
-        y: H * 0.62,
+        y: groundY,
         vy: -(5 + rnd(4)),
         vx: rndf(1.2),
         targetY: H * (0.05 + rnd(0.25)),

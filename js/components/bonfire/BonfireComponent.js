@@ -19,7 +19,7 @@ export class BonfireComponent extends DrawComponent {
 
   initialise() {
     this.x = 220;
-    this.y = this.H * 0.72;
+    this.y = this.scene.groundY + (this.H * 0.1);
     this.smoke = Array.from({length: 20}, (_, i) => this._makeSmoke(i * 3));
   }
 

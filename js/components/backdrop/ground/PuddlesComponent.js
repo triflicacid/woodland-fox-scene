@@ -16,9 +16,10 @@ export class PuddlesComponent extends DrawComponent {
   }
 
   initialise() {
+    const baseY = this.scene.groundY + (this.H * 0.06);
     this.puddles = Array.from({length: 5}, (_, i) => ({
       x: 120 + i * 110,
-      y: this.H * 0.68 + rnd(this.H * 0.1),
+      y: baseY + rnd(this.H * 0.1),
       rx: 0, maxRx: 20 + rnd(25),
       ry: 0, maxRy: 5 + rnd(4),
     }));

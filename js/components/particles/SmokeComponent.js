@@ -26,7 +26,7 @@ export class SmokeComponent extends DrawComponent {
   _makeSmoke(i = 0) {
     return {
       x: 640 + rndf(3),
-      y: this.H * 0.62 - 50 - i * 8,
+      y: this.scene.groundY - 50 - i * 8,
       vx: rndf(0.3) + 0.2,
       vy: -0.4 - rnd(0.3),
       size: 4 + i * 1.5,

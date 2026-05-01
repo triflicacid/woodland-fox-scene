@@ -117,10 +117,9 @@ export class GuyFawkesComponent extends DrawComponent {
 
   draw() {
     if (this.phase === 'off') return;
-    const y = this.H * 0.62;
     const saluting = this.phase === 'salute';
     const facingRight = !this.fromRight; // faces toward bonfire
-    this._drawGuyFawkes(this.x, y, facingRight, saluting, this.scene.frame);
+    this._drawGuyFawkes(this.x, this.scene.groundY, facingRight, saluting, this.scene.frame);
   }
 
   /**

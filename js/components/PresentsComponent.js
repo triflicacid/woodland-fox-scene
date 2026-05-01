@@ -1,24 +1,24 @@
 import {DrawComponent} from '@/core/DrawComponent';
 
 const CHRISTMAS_PRESENTS = [
-  {x: 155, w: 22, h: 16, col: '#cc2020', ribbon: '#ffdd00', pattern: null},
-  {x: 185, w: 16, h: 12, col: '#2060cc', ribbon: '#ff80ff', pattern: null},
-  {x: 430, w: 20, h: 14, col: '#20aa40', ribbon: '#ff4040', pattern: null},
-  {x: 455, w: 14, h: 18, col: '#aa20cc', ribbon: '#ffffaa', pattern: null},
-  {x: 575, w: 18, h: 13, col: '#cc6020', ribbon: '#aaffaa', pattern: null},
+  {x: 155, y: 0, dm: 0, w: 22, h: 16, col: '#cc2020', ribbon: '#ffdd00', pattern: null},
+  {x: 185, y: 0, dm: 0, w: 16, h: 12, col: '#2060cc', ribbon: '#ff80ff', pattern: null},
+  {x: 430, y: 0, dm: 0, w: 20, h: 14, col: '#20aa40', ribbon: '#ff4040', pattern: null},
+  {x: 455, y: 0, dm: 0, w: 14, h: 18, col: '#aa20cc', ribbon: '#ffffaa', pattern: null},
+  {x: 575, y: 0, dm: 0, w: 18, h: 13, col: '#cc6020', ribbon: '#aaffaa', pattern: null},
 ];
 
 const BIRTHDAY_PRESENTS = [
-  {x: 148, w: 24, h: 18, col: '#ff3366', ribbon: '#ffff00', pattern: 'dots'},
-  {x: 178, w: 18, h: 22, col: '#3366ff', ribbon: '#ff66ff', pattern: 'stripes'},
-  {x: 210, w: 20, h: 15, col: '#ff9900', ribbon: '#ffffff', pattern: 'dots'},
-  {x: 240, w: 14, h: 19, col: '#00cc88', ribbon: '#ff3366', pattern: 'stripes'},
-  {x: 390, w: 16, h: 14, col: '#ff66aa', ribbon: '#33ffcc', pattern: 'dots'},
-  {x: 420, w: 22, h: 16, col: '#ffcc00', ribbon: '#ff3300', pattern: 'dots'},
-  {x: 450, w: 16, h: 20, col: '#33cc66', ribbon: '#ffffff', pattern: 'stripes'},
-  {x: 480, w: 20, h: 17, col: '#cc33ff', ribbon: '#ffff66', pattern: 'dots'},
-  {x: 510, w: 18, h: 21, col: '#ff4400', ribbon: '#aaffaa', pattern: 'stripes'},
-  {x: 538, w: 22, h: 14, col: '#4488ff', ribbon: '#ffcc00', pattern: 'dots'},
+  {x: 148, y: 0, dm: 0, w: 24, h: 18, col: '#ff3366', ribbon: '#ffff00', pattern: 'dots'},
+  {x: 178, y: 0, dm: 0, w: 18, h: 22, col: '#3366ff', ribbon: '#ff66ff', pattern: 'stripes'},
+  {x: 210, y: 0, dm: 0, w: 20, h: 15, col: '#ff9900', ribbon: '#ffffff', pattern: 'dots'},
+  {x: 240, y: 0, dm: 0, w: 14, h: 19, col: '#00cc88', ribbon: '#ff3366', pattern: 'stripes'},
+  {x: 390, y: 0, dm: 0, w: 16, h: 14, col: '#ff66aa', ribbon: '#33ffcc', pattern: 'dots'},
+  {x: 420, y: 0, dm: 0, w: 22, h: 16, col: '#ffcc00', ribbon: '#ff3300', pattern: 'dots'},
+  {x: 450, y: 0, dm: 0, w: 16, h: 20, col: '#33cc66', ribbon: '#ffffff', pattern: 'stripes'},
+  {x: 480, y: 0, dm: 0, w: 20, h: 17, col: '#cc33ff', ribbon: '#ffff66', pattern: 'dots'},
+  {x: 510, y: 0, dm: 0, w: 18, h: 21, col: '#ff4400', ribbon: '#aaffaa', pattern: 'stripes'},
+  {x: 538, y: 0, dm: 0, w: 22, h: 14, col: '#4488ff', ribbon: '#ffcc00', pattern: 'dots'},
 ];
 
 /**
@@ -31,22 +31,27 @@ export class PresentsComponent extends DrawComponent {
     return PresentsComponent.COMPONENT_NAME;
   }
 
+  initialise() {
+    [...CHRISTMAS_PRESENTS, ...CHRISTMAS_PRESENTS].forEach(p => {
+      p.y = this.scene.groundY + (this.H * p.dm);
+    });
+  }
+
   isEnabled() {
     const {specialEvent} = this.scene;
     return specialEvent === 'christmas' || specialEvent === 'birthday';
   }
 
   draw() {
-    const {ctx, H} = this;
+    const {ctx} = this;
     const {frame, specialEvent} = this.scene;
     const presents = specialEvent === 'birthday' ? BIRTHDAY_PRESENTS : CHRISTMAS_PRESENTS;
 
     presents.forEach((pr, i) => {
-      const y = H * 0.62;
       const bob = Math.sin(frame * 0.03 + i * 0.8) * 0.5;
 
       ctx.save();
-      ctx.translate(pr.x, y + bob);
+      ctx.translate(pr.x, pr.y + bob);
 
       // box
       ctx.fillStyle = pr.col;

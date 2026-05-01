@@ -367,7 +367,7 @@ export class Scene {
 
       // click on a tree top to startle a bird
       state.trees.forEach(tr => {
-        if (Math.abs(cx - tr.x) < tr.r && cy < H * 0.62 && cy > H * 0.62 - tr.h * 0.7) {
+        if (Math.abs(cx - tr.x) < tr.r && cy < state.groundY && cy > state.groundY - tr.h * 0.7) {
           this._birds.spawnStartledBird(tr);
         }
       });

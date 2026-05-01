@@ -6,7 +6,7 @@ import {AuroraComponent} from "@/components/backdrop/sky/AuroraComponent";
 import {CloudsComponent} from "@/components/backdrop/sky/CloudsComponent";
 import {MistComponent} from "@/components/backdrop/sky/MistComponent";
 import {GroundComponent} from "@/components/backdrop/ground/GroundComponent";
-import {UndergrowthComponent} from "@/components/backdrop/ground/UndergrowthComponent";
+import UndergrowthComponent from "@/components/backdrop/ground/UndergrowthComponent";
 import {FallenLeavesComponent} from "@/components/backdrop/ground/FallenLeavesComponent";
 import {SnowDriftsComponent} from "@/components/backdrop/ground/SnowDriftsComponent";
 import {SpringFlowersComponent} from "@/components/backdrop/ground/SpringFlowersComponent";

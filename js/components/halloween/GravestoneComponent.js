@@ -4,10 +4,25 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render gravestone in the Halloween event
  */
 export class GravestoneComponent extends DrawComponent {
+  /** @type{Array<object>} */
+  gravestones = [
+    {x: 160, y: 0, dm: 0, lean: -0.08},
+    {x: 230, y: 0, dm: 0, lean:  0.05},
+    {x: 290, y: 0, dm: 0, lean: -0.04},
+    {x: 460, y: 0, dm: 0, lean:  0.07},
+    {x: 530, y: 0, dm: 0, lean: -0.06},
+  ];
+
   static COMPONENT_NAME = "GravestoneComponent";
 
   getName() {
     return GravestoneComponent.COMPONENT_NAME;
+  }
+
+  initialise() {
+    this.gravestones.forEach(g => {
+      g.y = this.scene.groundY + (this.H * g.dm);
+    });
   }
 
   isEnabled() {
@@ -16,16 +31,10 @@ export class GravestoneComponent extends DrawComponent {
 
   draw() {
     const {ctx, H} = this;
-    const gy = H * 0.62;
 
-    const GRAVESTONES = [
-      {x: 160, lean: -0.08}, {x: 230, lean: 0.05},
-      {x: 290, lean: -0.04}, {x: 460, lean: 0.07},
-      {x: 530, lean: -0.06},
-    ];
-    GRAVESTONES.forEach(g => {
+    this.gravestones.forEach(g => {
       ctx.save();
-      ctx.translate(g.x, gy);
+      ctx.translate(g.x, g.y);
       ctx.rotate(g.lean);
       // stone
       ctx.fillStyle = '#4a4a5a';
