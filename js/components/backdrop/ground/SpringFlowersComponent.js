@@ -9,6 +9,7 @@ export class SpringFlowersComponent extends DrawComponent {
     {x: 380, c: '#ffffaa'}, {x: 420, c: '#ff88bb'}, {x: 475, c: '#ddffaa'},
     {x: 160, c: '#ffaaee'}, {x: 540, c: '#ffcc44'},
   ];
+  flowersYDeltaM = 0.04;
 
   static COMPONENT_NAME = 'SpringFlowersComponent';
 
@@ -22,14 +23,14 @@ export class SpringFlowersComponent extends DrawComponent {
 
   draw() {
     const {ctx, H} = this;
-    const {frame, specialEvent, weather} = this.scene;
+    const {frame, specialEvent, weather, groundY} = this.scene;
     const wilting = specialEvent === 'eclipse';
     const windy = weather === 'wind' || weather === 'storm';
     const windAmt = windy ? Math.sin(frame * 0.06) * 8 : 0;
+    const y = groundY + (H * this.flowersYDeltaM);
 
+        ctx.save();
     this.flowers.forEach(f => {
-      ctx.save();
-
       const stemLen = 8;
       const droop = wilting ? Math.PI * 0.55 : 0;
       const sway = windAmt + Math.sin(frame * 0.04 + f.x * 0.07) * (wilting ? 1 : 2);
@@ -37,17 +38,17 @@ export class SpringFlowersComponent extends DrawComponent {
 
       // tip position
       const tipX = f.x + Math.sin(droop) * stemLen + sway;
-      const tipY = H * 0.66 - Math.cos(droop) * stemLen;
+      const tipY = y - Math.cos(droop) * stemLen;
 
       // stem
       ctx.strokeStyle = '#4a8a20';
       ctx.lineWidth = 1.2;
       ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(f.x, H * 0.66);
+      ctx.moveTo(f.x, y);
       ctx.quadraticCurveTo(
           f.x + Math.sin(droop) * stemLen * 0.5 + sway * 0.5,
-          H * 0.66 - stemLen * 0.5,
+          y - stemLen * 0.5,
           tipX, tipY
       );
       ctx.stroke();

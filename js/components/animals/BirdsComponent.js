@@ -243,7 +243,7 @@ export class BirdsComponent extends DrawComponent {
     }
     this.windStartledBirds.push({
       x: tr.x,
-      y: this.H * 0.62 - tr.h * 0.5,
+      y: tr.y * 0.5,
       vx: (2 + rnd(3)) * (prob(0.5) ? 1 : -1),
       vy: -(3 + rnd(2)),
       flapT: 0,

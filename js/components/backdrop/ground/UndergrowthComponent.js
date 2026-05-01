@@ -3,35 +3,48 @@ import {DrawComponent} from "@/core/DrawComponent";
 /**
  * render undergrowth
  */
-export class UndergrowthComponent extends DrawComponent {
+class UndergrowthComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  bushes = [
+    {x: 130, r: 28, dark: true}, {x: 175, r: 20, dark: false},
+    {x: 510, r: 25, dark: false}, {x: 545, r: 18, dark: true},
+    {x: 240, r: 16, dark: true}, {x: 420, r: 14, dark: false},
+    {x: 80, r: 18, dark: false}, {x: 620, r: 22, dark: true},
+  ];
+  /** @type{Array<Object>} */
+  rocks = [
+    {x: 195, y: 0, dm: 0.04}, {x: 290, y: 0, dm: 0.05},
+    {x: 400, y: 0, dm: 0.04}, {x: 490, y: 0, dm: 0.055},
+    {x: 660, y: 0, dm: 0.04},
+  ];
+
   static COMPONENT_NAME = "UndergrowthComponent";
 
   getName() {
     return UndergrowthComponent.COMPONENT_NAME;
   }
 
+  initialise() {
+    this.rocks.forEach(r => {
+      r.y = this.scene.groundY + (this.H * r.dm);
+    })
+  }
+
   draw() {
-    const {ctx, H} = this;
-    const {fox, season, weather, frame} = this.scene;
+    const {ctx} = this;
+    const {fox, season, weather, frame, groundY: y} = this.scene;
     const p = this.scene.pal();
 
-    const bushDefs = [
-      {x: 130, r: 28, dark: true}, {x: 175, r: 20, dark: false},
-      {x: 510, r: 25, dark: false}, {x: 545, r: 18, dark: true},
-      {x: 240, r: 16, dark: true}, {x: 420, r: 14, dark: false},
-      {x: 80, r: 18, dark: false}, {x: 620, r: 22, dark: true},
-    ];
-
-    bushDefs.forEach(b => {
+    this.bushes.forEach(b => {
       const li = b.dark ? p.fL - 5 : p.fL + 3;
-      const bg = ctx.createRadialGradient(b.x, H * 0.62 - b.r * 0.4, b.r * 0.1, b.x, H * 0.62, b.r);
+      const bg = ctx.createRadialGradient(b.x, y - b.r * 0.4, b.r * 0.1, b.x, y, b.r);
       bg.addColorStop(0, `hsl(${p.fH},${p.fSat}%,${li + 12}%)`);
       bg.addColorStop(1, `hsl(${p.fH},${p.fSat - 5}%,${li}%)`);
       ctx.fillStyle = bg;
       ctx.beginPath();
-      ctx.arc(b.x, H * 0.62, b.r, Math.PI, 0);
-      ctx.arc(b.x + b.r * 0.7, H * 0.62 - b.r * 0.3, b.r * 0.6, Math.PI, 0);
-      ctx.arc(b.x - b.r * 0.6, H * 0.62 - b.r * 0.2, b.r * 0.55, Math.PI, 0);
+      ctx.arc(b.x, y, b.r, Math.PI, 0);
+      ctx.arc(b.x + b.r * 0.7, y - b.r * 0.3, b.r * 0.6, Math.PI, 0);
+      ctx.arc(b.x - b.r * 0.6, y - b.r * 0.2, b.r * 0.55, Math.PI, 0);
       ctx.fill();
     });
 
@@ -45,10 +58,10 @@ export class UndergrowthComponent extends DrawComponent {
       for (let leaf = -3; leaf <= 3; leaf++) {
         const la = leaf * 0.22;
         ctx.beginPath();
-        ctx.moveTo(fx, H * 0.62);
+        ctx.moveTo(fx, y);
         ctx.quadraticCurveTo(
-            fx + sw + Math.sin(la) * 18, H * 0.62 - 20 + la * 5,
-            fx + Math.cos(la) * 28 + sw, H * 0.62 - 16 + leaf * 4
+            fx + sw + Math.sin(la) * 18, y - 20 + la * 5,
+            fx + Math.cos(la) * 28 + sw, y - 16 + leaf * 4
         );
         ctx.stroke();
       }
@@ -56,10 +69,7 @@ export class UndergrowthComponent extends DrawComponent {
     }
 
     // small rocks / roots
-    [
-      {x: 195, y: H * 0.63}, {x: 290, y: H * 0.64},
-      {x: 400, y: H * 0.63}, {x: 490, y: H * 0.64}, {x: 660, y: H * 0.63},
-    ].forEach(r => {
+    this.rocks.forEach(r => {
       ctx.fillStyle = season === 'winter' ? '#c0d0dc' : '#3a3228';
       ctx.beginPath();
       ctx.ellipse(r.x, r.y, 12, 7, 0.2, 0, Math.PI * 2);
@@ -73,3 +83,5 @@ export class UndergrowthComponent extends DrawComponent {
     });
   }
 }
+
+export default UndergrowthComponent

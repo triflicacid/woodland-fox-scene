@@ -55,7 +55,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
   tick() {
     let allDone = true;
     this.seasonLeaves.forEach(l => {
-      if (l.y < this.H * 0.62) {
+      if (l.y < this.scene.groundY) {
         allDone = false;
         l.x += l.vx;
         l.y += l.vy;

@@ -4,10 +4,22 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render scarecrows during Halloween
  */
 export class ScarecrowComponent extends DrawComponent {
+  /** @type{Array<Object>} */
+  scarecrows = [
+    {x: 210, y: 0, dm: 0},
+    {x: 490, y: 0, dm: 0},
+  ];
+
   static COMPONENT_NAME = "ScarecrowComponent";
 
   getName() {
     return ScarecrowComponent.COMPONENT_NAME;
+  }
+
+  initialise() {
+    this.scarecrows.forEach(s => {
+      s.y = this.scene.groundY + (this.H * s.dm);
+    });
   }
 
   isEnabled() {
@@ -18,12 +30,10 @@ export class ScarecrowComponent extends DrawComponent {
     const {ctx, H} = this;
     const {frame} = this.scene;
 
-    const SCARECROWS = [{x: 200}, {x: 490}];
-    SCARECROWS.forEach((sc, i) => {
+    this.scarecrows.forEach(({x, y}, i) => {
       const sway = Math.sin(frame * 0.02 + i) * 0.06;
-      const y = H * 0.62;
       ctx.save();
-      ctx.translate(sc.x, y);
+      ctx.translate(x, y);
       ctx.rotate(sway);
       // post
       ctx.strokeStyle = '#5a3a10';

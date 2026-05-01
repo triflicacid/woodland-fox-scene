@@ -18,7 +18,7 @@ export class FallenLeavesComponent extends DrawComponent {
     const {W, H} = this;
     this.leaves = Array.from({length: 80}, () => ({
       x: rnd(W),
-      y: H * 0.62 + rnd(H * 0.25),
+      y: this.scene.groundY + rnd(H * 0.25),
       size: 3 + rnd(4),
       rot: rnd(Math.PI * 2),
       hueOff: rndf(10),

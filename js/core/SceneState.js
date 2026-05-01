@@ -37,16 +37,19 @@ export class SceneState {
     this.frame = 0;
 
     // y-position of ground
-    this.groundY = this.H * 0.62;
+    this.groundY = this.H * 0.72;
 
     // fox position (default, not updated)
     this.fox = {
       x: 350,
-      y: 0.64 * this.H,
+      y: this.groundY + (0.02 * this.H),
     };
 
     // tree definitions
     this.trees = TREE_DEFS;
+    this.trees.forEach(t => {
+      t.y = this.groundY;
+    });
 
     this.clearInvalidStates();
   }

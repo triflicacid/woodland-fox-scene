@@ -46,7 +46,7 @@ export class HedgehogComponent extends DrawComponent {
   }
 
   initialise() {
-    this.y = this.H * 0.62;
+    this.y = this.scene.groundY;
     this.sniffX = this.scene.fox.x + 100;
 
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {

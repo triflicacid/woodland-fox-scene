@@ -8,6 +8,7 @@ import {Component} from '@/core/Component.js';
 export const TREE_DEFS = [
   {
     x: 25,
+    y: 0,
     h: 140,
     r: 32,
     sway: 0.016,
@@ -21,6 +22,7 @@ export const TREE_DEFS = [
   },
   {
     x: 50,
+    y: 0,
     h: 220,
     r: 50,
     sway: 0.012,
@@ -34,6 +36,7 @@ export const TREE_DEFS = [
   },
   {
     x: 100,
+    y: 0,
     h: 270,
     r: 58,
     sway: 0.008,
@@ -47,6 +50,7 @@ export const TREE_DEFS = [
   },
   {
     x: 148,
+    y: 0,
     h: 170,
     r: 40,
     sway: 0.009,
@@ -60,6 +64,7 @@ export const TREE_DEFS = [
   },
   {
     x: 200,
+    y: 0,
     h: 130,
     r: 28,
     sway: 0.014,
@@ -73,6 +78,7 @@ export const TREE_DEFS = [
   },
   {
     x: 260,
+    y: 0,
     h: 100,
     r: 22,
     sway: 0.018,
@@ -86,6 +92,7 @@ export const TREE_DEFS = [
   },
   {
     x: 440,
+    y: 0,
     h: 110,
     r: 24,
     sway: 0.016,
@@ -99,6 +106,7 @@ export const TREE_DEFS = [
   },
   {
     x: 480,
+    y: 0,
     h: 120,
     r: 26,
     sway: 0.011,
@@ -112,6 +120,7 @@ export const TREE_DEFS = [
   },
   {
     x: 555,
+    y: 0,
     h: 230,
     r: 52,
     sway: 0.011,
@@ -125,6 +134,7 @@ export const TREE_DEFS = [
   },
   {
     x: 598,
+    y: 0,
     h: 260,
     r: 54,
     sway: 0.010,
@@ -138,6 +148,7 @@ export const TREE_DEFS = [
   },
   {
     x: 625,
+    y: 0,
     h: 180,
     r: 44,
     sway: 0.013,
@@ -151,6 +162,7 @@ export const TREE_DEFS = [
   },
   {
     x: 678,
+    y: 0,
     h: 150,
     r: 34,
     sway: 0.014,
@@ -217,7 +229,7 @@ export function getTreeTopPos(tr, weather, season, specialEvent, frame, H) {
   const isPine = tr.type === 'pine';
   const topLayerLy = -(trunkH) - (tr.layers - 1) * (tr.h * (isPine ? 0.14 : 0.16));
   const tipOffsetX = sway * 0.7 * (1 + (tr.layers - 1) * 0.3) + Math.sin(sway * 0.008) * (-topLayerLy);
-  return {x: tr.x + tipOffsetX, y: H * 0.62 + topLayerLy - 8};
+  return {x: tr.x + tipOffsetX, y: tr.y + topLayerLy - 8};
 }
 
 /**
@@ -237,7 +249,7 @@ function drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H) {
   const trunkH = getTrunkHeight(tr, bare);
 
   ctx.save();
-  ctx.translate(tr.x, H * 0.62);
+  ctx.translate(tr.x, tr.y);
   ctx.rotate(sway * 0.008);
 
   // trunk
@@ -484,6 +496,9 @@ function _drawLeafyCanopy(ctx, tr, trunkH, pal, season, specialEvent, sway) {
  * Used to split the rendering into layers.
  */
 class TreesComponent extends Component {
+  /** @type{Array<Object>} */
+  trees;
+
   /**
    * @param {EventBus} eventBus
    * @param {SceneState} scene
@@ -494,17 +509,17 @@ class TreesComponent extends Component {
     super(eventBus, scene);
     this.ctx = ctx;
     this.background = background;
-    /** @type {Array<Object>} - tree data from config */
-    this.trees = TREE_DEFS;
+  }
+
+  initialise() {
+    this.trees = this.scene.trees.filter(t => t.background === this.background);
   }
 
   draw() {
-    const {ctx, trees, background} = this;
+    const {ctx, trees} = this;
     const {season, weather, specialEvent, frame, H} = this.scene;
     const pal = this.scene.pal();
-    trees
-        .filter(t => background === undefined || t.background === background)
-        .forEach(tr => drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H));
+    trees.forEach(tr => drawTree(ctx, tr, pal, season, weather, specialEvent, frame, H));
   }
 }
 

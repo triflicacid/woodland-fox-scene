@@ -4,7 +4,11 @@ import {DrawComponent} from "@/core/DrawComponent";
  * render snowmen during Christmas
  */
 export class SnowmenComponent extends DrawComponent {
-  snowmen = [{x: 180}, {x: 420}, {x: 560}];
+  snowmen = [
+      {x: 180, y: 0},
+      {x: 420, y: 0},
+      {x: 560, y: 0}
+  ];
 
   static COMPONENT_NAME = "SnowmenComponent";
 
@@ -12,16 +16,21 @@ export class SnowmenComponent extends DrawComponent {
     return SnowmenComponent.COMPONENT_NAME;
   }
 
+  initialise() {
+    this.snowmen.forEach(sm => {
+      sm.y = this.scene.groundY;
+    });
+  }
+
   isEnabled() {
     return this.scene.specialEvent === 'christmas';
   }
 
   draw() {
-    const {ctx, H} = this;
-    this.snowmen.forEach((sm, i) => {
-      const y = H * 0.62;
+    const {ctx} = this;
+    this.snowmen.forEach(({x, y}, i) => {
       ctx.save();
-      ctx.translate(sm.x, y);
+      ctx.translate(x, y);
       // shadow
       ctx.fillStyle = 'rgba(0,0,0,0.12)';
       ctx.beginPath();

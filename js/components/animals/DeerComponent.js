@@ -47,7 +47,7 @@ export class DeerComponent extends DrawComponent {
 
   initialise() {
     this.x = this.W + OFFSCREEN_BOUNDARY;
-    this.y = this.H * 0.62;
+    this.y = this.scene.groundY;
 
     this.eventBus.subscribe(Subscriptions.onCharacterAction(this.getName(), ({character, action}) => {
       if (character === 'bunny') {
