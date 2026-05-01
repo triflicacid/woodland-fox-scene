@@ -8,7 +8,9 @@ const statusEl = document.getElementById('status');
 const scene = new Scene(canvas, statusEl);
 globalThis.scene = scene;
 globalThis.probs = PROBABILITY;
-globalThis.printEvents = false;
+
+/** @type{boolean | string[]} global yes/.no, or filter to show */
+globalThis.printEvents = ["TODChange"];
 
 scene.initialise();
 scene.start();
