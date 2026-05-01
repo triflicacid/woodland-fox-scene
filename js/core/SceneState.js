@@ -37,7 +37,7 @@ export class SceneState {
     this.frame = 0;
 
     // y-position of ground
-    this.groundY = this.H * 0.72;
+    this.groundY = this.H * 0.62;
 
     // fox position (default, not updated)
     this.fox = {
