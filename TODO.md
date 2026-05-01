@@ -6,7 +6,6 @@ Things desired to work on/that should be done.
 
 - Werewolves event, maybe during a full moon?
 - Mouse animal
-- Twighlight/dawn time of day
 - Volcano eruption scene
 
 ## Tweaks
