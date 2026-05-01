@@ -12,17 +12,20 @@ export class TimeOfDayComponent extends Component {
     return TimeOfDayComponent.COMPONENT_NAME;
   }
 
+  isEnabled() {
+    return !this.isAtTarget();
+  }
+
   tick() {
     const prevBlend = this.scene.todBlend;
-    // blend todBlend toward target
     this.scene.todBlend = lerp(this.scene.todBlend, this.scene.todTarget, 0.025);
 
-    const justFinished = this.scene.todTarget === 1
-        ? prevBlend < 0.5 && this.scene.todBlend >= 0.5
-        : prevBlend > 0.5 && this.scene.todBlend <= 0.5;
-    if (justFinished) {
-      // send opposite of tod
-      this.eventBus.dispatch(Events.todChange("TimeOfDayComponent", this.scene.timeOfDay === 'day' ? 'night' : 'day', this.scene));
+    if (this.isAtTarget()) { // done! notify of change completion
+      this.eventBus.dispatch(Events.todChange(this.getName(), this.scene.prevTimeOfDay, this.scene));
     }
+  }
+
+  isAtTarget() {
+    return Math.abs(this.scene.todBlend - this.scene.todTarget) <= 0.01;
   }
 }

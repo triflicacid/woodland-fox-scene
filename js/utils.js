@@ -150,3 +150,55 @@ export function shadeHex(hex, amt) {
   const b = Math.min(255, Math.max(0, (n & 0xff) + amt));
   return `rgb(${r},${g},${b})`;
 }
+
+/**
+ * samples a value from a set of keyframe stops at position t (0-1)
+ * @param {number} t value [0, 1]
+ * @param {Array<Object>} stops array of {t, v} where v is a number
+ * @returns {number}
+ */
+export function sample(t, stops) {
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i], b = stops[i + 1];
+    if (t >= a.t && t <= b.t) {
+      const p = (t - a.t) / (b.t - a.t);
+      return a.v + (b.v - a.v) * p;
+    }
+  }
+  return stops[stops.length - 1].v;
+}
+
+/**
+ * samples an rgb colour from keyframe stops at position t.
+ * @param {number} t value [0, 1]
+ * @param {Array<Object>} stops array of {t, r, g, b}
+ * @returns {[number, number, number]} rgb
+ */
+export function sampleCol(t, stops) {
+  if (stops.length === 0) return undefined;
+  if (t <= stops[0].t) {
+    const l = stops[0];
+    return [l.r, l.g, l.b];
+  }
+
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i], b = stops[i + 1];
+    if (t >= a.t && t <= b.t) {
+      const p = (t - a.t) / (b.t - a.t);
+      return [
+        Math.round(a.r + (b.r - a.r) * p),
+        Math.round(a.g + (b.g - a.g) * p),
+        Math.round(a.b + (b.b - a.b) * p),
+      ];
+    }
+  }
+  const l = stops[stops.length - 1];
+  return [l.r, l.g, l.b];
+}
+
+/**
+ * builds an RGB colour string with the given components
+ */
+export function rgb([r, g, b], a = 1) {
+  return a < 1 ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`;
+}

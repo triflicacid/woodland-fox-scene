@@ -1,4 +1,4 @@
-import {PALETTES} from '@/config';
+import {PALETTES, TOD_BLEND} from '@/config';
 import {rnd} from '@/utils';
 import {TREE_DEFS} from "@/components/TreeComponent";
 
@@ -18,7 +18,8 @@ export class SceneState {
     /** @type{string} */
     this.season = localStorage.getItem('season') || 'summer';
     /** @type{string} */
-    this.timeOfDay = localStorage.getItem('tod') || 'night';
+    this.timeOfDay = this.prevTimeOfDay = localStorage.getItem('tod') || 'night';
+    this.todBlend = this.todTarget = TOD_BLEND[this.timeOfDay];
     /** @type{string} */
     this.weather = localStorage.getItem('weather') || 'clear';
     /** @type{string | null} */
@@ -32,11 +33,11 @@ export class SceneState {
     // prevent invalid combos on first load
     if (this.weather === 'snow' && this.season !== 'winter') this.weather = 'clear';
 
-    this.todBlend = this.timeOfDay === 'day' ? 1 : 0;
-    this.todTarget = this.timeOfDay === 'day' ? 1 : 0;
-
     // global animation frame counter
     this.frame = 0;
+
+    // y-position of ground
+    this.groundY = this.H * 0.62;
 
     // fox position (default, not updated)
     this.fox = {
@@ -48,21 +49,6 @@ export class SceneState {
     this.trees = TREE_DEFS;
 
     this.clearInvalidStates();
-  }
-
-  /**
-   * are we currently in night-time?
-   */
-  isNight() {
-    return this.todBlend < 0.8;
-  }
-
-  /**
-   * are we currently in day-time?
-   * (note the overlap with `isNight`; this is because we also count transitioning)
-   */
-  isDay() {
-    return this.todBlend > 0.2;
   }
 
   /**
@@ -90,8 +76,9 @@ export class SceneState {
    * @param {string} v - 'day' or 'night'
    */
   setTOD(v) {
+    this.prevTimeOfDay = this.timeOfDay;
     this.timeOfDay = v;
-    this.todTarget = v === 'day' ? 1 : 0;
+    this.todTarget = TOD_BLEND[v];
     this.savePref();
   }
 
@@ -117,7 +104,7 @@ export class SceneState {
       this.specialEvent = null;
     } else if (this.specialEvent === 'bonfire' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
-    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'day')) {
+    } else if (this.specialEvent === 'easter' && !(this.season === 'spring' && this.timeOfDay === 'night')) {
       this.specialEvent = null;
     } else if (this.specialEvent === 'eclipse' && this.timeOfDay !== 'day') {
       this.specialEvent = null;

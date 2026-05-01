@@ -17,7 +17,7 @@ export class CometComponent extends DrawComponent {
   }
 
   isEnabled() {
-    return this.scene.isNight() && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
+    return this.scene.timeOfDay === 'night' && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
   }
 
   tick() {

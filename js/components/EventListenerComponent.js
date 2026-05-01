@@ -13,8 +13,20 @@ export class EventListenerComponent extends Component {
 
   initialise(state) {
     this.eventBus.subscribe(new Subscription(Subscription.CAPTURE_ALL, this.getName(), event => {
-      globalThis.printEvents && console.log(`${event.eventName} (${event.originator})`, event.payload);
+      this.logEvent(event.eventName) && console.log(`${event.eventName} (${event.originator})`, event.payload);
     }, true));
+  }
+
+  /**
+   * are we logging the given event?
+   * @param {string} event
+   */
+  logEvent(event) {
+    const f = globalThis.printEvents;
+    if (typeof f === 'object') {
+      return f.indexOf(event) !== -1;
+    }
+    return !!f;
   }
 }
 

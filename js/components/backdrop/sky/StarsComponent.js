@@ -13,7 +13,7 @@ export class StarsComponent extends DrawComponent {
 
   isEnabled() {
     const {weather} = this.scene;
-    return this.scene.isNight() && (weather === 'clear' || weather === 'wind');
+    return this.scene.timeOfDay === 'night' && (weather === 'clear' || weather === 'wind');
   }
 
   draw() {
