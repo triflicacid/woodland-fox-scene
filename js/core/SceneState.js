@@ -36,6 +36,9 @@ export class SceneState {
     // global animation frame counter
     this.frame = 0;
 
+    // y-position of ground
+    this.groundY = this.H * 0.62;
+
     // fox position (default, not updated)
     this.fox = {
       x: 350,
