@@ -227,7 +227,7 @@ export function getTreeTopPos(tr, weather, season, specialEvent, frame, H) {
   const bare = isBare(tr, season, specialEvent);
   const trunkH = getTrunkHeight(tr, bare);
   const isPine = tr.type === 'pine';
-  const topLayerLy = -(trunkH) - (tr.layers - 1) * (tr.h * (isPine ? 0.14 : 0.16));
+  const topLayerLy = bare ? -trunkH : -(trunkH) - (tr.layers - 1) * (tr.h * (isPine ? 0.14 : 0.16));
   const tipOffsetX = sway * 0.7 * (1 + (tr.layers - 1) * 0.3) + Math.sin(sway * 0.008) * (-topLayerLy);
   return {x: tr.x + tipOffsetX, y: tr.y + topLayerLy - 8};
 }
