@@ -68,9 +68,17 @@ export class AuroraComponent extends DrawComponent {
   }
 
   /**
-   * toggle the status of the aurora
+   * is this component currently on?
    */
-  toggle() {
-    this.on = !this.on;
+  isOn() {
+    return this.on;
+  }
+
+  /**
+   * set whether the aurora is on or not
+   * @param {boolean} on
+   */
+  setOn(on) {
+    this.on = on;
   }
 }

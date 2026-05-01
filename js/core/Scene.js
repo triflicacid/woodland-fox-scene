@@ -165,6 +165,7 @@ export class Scene {
 
       new ScreenShakeRestoreComponent(this.eventBus, this.state, this.ctx, W, H, this.shake),
     ]);
+    /** @type{AuroraComponent} */
     this._aurora = requireNonNull(this._components.getComponent(AuroraComponent.COMPONENT_NAME));
   }
 
@@ -295,8 +296,8 @@ export class Scene {
           defaultValue: false,
         }).register({
           key: 'aurora',
-          save: () => this._aurora.on,
-          load: v => this._aurora.on = v,
+          save: () => this._aurora.isOn(),
+          load: v => this._aurora.setOn(v),
           defaultValue: false,
         });
 
@@ -342,14 +343,14 @@ export class Scene {
         document.getElementById('btn-' + s).classList.toggle('btn-active', state.timeOfDay === s));
     ['clear', 'rain', 'fog', 'snow', 'storm', 'wind'].forEach(s =>
         document.getElementById('btn-' + s).classList.toggle('btn-active', state.weather === s));
-    document.getElementById('btn-aurora').classList.toggle('btn-active', this._aurora.on);
+    document.getElementById('btn-aurora').classList.toggle('btn-active', this._aurora.isOn());
 
     const snowBtn = document.getElementById('btn-snow');
     snowBtn.disabled = state.season !== 'winter';
 
     const auroraBtn = document.getElementById('btn-aurora');
     auroraBtn.disabled = state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing;
-    auroraBtn.classList.toggle('btn-active', this._aurora.on);
+    auroraBtn.classList.toggle('btn-active', this._aurora.isOn());
 
     const halloweenBtn = document.getElementById('btn-halloween');
     halloweenBtn.disabled = !(state.season === 'autumn' && state.timeOfDay === 'night');
@@ -400,7 +401,7 @@ export class Scene {
     if (stargazeBtn) {
       const canStargaze = state.timeOfDay === 'night'
           && (state.weather === 'clear' || state.weather === 'wind')
-          && !this._aurora.on;
+          && !this._aurora.isOn();
       stargazeBtn.disabled = !canStargaze;
       stargazeBtn.classList.toggle('btn-active', state.stargazing);
     }
@@ -504,8 +505,8 @@ export class Scene {
     // aurora toggle
     document.getElementById('btn-aurora').addEventListener('click', () => {
       if (state.season !== 'winter' || state.timeOfDay !== 'night' || state.stargazing) return;
-      this._aurora.toggle();
-      if (this._aurora.on && state.stargazing) {
+      this._aurora.setOn(!this._aurora.isOn());
+      if (this._aurora.isOn() && state.stargazing) {
         state.stargazing = false; // supress stargazing
       }
       this.saveState.save('aurora', 'stargazing');
@@ -514,8 +515,8 @@ export class Scene {
     // stargazing toggle
     document.getElementById('btn-stargaze').addEventListener('click', () => {
       state.stargazing = !state.stargazing;
-      if (state.stargazing && this._aurora.on) {
-        this._aurora.on = false; // supress aurora
+      if (state.stargazing && this._aurora.isOn()) {
+        this._aurora.setOn(false); // supress aurora
       }
       this.saveState.save('aurora', 'stargazing');
       this._refreshUI();
@@ -641,7 +642,7 @@ export class Scene {
 
     const weatherSummary = [
       weatherEmoji[state.weather] ?? '',
-      this._aurora.on ? '✦' : '',
+      this._aurora.isOn() ? '✦' : '',
       state.stargazing ? '🔭' : '',
     ].filter(Boolean).join(' ');
 
