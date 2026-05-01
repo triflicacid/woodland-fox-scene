@@ -1,8 +1,28 @@
 import {DrawComponent} from "@/core/DrawComponent";
-import {clamp} from "@/utils";
+import {TOD_BLEND} from "@/config";
+import {clamp, rgb, sampleCol} from "@/utils";
+
+// sun colour: night=n/a, twilight=deep orange-red, dawn=warm orange, day=pale yellow
+// keyed by tod blend value: 0=night, 0.25=twilight, 0.75=dawn, 1=day
+const SUN_COLS = [
+  {t: 0.20, r: 200, g: 60,  b: 20},  // just before twilight - deep red
+  {t: 0.25, r: 220, g: 80,  b: 30},  // twilight - red-orange, barely visible
+  {t: 0.60, r: 255, g: 140, b: 40},  // mid transition - orange
+  {t: 0.75, r: 255, g: 160, b: 60},  // dawn - warm orange
+  {t: 0.90, r: 255, g: 220, b: 140}, // climbing toward day
+  {t: 1.00, r: 255, g: 250, b: 200}, // day - pale yellow
+];
+
+// arc position per state
+const ARC_POS = {dawn: 0.0, day: 0.5, twilight: 1.0, night: NaN};
+
+const DAWN_POSITION = 0.48;
+const TWILIGHT_POSITION = 0.5;
 
 /**
- * render the sun on clear days
+ * render the sun, moving position and colour based on tod.
+ * at twilight the sun moves off the bottom of the scene.
+ * at dawn it sits low on the horizon and climbs toward day position.
  */
 export class SunComponent extends DrawComponent {
   static COMPONENT_NAME = "SunComponent";
@@ -13,48 +33,50 @@ export class SunComponent extends DrawComponent {
 
   isEnabled() {
     const {weather, specialEvent, timeOfDay} = this.scene;
-    return (timeOfDay === 'day' || timeOfDay === 'dawn') &&
-        (specialEvent === 'eclipse' || weather !== 'fog' && weather !== 'rain' && weather !== 'storm');
+    if (timeOfDay === 'night') return false;
+    if (weather === 'fog' || weather === 'rain' || weather === 'storm') return specialEvent === 'eclipse';
+    return true;
   }
 
   draw() {
     const {ctx} = this;
-    const {season, weather, frame, todBlend: td, specialEvent, timeOfDay} = this.scene;
-    const sa = clamp((td - 0.2) / 0.6, 0, 1);
+    const {season, weather, frame, todBlend: td, specialEvent, timeOfDay, prevTimeOfDay} = this.scene;
 
-    const isDawn = timeOfDay === 'dawn';
-
-    // dawn: sun sits low on the horizon, warm orange
-    const sunX = isDawn ? 180 : (season === 'autumn' ? 120 : season === 'winter' ? 160 : 550);
-    const sunY = isDawn ? this.H * 0.52 : (season === 'winter' ? 90 : 65);
+    const {x: sunX, y: sunY, alpha} = this._sunPos(td, season, timeOfDay, prevTimeOfDay);
+    if (alpha <= 0.01) return;
 
     if (specialEvent === 'eclipse') {
-      this._drawEclipse(sunX, sunY, frame, sa);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      this._drawEclipse(sunX, sunY, frame, alpha);
+      ctx.restore();
       return;
     }
 
-    const sunCol = isDawn ? '#ff9944' : (season === 'autumn' ? '#f0a030' : season === 'winter' ? '#dde8f0' : '#fffad0');
-    const glowCol = isDawn ? '#ff660088' : '#ffe87888';
+    const sunCol = sampleCol(td, SUN_COLS);
+    const glowCol = timeOfDay === 'dawn' || timeOfDay === 'twilight'
+        ? rgb(sunCol, 0.5)
+        : 'rgba(255,232,120,0.5)';
 
     ctx.save();
-    ctx.globalAlpha = isDawn ? 0.9 : sa;
-    ctx.shadowBlur = isDawn ? 80 : 60;
+    ctx.globalAlpha = alpha;
+    ctx.shadowBlur = timeOfDay === 'dawn' ? 80 : 60;
     ctx.shadowColor = glowCol;
-    ctx.fillStyle = sunCol;
+    ctx.fillStyle = rgb(sunCol);
     ctx.beginPath();
     ctx.arc(sunX, sunY, 26, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.globalAlpha = (isDawn ? 0.9 : sa) * 0.15;
+    ctx.globalAlpha = alpha * 0.15;
     ctx.beginPath();
     ctx.arc(sunX, sunY, 44, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
 
-    if (season === 'summer' && weather === 'clear' && !isDawn) {
+    if (season === 'summer' && weather === 'clear' && timeOfDay === 'day') {
       ctx.strokeStyle = 'rgba(255,250,180,0.08)';
       ctx.lineWidth = 18;
-      ctx.globalAlpha = sa;
+      ctx.globalAlpha = alpha;
       for (let r = 0; r < 6; r++) {
         const a = r * Math.PI / 3 + frame * 0.003;
         ctx.beginPath();
@@ -68,19 +90,49 @@ export class SunComponent extends DrawComponent {
   }
 
   /**
+   * compute sun x, y and alpha from todBlend and season.
+   * sun arcs across the sky from left to right.
+   * @param {number} td time of day blend
+   * @param {string} season
+   * @param {string} timeOfDay
+   * @param {string} prevTimeOfDay
+   */
+  _sunPos(td, season, timeOfDay, prevTimeOfDay) {
+    const dayX = season === 'autumn' ? 120 : season === 'winter' ? 160 : 550;
+    const dayY = season === 'winter' ? 90 : 65;
+
+    const from = ARC_POS[prevTimeOfDay];
+    const to = ARC_POS[timeOfDay];
+
+    const tFrom = TOD_BLEND[prevTimeOfDay];
+    const tTo = TOD_BLEND[timeOfDay];
+    const progress = Math.abs(tTo - tFrom) < 0.001 ? 1.0 : clamp((td - tFrom) / (tTo - tFrom), 0, 1);
+
+    const arc = from + (to - from) * progress;
+
+    // x: -60 at arc=0 (dawn), dayX at arc=0.5 (day), W+80 at arc=1 (twilight)
+    const x = arc <= 0.5
+        ? -60 + (dayX + 60) * (arc / 0.5)
+        : dayX + (this.W + 80 - dayX) * ((arc - 0.5) / 0.5);
+
+    // y: parabola peaking at arc=0.5, low at both ends
+    const horizonY = this.H * 0.55;
+    const y = horizonY - Math.sin(arc * Math.PI) * (horizonY - dayY);
+
+    const alpha = timeOfDay === 'day' ? 1.0 : clamp(1 - Math.abs(arc - 0.5) * 2.5, 0, 1);
+    return {x, y, alpha};
+  }
+
+  /**
    * draw the eclipsed sun - black disc with animated organic corona.
    * @param {number} x
    * @param {number} y
    * @param {number} frame
-   * @param {number} sa - sun alpha based on tod blend
+   * @param {number} sa
    */
   _drawEclipse(x, y, frame, sa) {
     const {ctx} = this;
 
-    ctx.save();
-    ctx.globalAlpha = sa;
-
-    // outer diffuse glow
     const glow = ctx.createRadialGradient(x, y, 26, x, y, 26 * 4.5);
     glow.addColorStop(0, 'rgba(255,240,180,0.35)');
     glow.addColorStop(0.3, 'rgba(255,200,80,0.15)');
@@ -91,7 +143,6 @@ export class SunComponent extends DrawComponent {
     ctx.arc(x, y, 26 * 4.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // plasma arcs
     const r = 26;
     for (let i = 0; i < 8; i++) {
       const baseAngle = (i / 8) * Math.PI * 2;
@@ -116,13 +167,11 @@ export class SunComponent extends DrawComponent {
       ctx.beginPath();
       ctx.moveTo(x + Math.cos(angle - 0.3) * r, y + Math.sin(angle - 0.3) * r);
       ctx.bezierCurveTo(cx1, cy1, cx2, cy2, ex, ey);
-      ctx.bezierCurveTo(cx2, cy2, cx1, cy1,
-          x + Math.cos(angle + 0.3) * r, y + Math.sin(angle + 0.3) * r);
+      ctx.bezierCurveTo(cx2, cy2, cx1, cy1, x + Math.cos(angle + 0.3) * r, y + Math.sin(angle + 0.3) * r);
       ctx.stroke();
       ctx.restore();
     }
 
-    // thin streamer rays
     for (let i = 0; i < 16; i++) {
       const angle = (i / 16) * Math.PI * 2 + frame * 0.002;
       const rayLen = r * (2 + Math.sin(frame * 0.015 + i * 0.7) * 0.8);
@@ -136,20 +185,16 @@ export class SunComponent extends DrawComponent {
       ctx.restore();
     }
 
-    // black moon disc
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#050208';
     ctx.beginPath();
     ctx.arc(x, y, 24, 0, Math.PI * 2);
     ctx.fill();
 
-    // chromosphere rim
     ctx.strokeStyle = 'rgba(255,60,20,0.5)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(x, y, 24, 0, Math.PI * 2);
     ctx.stroke();
-
-    ctx.restore();
   }
 }

@@ -66,11 +66,11 @@ export class SkyBackdropComponents extends ComponentGroup {
 
     this._components = [
       new SkyBackdropComponent(eventBus, scene, ctx, W, H),
+      new HorizonGlowComponent(eventBus, scene, ctx, W, H),
       new StarsComponent(eventBus, scene, ctx, W, H),
       new CometComponent(eventBus, scene, ctx, W, H),
       new MoonComponent(eventBus, scene, ctx, W, H),
       new SunComponent(eventBus, scene, ctx, W, H),
-      new HorizonGlowComponent(eventBus, scene, ctx, W, H),
       new AuroraComponent(eventBus, scene, ctx, W, H),
       new CloudsComponent(eventBus, scene, ctx, W, H),
       new MistComponent(eventBus, scene, ctx, W, H), // TODO ??

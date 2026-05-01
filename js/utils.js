@@ -175,6 +175,12 @@ export function sample(t, stops) {
  * @returns {[number, number, number]} rgb
  */
 export function sampleCol(t, stops) {
+  if (stops.length === 0) return undefined;
+  if (t <= stops[0].t) {
+    const l = stops[0];
+    return [l.r, l.g, l.b];
+  }
+
   for (let i = 0; i < stops.length - 1; i++) {
     const a = stops[i], b = stops[i + 1];
     if (t >= a.t && t <= b.t) {
