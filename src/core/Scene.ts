@@ -230,18 +230,33 @@ export class Scene {
     }
 
     /**
-     * run one frame: clear, tick, draw all components, then request next frame.
+     * run one frame: clear, tick, draw all components.
      */
-    private loop() {
-        if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
-
+    public tick() {
         const {ctx, state} = this;
         ctx.clearRect(0, 0, CANVAS.WIDTH, CANVAS.HEIGHT);
         state.frame++;
 
         this.components.tick();
         this.components.draw();
+    }
 
+    /**
+     * ticks for the given number of frames at max speed.
+     */
+    public tickMany(frames: number) {
+        for (let i = 0; i < frames; i++) {
+            this.tick();
+        }
+    }
+
+    /**
+     * run one frame: clear, tick, draw all components, then request next frame.
+     */
+    private loop() {
+        if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
+
+        this.tick();
         this.handle = requestAnimationFrame(this.loop);
     }
 
