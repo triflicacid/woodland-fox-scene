@@ -1,11 +1,6 @@
 import {PALETTES, type Season, type SpecialEvent, type TimeOfDay, TOD_BLEND, type Weather} from '@/config';
 import {TREE_DEFS, type TreeDef} from '@/components/trees/treeDefinitions';
-
-// TODO migrate all but x/y into FoxComponent
-export interface FoxState {
-    x: number;
-    y: number;
-}
+import {Position} from "@/core/Position.ts";
 
 /**
  * manages the shared state of the scene.
@@ -27,19 +22,14 @@ export class SceneState {
     public frame = 0;
     public readonly groundY: number;
 
-    public fox: FoxState;
+    public fox: Position;
     public trees: TreeDef[];
 
     public constructor(W: number, H: number) {
         this.W = W;
         this.H = H;
         this.groundY = H * 0.62;
-
-        this.fox = {
-            x: 350,
-            y: this.groundY + 0.02 * H,
-        };
-
+        this.fox = new Position(350, this.groundY + 0.02 * H);
         this.trees = TREE_DEFS.map(t => ({...t, y: this.groundY}));
 
         this.clearInvalidStates();
