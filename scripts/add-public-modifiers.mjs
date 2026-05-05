@@ -8,10 +8,10 @@ const ACCESS_MODIFIER_RE = /^\s*(public|private|protected)\b/;
 const DECORATOR_RE = /^\s*@/;
 const COMMENT_OR_BLANK_RE = /^\s*(\/\/|\/\*|\*|$)/;
 
-const CLASS_RE = /\bclass\s+\w+/;
+const CLASS_RE = /^\s*(?:export\s+)?(?:default\s+)?(?:abstract\s+)?class\s+\w+\b/;
 
 const CLASS_MEMBER_START_RE =
-    /^(\s*)(?!(?:public|private|protected)\b)(?!(?:if|for|while|switch|catch|return|throw|const|let|var|type|interface|enum|export|import)\b)(?:(?:static|override|readonly|abstract|async|declare|accessor|get|set)\s+)*[#A-Za-z_$][\w$#]*\s*(?:[<(:!?=;]|\()/;
+    /^(\s*)(?!(?:public|private|protected)\b)(?!(?:if|for|while|switch|catch|return|throw|const|let|var|type|interface|enum|export|import)\b)(?:(?:static|override|readonly|abstract|async|declare|accessor|get|set)\s+)*(?:[#A-Za-z_$][\w$#]*\s*(?:<[^>{}]*>)?\s*\([^)]*\)\s*(?::\s*[^={;]+)?\s*(?:\{|;)|[#A-Za-z_$][\w$#]*\s*(?:[!:?=;]|:\s*[^=;]+(?:=|;)))/;
 
 const CONSTRUCTOR_RE =
     /^(\s*)(?!(?:public|private|protected)\b)constructor\s*\(/;

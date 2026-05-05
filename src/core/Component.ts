@@ -36,10 +36,10 @@ export abstract class Component {
     /**
      * draw this component.
      */
-    draw() {}
+    public draw() {}
 
     /**
      * process a tick update for this component.
      */
-    tick() {}
+    public tick() {}
 }
