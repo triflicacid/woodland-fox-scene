@@ -1,0 +1,81 @@
+import {DrawComponent} from '@/core/DrawComponent';
+import {prob, rnd} from '@/utils';
+import {drawMonster, type MonsterType, randomMonster, randomMonsterForm} from '@/components/eclipse/drawMonsters';
+import {PROBABILITY} from '@/config';
+
+interface Monster {
+    x: number;
+    y: number;
+    vx: number;
+    type: MonsterType;
+    form: number;
+    phase: number;
+    scale: number;
+}
+
+const OFFSCREEN_BOUNDARY = 30;
+
+/**
+ * foreground walking monsters during solar eclipse.
+ * drawn in front of trees, sorted by y for correct perspective.
+ */
+export class EclipseMonstersComponent extends DrawComponent {
+    public static COMPONENT_NAME = 'EclipseMonstersComponent';
+
+    private monsters: Monster[] = [];
+    private spawnCooldown = 0;
+
+    public override getName() {
+        return EclipseMonstersComponent.COMPONENT_NAME;
+    }
+
+    public override isEnabled() {
+        return this.scene.specialEvent === 'eclipse';
+    }
+
+    public override tick() {
+        const {W} = this;
+        this.spawnCooldown--;
+
+        if (this.spawnCooldown <= 0 && prob(PROBABILITY.ECLIPSE.MONSTER_SPAWN)) {
+            this.summon();
+            this.spawnCooldown = 100 + Math.floor(rnd(150));
+        }
+
+        this.monsters = this.monsters.filter(m => {
+            m.x += m.vx;
+            return m.x > -OFFSCREEN_BOUNDARY && m.x < W + OFFSCREEN_BOUNDARY;
+        });
+    }
+
+    public override draw() {
+        const {ctx} = this;
+        const {frame} = this.scene;
+
+        this.monsters
+            .sort((a, b) => a.y - b.y)
+            .forEach(m => {
+                ctx.save();
+                ctx.translate(m.x, m.y);
+                ctx.scale(m.scale * (m.vx < 0 ? -1 : 1), m.scale);
+                drawMonster(ctx, m.type, frame + m.phase, false, m.form);
+                ctx.restore();
+            });
+    }
+
+    /**
+     * summon a monster, optionally of a given type and form.
+     */
+    public summon(type: MonsterType = randomMonster(), form: number | undefined = undefined) {
+        const fromRight = prob(0.5);
+        this.monsters.push({
+            x: fromRight ? this.W + OFFSCREEN_BOUNDARY : -OFFSCREEN_BOUNDARY,
+            y: this.scene.groundY,
+            vx: fromRight ? -(0.6 + rnd(0.5)) : (0.6 + rnd(0.5)),
+            type,
+            form: form !== undefined ? form : randomMonsterForm(type),
+            phase: rnd(Math.PI * 2),
+            scale: 0.9 + rnd(0.4),
+        });
+    }
+}

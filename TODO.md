@@ -13,5 +13,5 @@ Things desired to work on/that should be done.
 ## Tech Debt
 
 - Aim: move most things out of `SceneState`.
-For instance, `bunny` and `fox` (but they'd still need a way to know of each other's state, for example in the `Visitor` sequence)
-- [Unsure] Migrate to TypeScript??
+  For instance, `bunny` and `fox` (but they'd still need a way to know of each other's state, for example in the
+  `Visitor` sequence)

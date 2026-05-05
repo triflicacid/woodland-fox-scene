@@ -1,12 +1,15 @@
 # Woodland Fox Scene
 
-A canvas-based animated scene of a fox resting in a woodland clearing. The scene is interactive: you can change the season, weather, time of day, trigger special events, and bring in visiting animals. The fox has idle animations and can be woken up, made to wander, or receive a visitor.
+A canvas-based animated scene of a fox resting in a woodland clearing. The scene is interactive: you can change the
+season, weather, time of day, trigger special events, and bring in visiting animals. The fox has idle animations and can
+be woken up, made to wander, or receive a visitor.
 
 Built with vanilla JS and [Vite](https://vitejs.dev/).
 
 This was made as a Birthday gift to my boyfriend, Theo.
 
-Read `TODO` to get an idea of future changes, and `Guide` for a quick run-down of the code and architecture, as well as governing principles.
+Read `TODO` to get an idea of future changes, and `Guide` for a quick run-down of the code and architecture, as well as
+governing principles.
 While developed as a gift, effort has been made to keep the code clean, readable, and maintainable.
 
 ---
@@ -64,7 +67,8 @@ These buttons are always visible above the tabs.
 
 Controls the environment.
 
-- **Season** - spring, summer, autumn, winter. Changes the colour palette, foliage, and ground cover. Some special events are locked to specific seasons.
+- **Season** - spring, summer, autumn, winter. Changes the colour palette, foliage, and ground cover. Some special
+  events are locked to specific seasons.
 - **Day / Night** - transitions the lighting between daytime and a dark night sky.
 - **Moon Phase** - eight phases from new moon to waning crescent. Only visible at night.
 
@@ -82,7 +86,8 @@ Controls the environment.
 ### Events
 
 Special events layer additional components over the scene.
-Events are locked to a specific season and/or time of day - the button will be disabled if the current conditions do not match.
+Events are locked to a specific season and/or time of day - the button will be disabled if the current conditions do not
+match.
 
 | Event         | Conditions    |
 |---------------|---------------|
@@ -103,7 +108,8 @@ Events are locked to a specific season and/or time of day - the button will be d
 
 **Easter** - decorated eggs are scattered across the ground in clusters while the Easter bunny presides over them.
 
-**Solar Eclipse** - the moon eclipses the sun, the solar corona visible. Monsters inspired from Terraria wander across the screen.
+**Solar Eclipse** - the moon eclipses the sun, the solar corona visible. Monsters inspired from Terraria wander across
+the screen.
 
 ### Animals
 
