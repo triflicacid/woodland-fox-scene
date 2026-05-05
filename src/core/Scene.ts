@@ -57,8 +57,7 @@ import {EclipseSilhouettesComponent} from '@/components/eclipse/EclipseSilhoutte
 import {BirthdayCakeComponent} from '@/components/birthday/BirthdayCakeComponent';
 import {CupcakesComponent} from '@/components/birthday/CupcakesComponent';
 import {SaveState} from '@/core/SaveState';
-import {FrameRateMonitor} from '@/frames/FrameRateMonitor.ts';
-import {FrameRateLimiter} from '@/frames/FrameRateLimiter.ts';
+import {FrameLoopController} from '@/frames/FrameLoopController.ts';
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -75,10 +74,7 @@ export class Scene {
     private readonly saveState: SaveState;
     private readonly eventBus: EventBus;
     private readonly components: ComponentGroup;
-    private readonly frameRateMonitor = new FrameRateMonitor(1_000);
-    private readonly frameRateLimiter = new FrameRateLimiter(60);
-    private handle: number | undefined = undefined;
-    private active = false;
+    private readonly frameLoop: FrameLoopController;
     private activeTab: Tab | null = null;
 
     // components held by reference for direct calls and save state
@@ -189,6 +185,8 @@ export class Scene {
         ]);
 
         this.aurora = requireNonNull(this.components.getComponent(AuroraComponent.COMPONENT_NAME)) as AuroraComponent;
+
+        this.frameLoop = new FrameLoopController(this.tick.bind(this), 60);
     }
 
     /**
@@ -202,8 +200,6 @@ export class Scene {
         this.refreshUI();
         this.components.initialise();
 
-        this.loop = this.loop.bind(this);
-
         this.eventBus.subscribe(Subscriptions.onStatusTextChange('Scene', ({text}) => {
             this.statusEl.textContent = text;
         }));
@@ -216,13 +212,7 @@ export class Scene {
      * start the rendering loop.
      */
     public start() {
-        if (this.active) {
-            throw new Error('scene is already active');
-        }
-        this.frameRateMonitor.reset();
-        this.frameRateLimiter.reset();
-        this.handle = requestAnimationFrame(this.loop);
-        this.active = true;
+        this.frameLoop.start();
     }
 
     /**
@@ -230,11 +220,7 @@ export class Scene {
      */
     public stop() {
         console.warn('stopping scene.');
-        this.active = false;
-        if (this.handle !== undefined) {
-            cancelAnimationFrame(this.handle);
-            this.handle = undefined;
-        }
+        this.frameLoop.stop();
     }
 
     /**
@@ -261,24 +247,10 @@ export class Scene {
     }
 
     /**
-     * run one frame: clear, tick, draw all components, then request next frame.
-     */
-    private loop(timestamp: DOMHighResTimeStamp) {
-        if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
-
-        // only run if under the frame limit
-        if (this.frameRateLimiter.shouldRunFrame(timestamp)) {
-            this.tick();
-            this.frameRateMonitor.recordFrame(+timestamp);
-        }
-        this.handle = requestAnimationFrame(this.loop);
-    }
-
-    /**
      * gets the calculated actual FPS this Scene is rendering at.
      */
     public getActualFps() {
-        return this.active ? this.frameRateMonitor.getFps() : 0;
+        return this.frameLoop.getActualFps();
     }
 
     /**
@@ -286,14 +258,14 @@ export class Scene {
      * ideally, this would be equal to `this::getActualFPS`.
      */
     public getTargetFps() {
-        return this.frameRateLimiter.getTargetFps();
+        return this.frameLoop.getTargetFps();
     }
 
     /**
      * lift any frame rate limits.
      */
     public unrestrictFrameRate() {
-        this.frameRateLimiter.setUnlimited();
+        this.frameLoop.setUnlimited();
     }
 
     /**
@@ -301,7 +273,7 @@ export class Scene {
      * pass in `undefined` for unlimited.
      */
     public setTargetFps(fps: number | undefined) {
-        this.frameRateLimiter.setTargetFps(fps);
+        this.frameLoop.setTargetFps(fps);
     }
 
     /**
