@@ -67,8 +67,10 @@ export class LightningComponent extends DrawComponent {
         }
 
         // advance all bolts, remove expired ones
-        this.bolts.forEach(b => b.t++);
-        this.bolts = this.bolts.filter(b => b.t < BOLT_LIFETIME);
+        if (this.bolts.length > 0) {
+            this.bolts.forEach(b => b.t++);
+            this.bolts = this.bolts.filter(b => b.t < BOLT_LIFETIME);
+        }
     }
 
     /**
