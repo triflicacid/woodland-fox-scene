@@ -36,18 +36,18 @@ const PLANETS: Planet[] = [
  * saturn has rings. all dim slightly under a bright moon.
  */
 export class PlanetsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'PlanetsComponent';
+    public static COMPONENT_NAME = 'PlanetsComponent';
 
-    override getName() {
+    public override getName() {
         return PlanetsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather} = this.scene;
         return this.scene.stargazing && this.scene.timeOfDay === 'night' && (weather === 'clear' || weather === 'wind');
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {moonPhase} = this.scene;
         const nightAlpha = clamp(1 - this.scene.todBlend * 2.5, 0, 1);

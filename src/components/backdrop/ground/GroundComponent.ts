@@ -4,13 +4,13 @@ import {DrawComponent} from '@/core/DrawComponent';
  * render the ground
  */
 export class GroundComponent extends DrawComponent {
-    static COMPONENT_NAME = 'GroundComponent';
+    public static COMPONENT_NAME = 'GroundComponent';
 
-    override getName() {
+    public override getName() {
         return GroundComponent.COMPONENT_NAME;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {season, groundY} = this.scene;
         const p = this.scene.pal();

@@ -25,17 +25,17 @@ interface FlyingBird {
  * render flying birds, perched birds, and startled birds.
  */
 export class BirdsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BirdsComponent';
+    public static COMPONENT_NAME = 'BirdsComponent';
 
     private perchedBirds: PerchedBird[] = [];
     private windStartledBirds: Required<FlyingBird>[] = [];
     private flyingBirds: FlyingBird[] = [];
 
-    override getName() {
+    public override getName() {
         return BirdsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.perchedBirds = [
             {treeIdx: 0, offset: -0.7, side: 1},
             {treeIdx: 2, offset: -0.6, side: -1},
@@ -88,7 +88,7 @@ export class BirdsComponent extends DrawComponent {
         }
     }
 
-    override tick() {
+    public override tick() {
         this.windStartledBirds = this.windStartledBirds.filter(b => {
             b.x += b.vx;
             b.y += b.vy;
@@ -112,7 +112,7 @@ export class BirdsComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather, season, frame, specialEvent, trees} = this.scene;
 
@@ -224,7 +224,7 @@ export class BirdsComponent extends DrawComponent {
     /**
      * add a startled bird to the screen at the given position
      */
-    spawnStartledBird(x: number, y: number) {
+    public spawnStartledBird(x: number, y: number) {
         if (!this.areBirdsActive()) return;
         this.windStartledBirds.push({
             x,

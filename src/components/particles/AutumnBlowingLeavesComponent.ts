@@ -17,15 +17,15 @@ interface CanopyLeaf {
  * render autumn canopy leaves dislodged by wind
  */
 export class AutumnBlowingLeavesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'AutumnBlowingLeavesComponent';
+    public static COMPONENT_NAME = 'AutumnBlowingLeavesComponent';
 
     private leaves: CanopyLeaf[] = [];
 
-    override getName() {
+    public override getName() {
         return AutumnBlowingLeavesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.leaves = Array.from({length: 30}, () => this.makeCanopyLeaf());
     }
 
@@ -46,7 +46,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
         };
     }
 
-    override tick() {
+    public override tick() {
         const {weather, season} = this.scene;
         const shouldFall = season === 'autumn' && (weather === 'wind' || weather === 'storm');
 
@@ -71,7 +71,7 @@ export class AutumnBlowingLeavesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.leaves.filter(l => l.active).forEach(l => {
             ctx.save();

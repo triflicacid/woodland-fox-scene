@@ -5,13 +5,13 @@ import {DrawComponent} from '@/core/DrawComponent';
  * withers and droops during solar eclipse.
  */
 export class GrassComponent extends DrawComponent {
-    static COMPONENT_NAME = 'GrassComponent';
+    public static COMPONENT_NAME = 'GrassComponent';
 
-    override getName() {
+    public override getName() {
         return GrassComponent.COMPONENT_NAME;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {season, weather, frame, specialEvent, groundY: y} = this.scene;
 

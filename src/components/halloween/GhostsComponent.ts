@@ -13,15 +13,15 @@ interface Ghost {
  * render floating ghosts during Halloween
  */
 export class GhostsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'GhostsComponent';
+    public static COMPONENT_NAME = 'GhostsComponent';
 
     private ghosts: Ghost[] = [];
 
-    override getName() {
+    public override getName() {
         return GhostsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), update => {
             if (update.previous === 'storm' || update.updated === 'storm') { // regenerate only if would change
                 this.generateGhosts();
@@ -30,7 +30,7 @@ export class GhostsComponent extends DrawComponent {
         this.generateGhosts();
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'halloween';
     }
 
@@ -45,7 +45,7 @@ export class GhostsComponent extends DrawComponent {
         }));
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.ghosts.forEach(g => {
             g.x += g.vx;
@@ -54,7 +54,7 @@ export class GhostsComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame} = this.scene;
         this.ghosts.forEach(g => {

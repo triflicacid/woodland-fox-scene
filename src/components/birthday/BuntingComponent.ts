@@ -7,7 +7,7 @@ import {BALLOON_PALETTE} from '@/components/birthday/BalloonsComponent';
  * flags sway in wind.
  */
 export class BuntingComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BuntingComponent';
+    public static COMPONENT_NAME = 'BuntingComponent';
 
     private leftTreeIndex = 2;
     private rightTreeIndex = 9;
@@ -17,16 +17,16 @@ export class BuntingComponent extends DrawComponent {
         h: 18,
     };
 
-    override getName() {
+    public override getName() {
         return BuntingComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {specialEvent} = this.scene;
         return specialEvent === 'birthday' || specialEvent === 'easter';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather, season, frame, trees, specialEvent} = this.scene;
 

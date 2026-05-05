@@ -93,7 +93,7 @@ export class Scene {
     private readonly laptop: LaptopComponent;
     private readonly chicks: ChicksComponent;
 
-    constructor(canvas: HTMLCanvasElement, statusEl: HTMLElement) {
+    public constructor(canvas: HTMLCanvasElement, statusEl: HTMLElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
         this.statusEl = statusEl;
@@ -188,7 +188,7 @@ export class Scene {
     /**
      * initialise the scene.
      */
-    initialise() {
+    public initialise() {
         Events.registerAll(this.eventBus);
         this.initSaveState();
         this.initTabs();
@@ -209,7 +209,7 @@ export class Scene {
     /**
      * start the rendering loop.
      */
-    start() {
+    public start() {
         if (this.active) {
             throw new Error('scene is already active');
         }
@@ -220,7 +220,7 @@ export class Scene {
     /**
      * stop the rendering loop.
      */
-    stop() {
+    public stop() {
         console.warn('stopping scene.');
         this.active = false;
         if (this.handle !== undefined) {

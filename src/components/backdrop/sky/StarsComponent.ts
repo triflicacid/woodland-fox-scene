@@ -7,7 +7,7 @@ type StarPos = [number, number];
  * render the stars in the night sky on a clear day
  */
 export class StarsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'StarsComponent';
+    public static COMPONENT_NAME = 'StarsComponent';
 
     private stars: StarPos[] = [
         [80, 30], [140, 18], [220, 40], [310, 12], [410, 28], [480, 15],
@@ -15,16 +15,16 @@ export class StarsComponent extends DrawComponent {
         [620, 20], [670, 45], [700, 10],
     ];
 
-    override getName() {
+    public override getName() {
         return StarsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather} = this.scene;
         return this.scene.timeOfDay === 'night' && (weather === 'clear' || weather === 'wind');
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {todBlend: td, frame} = this.scene;
 

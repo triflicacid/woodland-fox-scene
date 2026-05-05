@@ -22,7 +22,7 @@ const OFFSCREEN_BOUNDARY = 45;
  * render a deer which sometimes walks into frame
  */
 export class DeerComponent extends DrawComponent {
-    static COMPONENT_NAME = 'DeerComponent';
+    public static COMPONENT_NAME = 'DeerComponent';
 
     private x = 0;
     private y = 0;
@@ -32,16 +32,16 @@ export class DeerComponent extends DrawComponent {
     private bunnyActive = false;
     private readonly notes: MusicalNotesComponent;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
         super(eventBus, scene, ctx, W, H);
         this.notes = notes;
     }
 
-    override getName() {
+    public override getName() {
         return DeerComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.x = this.W + OFFSCREEN_BOUNDARY;
         this.y = this.scene.groundY;
 
@@ -53,7 +53,7 @@ export class DeerComponent extends DrawComponent {
         }));
     }
 
-    override tick() {
+    public override tick() {
         let cfg = this.phase !== 'off' ? DEER_PHASES[this.phase] : null;
         let t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
         this.cooldown--;
@@ -126,7 +126,7 @@ export class DeerComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         if (this.phase === 'off') return;
         const {ctx} = this;
         const {frame} = this.scene;
@@ -282,7 +282,7 @@ export class DeerComponent extends DrawComponent {
     /**
      * set us to be off, cancels any actions or transitions.
      */
-    forceOff() {
+    public forceOff() {
         this.phase = 'off';
         this.phaseT = 0;
     }
@@ -290,7 +290,7 @@ export class DeerComponent extends DrawComponent {
     /**
      * summon the deer immediately (called by the summon button).
      */
-    summon() {
+    public summon() {
         if (this.phase !== 'off') return;
         this.phase = 'entering';
         this.phaseT = 0;

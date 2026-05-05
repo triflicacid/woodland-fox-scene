@@ -5,17 +5,17 @@ import {DrawComponent} from '@/core/DrawComponent';
  * TODO is needed?
  */
 export class MistComponent extends DrawComponent {
-    static COMPONENT_NAME = 'MistComponent';
+    public static COMPONENT_NAME = 'MistComponent';
 
-    override getName() {
+    public override getName() {
         return MistComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather !== 'fog';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {season} = this.scene;
         const mA = season === 'winter' ? 0.22 : season === 'autumn' ? 0.10 : 0.05;

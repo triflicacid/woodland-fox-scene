@@ -15,15 +15,15 @@ interface SmokeParticle {
  * render campfire/cabin smoke particles
  */
 export class SmokeComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SmokeComponent';
+    public static COMPONENT_NAME = 'SmokeComponent';
 
     private particles: SmokeParticle[] = [];
 
-    override getName() {
+    public override getName() {
         return SmokeComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.particles = Array.from({length: 12}, (_, i) => this.makeSmoke(i));
     }
 
@@ -43,12 +43,12 @@ export class SmokeComponent extends DrawComponent {
         };
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather, season} = this.scene;
         return !(weather === 'rain' || weather === 'storm' || season === 'summer');
     }
 
-    override tick() {
+    public override tick() {
         const {weather} = this.scene;
         this.particles.forEach((p, i) => {
             p.x += p.vx + (weather === 'wind' ? 1.5 : 0);
@@ -60,7 +60,7 @@ export class SmokeComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {season} = this.scene;
         this.particles.forEach(p => {

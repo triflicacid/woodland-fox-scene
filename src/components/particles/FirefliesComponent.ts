@@ -18,15 +18,15 @@ const MAX_FIREFLIES = 64;
  * render fireflies during nighttime
  */
 export class FirefliesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FirefliesComponent';
+    public static COMPONENT_NAME = 'FirefliesComponent';
 
     private fireflies: Firefly[] = [];
 
-    override getName() {
+    public override getName() {
         return FirefliesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.generateFireflies();
 
         this.eventBus.subscribe(Subscriptions.onSceneStateMutation(this.getName(), () => {
@@ -51,11 +51,11 @@ export class FirefliesComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.todBlend < 0.5 && !(this.scene.weather === 'rain' || this.scene.weather === 'storm');
     }
 
-    override tick() {
+    public override tick() {
         const {W, H} = this;
         const minX = 60, maxX = W - 60;
         const minY = H * 0.3, maxY = H * 0.65;
@@ -90,7 +90,7 @@ export class FirefliesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {todBlend, frame} = this.scene;
         const alpha = clamp(1 - todBlend * 2, 0, 1);

@@ -20,20 +20,20 @@ const OFFSCREEN_BOUNDARY = 30;
  * drawn in front of trees, sorted by y for correct perspective.
  */
 export class EclipseMonstersComponent extends DrawComponent {
-    static COMPONENT_NAME = 'EclipseMonstersComponent';
+    public static COMPONENT_NAME = 'EclipseMonstersComponent';
 
     private monsters: Monster[] = [];
     private spawnCooldown = 0;
 
-    override getName() {
+    public override getName() {
         return EclipseMonstersComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'eclipse';
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.spawnCooldown--;
 
@@ -48,7 +48,7 @@ export class EclipseMonstersComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame} = this.scene;
 
@@ -66,7 +66,7 @@ export class EclipseMonstersComponent extends DrawComponent {
     /**
      * summon a monster, optionally of a given type and form.
      */
-    summon(type: MonsterType = randomMonster(), form: number | undefined = undefined) {
+    public summon(type: MonsterType = randomMonster(), form: number | undefined = undefined) {
         const fromRight = prob(0.5);
         this.monsters.push({
             x: fromRight ? this.W + OFFSCREEN_BOUNDARY : -OFFSCREEN_BOUNDARY,

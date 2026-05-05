@@ -9,7 +9,7 @@ interface Flower {
  * render springtime flowers with wind sway and eclipse wilting.
  */
 export class SpringFlowersComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SpringFlowersComponent';
+    public static COMPONENT_NAME = 'SpringFlowersComponent';
 
     private flowersYDeltaMul = 0.04;
 
@@ -19,15 +19,15 @@ export class SpringFlowersComponent extends DrawComponent {
         {x: 160, c: '#ffaaee'}, {x: 540, c: '#ffcc44'},
     ];
 
-    override getName() {
+    public override getName() {
         return SpringFlowersComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.season === 'spring';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, H} = this;
         const {frame, specialEvent, weather, groundY} = this.scene;
         const wilting = specialEvent === 'eclipse';

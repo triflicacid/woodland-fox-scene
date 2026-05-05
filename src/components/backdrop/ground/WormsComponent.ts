@@ -18,21 +18,21 @@ interface Worm {
  * wiggling worms near puddles when raining
  */
 export class WormsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'WormsComponent';
+    public static COMPONENT_NAME = 'WormsComponent';
 
     private readonly puddles: PuddlesComponent;
     private worms: Worm[] = [];
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, puddles: PuddlesComponent) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, puddles: PuddlesComponent) {
         super(eventBus, scene, ctx, W, H);
         this.puddles = puddles;
     }
 
-    override getName() {
+    public override getName() {
         return WormsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.eventBus.subscribe(Subscriptions.onSeasonChange(this.getName(), () => this.generateWorms()));
         this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), () => this.generateWorms()));
         this.generateWorms();
@@ -62,12 +62,12 @@ export class WormsComponent extends DrawComponent {
         }).filter((w): w is Worm => w !== null);
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         // only appear once puddles are established
         return this.puddles.getPuddleLevel() > 0.3;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame} = this.scene;
         const puddleLevel = this.puddles.getPuddleLevel();

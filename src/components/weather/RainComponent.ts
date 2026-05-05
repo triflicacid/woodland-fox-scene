@@ -12,15 +12,15 @@ interface Raindrop {
  * render rain droplets
  */
 export class RainComponent extends DrawComponent {
-    static COMPONENT_NAME = 'RainComponent';
+    public static COMPONENT_NAME = 'RainComponent';
 
     private raindrops: Raindrop[] = [];
 
-    override getName() {
+    public override getName() {
         return RainComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.raindrops = Array.from({length: 250}, () => this.makeRain());
     }
 
@@ -33,7 +33,7 @@ export class RainComponent extends DrawComponent {
         };
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather} = this.scene;
         return weather === 'rain' || weather === 'storm';
     }
@@ -45,7 +45,7 @@ export class RainComponent extends DrawComponent {
         return this.scene.weather === 'storm' ? 0.15 : 0.06;
     }
 
-    override tick() {
+    public override tick() {
         const {W, H} = this;
         const angle = this.getRainAngle();
         this.raindrops.forEach(r => {
@@ -55,7 +55,7 @@ export class RainComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather} = this.scene;
         const angle = this.getRainAngle();

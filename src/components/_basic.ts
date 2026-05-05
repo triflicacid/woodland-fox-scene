@@ -4,9 +4,9 @@ import {Component} from '@/core/Component';
  * ...
  */
 export class BasicComponent extends Component {
-    static COMPONENT_NAME = 'BasicComponent';
+    public static COMPONENT_NAME = 'BasicComponent';
 
-    override getName() {
+    public override getName() {
         return BasicComponent.COMPONENT_NAME;
     }
 }

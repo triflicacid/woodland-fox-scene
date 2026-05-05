@@ -6,17 +6,17 @@ import {Events} from '@/core/Events';
  * a non-drawing component which advances time of day blend only.
  */
 export class TimeOfDayComponent extends Component {
-    static COMPONENT_NAME = 'TimeOfDayComponent';
+    public static COMPONENT_NAME = 'TimeOfDayComponent';
 
-    override getName() {
+    public override getName() {
         return TimeOfDayComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return !this.isAtTarget();
     }
 
-    override tick() {
+    public override tick() {
         this.scene.todBlend = lerp(this.scene.todBlend, this.scene.todTarget, 0.025);
 
         if (this.isAtTarget()) { // done! notify of change completion

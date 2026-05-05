@@ -14,15 +14,15 @@ interface FogParticle {
  * render fog overlay when foggy
  */
 export class FogOverlayComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FogOverlayComponent';
+    public static COMPONENT_NAME = 'FogOverlayComponent';
 
     private fogParticles: FogParticle[] = [];
 
-    override getName() {
+    public override getName() {
         return FogOverlayComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         const {W, H} = this;
         this.fogParticles = Array.from({length: 14}, (_, i) => ({
             x: (i / 14) * W * 1.3 - W * 0.15,
@@ -34,11 +34,11 @@ export class FogOverlayComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather === 'fog';
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.fogParticles.forEach(fp => {
             fp.x += fp.speed;
@@ -46,7 +46,7 @@ export class FogOverlayComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         this.fogParticles.forEach(fp => {
             ctx.save();

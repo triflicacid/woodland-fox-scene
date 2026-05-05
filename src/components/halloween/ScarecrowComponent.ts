@@ -10,28 +10,28 @@ interface Scarecrow {
  * render scarecrows during Halloween
  */
 export class ScarecrowComponent extends DrawComponent {
-    static COMPONENT_NAME = 'ScarecrowComponent';
+    public static COMPONENT_NAME = 'ScarecrowComponent';
 
     private scarecrows: Scarecrow[] = [
         {x: 210, y: 0, dm: 0},
         {x: 490, y: 0, dm: 0},
     ];
 
-    override getName() {
+    public override getName() {
         return ScarecrowComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.scarecrows.forEach(s => {
             s.y = this.scene.groundY + (this.H * s.dm);
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'halloween';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame} = this.scene;
 

@@ -18,16 +18,16 @@ interface TransitionLeaf {
  * render leaf particles during season transitions
  */
 export class SeasonTransitionLeavesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SeasonTransitionLeavesComponent';
+    public static COMPONENT_NAME = 'SeasonTransitionLeavesComponent';
 
     private seasonLeafActive = false;
     private leaves: TransitionLeaf[] = [];
 
-    override getName() {
+    public override getName() {
         return SeasonTransitionLeavesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.leaves = Array.from({length: 40}, () => ({
             x: rnd(this.W),
             y: -rnd(200),
@@ -56,11 +56,11 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.seasonLeafActive;
     }
 
-    override tick() {
+    public override tick() {
         let allDone = true;
         this.leaves.forEach(l => {
             if (l.y < this.scene.groundY) {
@@ -74,7 +74,7 @@ export class SeasonTransitionLeavesComponent extends DrawComponent {
         if (allDone) this.seasonLeafActive = false;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {season} = this.scene;
         this.leaves.forEach(l => {

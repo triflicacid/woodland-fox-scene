@@ -18,19 +18,19 @@ const BOLT_SPREAD_SUPER = 70;
  * render lightning bolts during a storm
  */
 export class LightningComponent extends DrawComponent {
-    static COMPONENT_NAME = 'LightningComponent';
+    public static COMPONENT_NAME = 'LightningComponent';
 
     private bolts: Bolt[] = [];
 
-    override getName() {
+    public override getName() {
         return LightningComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather === 'storm';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         if (!this.bolts.length) return;
 
@@ -64,7 +64,7 @@ export class LightningComponent extends DrawComponent {
         });
     }
 
-    override tick() {
+    public override tick() {
         // chance to spawn a new bolt each frame
         if (prob(PROBABILITY.LIGHTNING)) {
             const superBolt = prob(PROBABILITY.SUPER_BOLT);

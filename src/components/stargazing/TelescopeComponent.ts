@@ -11,7 +11,7 @@ const TRIPOD_FEET: TripodFoot[] = [[-22, 28], [0, 32], [22, 28]];
  * when stargazing at night, slowly pans around as if someone is observing.
  */
 export class TelescopeComponent extends DrawComponent {
-    static COMPONENT_NAME = 'TelescopeComponent';
+    public static COMPONENT_NAME = 'TelescopeComponent';
 
     // position relative to fox
     private readonly offsetX = 110;
@@ -25,15 +25,15 @@ export class TelescopeComponent extends DrawComponent {
     private panXTarget = 0;
     private panXTimer = 0;
 
-    override getName() {
+    public override getName() {
         return TelescopeComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.stargazing;
     }
 
-    override tick() {
+    public override tick() {
         const {todBlend, weather} = this.scene;
         const observing = todBlend < 0.35 && (weather === 'clear' || weather === 'wind');
 
@@ -55,7 +55,7 @@ export class TelescopeComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox} = this.scene;
         const x = fox.x + this.offsetX;

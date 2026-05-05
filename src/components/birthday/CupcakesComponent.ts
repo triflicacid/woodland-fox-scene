@@ -29,7 +29,7 @@ const SPRINKLE_COLS = DOLLOP_COLS;
  * and optionally a candle.
  */
 export class CupcakesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'CupcakesComponent';
+    public static COMPONENT_NAME = 'CupcakesComponent';
 
     private cupcakes: Cupcake[] = [
         {
@@ -94,11 +94,11 @@ export class CupcakesComponent extends DrawComponent {
         },
     ];
 
-    override getName() {
+    public override getName() {
         return CupcakesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.cupcakes.forEach(def => {
             def.sprinkles = Array.from({length: 9}, (_, i) => ({
                 dx: (Math.random() - 0.5) * 18,
@@ -109,11 +109,11 @@ export class CupcakesComponent extends DrawComponent {
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'birthday';
     }
 
-    override draw() {
+    public override draw() {
         const {frame} = this.scene;
         this.cupcakes.forEach((cup, i) => {
             const y = this.H * cup.yFrac;

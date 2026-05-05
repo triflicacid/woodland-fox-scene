@@ -4,22 +4,22 @@ import {DrawComponent} from '@/core/DrawComponent';
  * a simple folding stool, part of the stargazing setup.
  */
 export class FoldingStoolComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FoldingStoolComponent';
+    public static COMPONENT_NAME = 'FoldingStoolComponent';
 
     // offset from fox
     private readonly offsetX = 160;
     private readonly offsetY = 72;
     private readonly scale = 1.2;
 
-    override getName() {
+    public override getName() {
         return FoldingStoolComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.stargazing;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox} = this.scene;
         const x = fox.x + this.offsetX;

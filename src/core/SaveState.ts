@@ -16,7 +16,7 @@ export class SaveState {
      * registers a value provider.
      * `save()` should return the value to persist, `load()` receives the restored value.
      */
-    register<T>(provider: Provider<T>): this {
+    public register<T>(provider: Provider<T>): this {
         if (this.providers.has(provider.key)) {
             console.error(`provider ${provider.key} is already registered`);
         } else {
@@ -29,7 +29,7 @@ export class SaveState {
      * saves the given providers to localStorage.
      * if no values are given, saves ALL providers.
      */
-    save(...providerKeys: string[]) {
+    public save(...providerKeys: string[]) {
         this.getProviders(providerKeys).forEach(({key, save}) => {
             const val = save();
             if (val !== undefined) localStorage.setItem(key, JSON.stringify(val));
@@ -40,7 +40,7 @@ export class SaveState {
      * restores the given providers from localStorage.
      * if no values are given, restores ALL providers.
      */
-    load(...providerKeys: string[]) {
+    public load(...providerKeys: string[]) {
         this.getProviders(providerKeys).forEach(({key, load, defaultValue}) => {
             try {
                 const raw = localStorage.getItem(key);

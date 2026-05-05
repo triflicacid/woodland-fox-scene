@@ -13,20 +13,20 @@ const ARC_POS: Partial<Record<TimeOfDay, number>> = {dawn: 0.0, day: 0.5, twilig
  * at dawn it sits low on the horizon and climbs toward day position.
  */
 export class SunComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SunComponent';
+    public static COMPONENT_NAME = 'SunComponent';
 
-    override getName() {
+    public override getName() {
         return SunComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather, specialEvent, timeOfDay} = this.scene;
         if (timeOfDay === 'night') return false;
         if (weather === 'fog' || weather === 'rain' || weather === 'storm') return specialEvent === 'eclipse';
         return true;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {season, weather, frame, todBlend: td, specialEvent, timeOfDay, prevTimeOfDay} = this.scene;
 

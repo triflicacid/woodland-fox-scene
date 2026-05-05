@@ -22,7 +22,7 @@ const OFFSCREEN_BOUNDARY = 25;
  * render a hedgehog which occasionally walks into frame
  */
 export class HedgehogComponent extends DrawComponent {
-    static COMPONENT_NAME = 'HedgehogComponent';
+    public static COMPONENT_NAME = 'HedgehogComponent';
 
     private phase: HogPhase = 'off';
     private phaseT = 0;
@@ -32,16 +32,16 @@ export class HedgehogComponent extends DrawComponent {
     private bunnyActive = false;
     private readonly notes: MusicalNotesComponent;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
         super(eventBus, scene, ctx, W, H);
         this.notes = notes;
     }
 
-    override getName() {
+    public override getName() {
         return HedgehogComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.y = this.scene.groundY;
         this.sniffX = this.scene.fox.x + 100;
 
@@ -53,7 +53,7 @@ export class HedgehogComponent extends DrawComponent {
         }));
     }
 
-    override tick() {
+    public override tick() {
         const {fox, season, frame} = this.scene;
         let cfg = this.phase !== 'off' ? HOG_PHASES[this.phase] : null;
         let t = cfg ? clamp(this.phaseT / cfg.f, 0, 1) : NaN;
@@ -120,7 +120,7 @@ export class HedgehogComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         if (this.phase === 'off') return;
         const {ctx} = this;
         const isBirthday = this.scene.specialEvent === 'birthday';
@@ -233,7 +233,7 @@ export class HedgehogComponent extends DrawComponent {
     /**
      * set us to be off, cancels any actions or transitions.
      */
-    forceOff() {
+    public forceOff() {
         this.phase = 'off';
         this.phaseT = 0;
     }
@@ -241,7 +241,7 @@ export class HedgehogComponent extends DrawComponent {
     /**
      * summon the hedgehog immediately (called by the summon button)
      */
-    summon() {
+    public summon() {
         if (this.phase !== 'off') return;
         this.phase = 'in';
         this.phaseT = 0;

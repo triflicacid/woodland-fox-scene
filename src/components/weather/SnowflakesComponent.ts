@@ -13,11 +13,11 @@ interface Snowflake {
  * render snowflakes during snowfall
  */
 export class SnowflakesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SnowflakesComponent';
+    public static COMPONENT_NAME = 'SnowflakesComponent';
 
     private snowflakes: Snowflake[] = [];
 
-    override getName() {
+    public override getName() {
         return SnowflakesComponent.COMPONENT_NAME;
     }
 
@@ -31,15 +31,15 @@ export class SnowflakesComponent extends DrawComponent {
         };
     }
 
-    override initialise() {
+    public override initialise() {
         this.snowflakes = Array.from({length: 120}, () => this.makeSnowflake());
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather === 'snow';
     }
 
-    override tick() {
+    public override tick() {
         const {H} = this;
         const {frame} = this.scene;
         this.snowflakes.forEach(sf => {
@@ -49,7 +49,7 @@ export class SnowflakesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.snowflakes.forEach(sf => {
             ctx.save();

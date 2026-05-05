@@ -7,21 +7,21 @@ import {clamp} from '@/utils';
  * still dims slightly under a full moon.
  */
 export class NorthStarComponent extends DrawComponent {
-    static COMPONENT_NAME = 'NorthStarComponent';
+    public static COMPONENT_NAME = 'NorthStarComponent';
 
     private readonly x = 360;
     private readonly y = 28;
 
-    override getName() {
+    public override getName() {
         return NorthStarComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {stargazing, weather, season} = this.scene;
         return (weather === 'clear' || weather === 'wind') && (stargazing || season === 'winter');
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, x, y} = this;
         const {moonPhase, frame} = this.scene;
 

@@ -21,31 +21,31 @@ type TongueDef = [number, number, number, string, number];
  * draws an animated bonfire with flickering flames and heavy smoke
  */
 export class BonfireComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BonfireComponent';
+    public static COMPONENT_NAME = 'BonfireComponent';
 
     private x = 0;
     private y = 0;
     private smoke: SmokeParticle[] = [];
 
-    override getName() {
+    public override getName() {
         return BonfireComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.x = 220;
         this.y = this.scene.groundY + (this.H * 0.1);
         this.smoke = Array.from({length: 20}, (_, i) => this.makeSmoke(i * 3));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'bonfire';
     }
 
-    getPosition() {
+    public getPosition() {
         return new Position(this.x, this.y);
     }
 
-    override tick() {
+    public override tick() {
         this.smoke.forEach(s => {
             s.x += s.vx + (this.scene.weather === 'wind' ? 2.5 : 0);
             s.y += s.vy;
@@ -56,7 +56,7 @@ export class BonfireComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {x, y} = this;
         const {frame, weather} = this.scene;
         const flameScale = this.getFlameScale();

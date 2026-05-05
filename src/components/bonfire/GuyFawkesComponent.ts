@@ -21,7 +21,7 @@ const PHASE_DURATIONS: Record<Exclude<GuyFawkesPhase, 'off'>, number> = {
  * only active during bonfire night special event.
  */
 export class GuyFawkesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'GuyFawkesComponent';
+    public static COMPONENT_NAME = 'GuyFawkesComponent';
 
     private readonly bonfire: Position;
     private phase: GuyFawkesPhase = 'off';
@@ -30,16 +30,16 @@ export class GuyFawkesComponent extends DrawComponent {
     private fromRight = false;
     private cooldown = 0;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, bonfire: Position) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, bonfire: Position) {
         super(eventBus, scene, ctx, W, H);
         this.bonfire = bonfire;
     }
 
-    override getName() {
+    public override getName() {
         return GuyFawkesComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         // check phase to allow for manual overriding
         return this.scene.specialEvent === 'bonfire' || this.phase !== 'off';
     }
@@ -47,12 +47,12 @@ export class GuyFawkesComponent extends DrawComponent {
     /**
      * summon guy fawkes immediately.
      */
-    summon() {
+    public summon() {
         if (this.phase !== 'off') return;
         this.start();
     }
 
-    override tick() {
+    public override tick() {
         this.cooldown--;
 
         if (this.phase === 'off') {
@@ -106,7 +106,7 @@ export class GuyFawkesComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         if (this.phase === 'off') return;
         const facingRight = !this.fromRight; // faces toward bonfire
         this.drawGuyFawkes(this.x, this.scene.groundY, facingRight, this.scene.frame);

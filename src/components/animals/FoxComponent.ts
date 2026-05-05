@@ -38,7 +38,7 @@ interface QuiverLine {
  * also handles the bunny interaction sequence.
  */
 export class FoxComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FoxComponent';
+    public static COMPONENT_NAME = 'FoxComponent';
 
     private x = 0;
     private y = 0;
@@ -64,16 +64,16 @@ export class FoxComponent extends DrawComponent {
     private asleep = true;
     private readonly notes: MusicalNotesComponent;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent) {
         super(eventBus, scene, ctx, W, H);
         this.notes = notes;
     }
 
-    override getName() {
+    public override getName() {
         return FoxComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.x = this.scene.fox.x;
         this.y = this.scene.fox.y;
         this.wanderX = this.x;
@@ -126,7 +126,7 @@ export class FoxComponent extends DrawComponent {
         }
     }
 
-    override tick() {
+    public override tick() {
         // birthday management
         if (this.scene.specialEvent === 'birthday') {
             if (this.phase === 'idle') {
@@ -300,7 +300,7 @@ export class FoxComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {season, weather, frame, todBlend} = this.scene;
 
@@ -801,7 +801,7 @@ export class FoxComponent extends DrawComponent {
     /**
      * set us to be idle, cancels any actions or transitions.
      */
-    forceIdle() {
+    public forceIdle() {
         this.phase = 'idle';
         this.phaseT = 0;
         this.poseBlend = 0;
@@ -810,7 +810,7 @@ export class FoxComponent extends DrawComponent {
         this.tailWag = 0;
     }
 
-    triggerGrumble() {
+    public triggerGrumble() {
         this.grumbleT = 0;
         this.earTwitchT = 0;
         this.earTwitchSide = 1;
@@ -818,7 +818,7 @@ export class FoxComponent extends DrawComponent {
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'grumble'));
     }
 
-    triggerYawn() {
+    public triggerYawn() {
         if (this.phase === 'idle' && this.poseBlend < 0.05) {
             this.yawnT = 0;
             this.eventBus.dispatch(Events.statusText(this.getName(), 'The fox has a big yawn...'));
@@ -826,20 +826,20 @@ export class FoxComponent extends DrawComponent {
         }
     }
 
-    triggerEarTwitch() {
+    public triggerEarTwitch() {
         this.earTwitchT = 0;
         this.earTwitchSide = Math.random() < 0.5 ? 1 : -1;
         this.eventBus.dispatch(Events.statusText(this.getName(), "The fox's ear twitches..."));
         this.eventBus.dispatch(Events.characterAction(this.getName(), 'fox', 'ear_twitch'));
     }
 
-    startWakeUpScene() {
+    public startWakeUpScene() {
         if (this.phase !== 'idle') return;
         this.phase = 'standup';
         this.phaseT = 0;
     }
 
-    startWanderScene() {
+    public startWanderScene() {
         if (this.phase !== 'idle') return;
         this.phase = 'wander_out';
         this.phaseT = 0;
@@ -847,23 +847,23 @@ export class FoxComponent extends DrawComponent {
         this.wanderX = this.x;
     }
 
-    containsPoint(cx: number, cy: number) {
+    public containsPoint(cx: number, cy: number) {
         return Math.abs(cx - this.getX()) < 46 && Math.abs(cy - (this.getY() - 15)) < 32;
     }
 
-    click() {
+    public click() {
         if (this.phase === 'idle' && this.poseBlend < 0.05) this.triggerGrumble();
     }
 
-    isIdle() {
+    public isIdle() {
         return this.phase === 'idle';
     }
 
-    isAsleep() {
+    public isAsleep() {
         return this.asleep;
     }
 
-    setAsleep(asleep: boolean) {
+    public setAsleep(asleep: boolean) {
         this.asleep = asleep;
     }
 

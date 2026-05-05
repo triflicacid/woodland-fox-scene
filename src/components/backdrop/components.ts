@@ -22,7 +22,7 @@ import type {SceneState} from '@/core/SceneState';
  * group together backdrop ground components
  */
 export class GroundBackdropComponents extends ComponentGroup {
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
         super(eventBus, scene);
         const puddles = new PuddlesComponent(eventBus, scene, ctx, W, H);
         this.add(new GroundComponent(eventBus, scene, ctx, W, H));
@@ -40,7 +40,7 @@ export class GroundBackdropComponents extends ComponentGroup {
  * group together backdrop sky components
  */
 export class SkyBackdropComponents extends ComponentGroup {
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
         super(eventBus, scene);
         this.add(new SkyBackdropComponent(eventBus, scene, ctx, W, H));
         this.add(new StarsComponent(eventBus, scene, ctx, W, H));

@@ -11,7 +11,7 @@ interface Gravestone {
  * render gravestones in the Halloween event
  */
 export class GravestoneComponent extends DrawComponent {
-    static COMPONENT_NAME = 'GravestoneComponent';
+    public static COMPONENT_NAME = 'GravestoneComponent';
 
     private gravestones: Gravestone[] = [
         {x: 160, y: 0, dm: 0, lean: -0.08},
@@ -21,21 +21,21 @@ export class GravestoneComponent extends DrawComponent {
         {x: 530, y: 0, dm: 0, lean: -0.06},
     ];
 
-    override getName() {
+    public override getName() {
         return GravestoneComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.gravestones.forEach(g => {
             g.y = this.scene.groundY + (this.H * g.dm);
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'halloween';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.gravestones.forEach(g => {
             ctx.save();

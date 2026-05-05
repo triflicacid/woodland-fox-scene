@@ -41,21 +41,21 @@ const WANDER_ZONES: [number, number][] = [
  * wanderers roam left/right; peckers bob their heads at the ground.
  */
 export class ChicksComponent extends DrawComponent {
-    static COMPONENT_NAME = 'ChicksComponent';
+    public static COMPONENT_NAME = 'ChicksComponent';
 
     private wanderers: Wanderer[] = [];
     private peckers: Pecker[] = [];
     private forced = false;
 
-    override getName() {
+    public override getName() {
         return ChicksComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.forced || this.scene.specialEvent === 'easter';
     }
 
-    override initialise() {
+    public override initialise() {
         this.wanderers = WANDER_ZONES.map(([x, yF]) => ({
             x,
             yF,
@@ -74,7 +74,7 @@ export class ChicksComponent extends DrawComponent {
         }));
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
 
         this.wanderers.forEach(c => {
@@ -92,7 +92,7 @@ export class ChicksComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {H} = this;
         const {frame} = this.scene;
 
@@ -234,11 +234,11 @@ export class ChicksComponent extends DrawComponent {
         ctx.restore(); // chick
     }
 
-    isForced() {
+    public isForced() {
         return this.forced;
     }
 
-    setForced(forced: boolean) {
+    public setForced(forced: boolean) {
         this.forced = forced;
     }
 }

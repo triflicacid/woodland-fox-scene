@@ -7,18 +7,18 @@ import {CONSTELLATIONS} from "@/components/stargazing/constellationDefinitions.t
  * brightness varies inversely with moon phase - brightest at new moon.
  */
 export class ConstellationsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'ConstellationsComponent';
+    public static COMPONENT_NAME = 'ConstellationsComponent';
 
-    override getName() {
+    public override getName() {
         return ConstellationsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {weather} = this.scene;
         return this.scene.stargazing && this.scene.timeOfDay === 'night' && (weather === 'clear' || weather === 'wind');
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {moonPhase, frame} = this.scene;
 

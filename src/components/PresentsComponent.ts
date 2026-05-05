@@ -36,24 +36,24 @@ const BIRTHDAY_PRESENTS: PresentDef[] = [
  * draws wrapped presents on the ground for christmas or birthday events.
  */
 export class PresentsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'PresentsComponent';
+    public static COMPONENT_NAME = 'PresentsComponent';
 
-    override getName() {
+    public override getName() {
         return PresentsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         [...CHRISTMAS_PRESENTS, ...BIRTHDAY_PRESENTS].forEach(p => {
             p.y = this.scene.groundY + this.H * p.dm;
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {specialEvent} = this.scene;
         return specialEvent === 'christmas' || specialEvent === 'birthday';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame, specialEvent} = this.scene;
         const presents = specialEvent === 'birthday' ? BIRTHDAY_PRESENTS : CHRISTMAS_PRESENTS;

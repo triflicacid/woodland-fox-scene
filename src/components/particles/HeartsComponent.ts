@@ -12,19 +12,19 @@ interface Heart {
  * render heart particles when hare and fox are kissing
  */
 export class HeartsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'HeartsComponent';
+    public static COMPONENT_NAME = 'HeartsComponent';
 
     private hearts: Heart[] = [];
 
-    override getName() {
+    public override getName() {
         return HeartsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.hearts.length > 0;
     }
 
-    override tick() {
+    public override tick() {
         this.hearts = this.hearts.filter(h => {
             h.y += h.vy;
             h.life++;
@@ -32,7 +32,7 @@ export class HeartsComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         this.hearts.forEach(h => {
             const a = clamp(1 - h.life / 60, 0, 1);
             this.drawHeart(h.x, h.y, 6 + h.life * 0.09, a);
@@ -60,14 +60,14 @@ export class HeartsComponent extends DrawComponent {
     /**
      * spawn a new heart at the given position.
      */
-    spawn(x: number, y: number) {
+    public spawn(x: number, y: number) {
         this.hearts.push({x, y, vy: -0.55 - rnd(0.45), life: 0});
     }
 
     /**
      * remove all heart particles.
      */
-    clear() {
+    public clear() {
         this.hearts.length = 0;
     }
 }

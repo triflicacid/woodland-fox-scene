@@ -9,7 +9,7 @@ type MothronPhase = 'off' | 'flying' | 'diving' | 'returning';
  * mothron - giant moth boss that flies across the sky and occasionally dives at the fox.
  */
 export class MothronComponent extends DrawComponent {
-    static COMPONENT_NAME = 'MothronComponent';
+    public static COMPONENT_NAME = 'MothronComponent';
 
     private x = -200;
     private y = 80;
@@ -20,15 +20,15 @@ export class MothronComponent extends DrawComponent {
     private diveTargetY = 0;
     private cooldown = 0;
 
-    override getName() {
+    public override getName() {
         return MothronComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'eclipse';
     }
 
-    override tick() {
+    public override tick() {
         const {W, fox} = this.scene;
         this.cooldown--;
         this.flapT += 0.12;
@@ -77,7 +77,7 @@ export class MothronComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         if (this.phase === 'off') return;
         const {ctx} = this;
         const flap = Math.sin(this.flapT) * 0.8;
@@ -172,7 +172,7 @@ export class MothronComponent extends DrawComponent {
     /**
      * force-summon mothron immediately.
      */
-    summon() {
+    public summon() {
         if (this.phase !== 'off') return;
         this.phase = 'flying';
         this.x = prob(0.5) ? -80 : this.W + 80;

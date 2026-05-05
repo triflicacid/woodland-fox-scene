@@ -11,13 +11,13 @@ import {
 } from "@/components/backdrop/sky/skyDefinitions.ts";
 
 export class SkyBackdropComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SkyBackdropComponent';
+    public static COMPONENT_NAME = 'SkyBackdropComponent';
 
-    override getName() {
+    public override getName() {
         return SkyBackdropComponent.COMPONENT_NAME;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {weather, todBlend: td, specialEvent, groundY} = this.scene;
 

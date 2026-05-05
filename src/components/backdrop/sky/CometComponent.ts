@@ -16,19 +16,19 @@ interface Comet {
  * only visible at night in clear or wind weather.
  */
 export class CometComponent extends DrawComponent {
-    static COMPONENT_NAME = 'CometComponent';
+    public static COMPONENT_NAME = 'CometComponent';
 
     private comets: Comet[] = [];
 
-    override getName() {
+    public override getName() {
         return CometComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.timeOfDay === 'night' && (this.scene.weather === 'clear' || this.scene.weather === 'wind');
     }
 
-    override tick() {
+    public override tick() {
         if (prob(PROBABILITY.COMET)) {
             this.comets.push(this.spawn());
         }
@@ -42,7 +42,7 @@ export class CometComponent extends DrawComponent {
             .filter(c => !(c.x < -200 || c.x > this.W + 200 || c.y < -200 || c.y > this.H * 0.6));
     }
 
-    override draw() {
+    public override draw() {
         if (this.comets.length === 0) return;
 
         const {ctx} = this;

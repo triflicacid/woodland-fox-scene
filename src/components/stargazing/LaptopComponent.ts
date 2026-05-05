@@ -18,7 +18,7 @@ const MODES: ScreenMode[] = ['off', 'starfield', 'app', 'telescope_feed', 'orrer
  * a laptop on the camping table showing astronomy content
  */
 export class LaptopComponent extends DrawComponent {
-    static COMPONENT_NAME = 'LaptopComponent';
+    public static COMPONENT_NAME = 'LaptopComponent';
 
     // offset from fox
     private readonly offsetX = 210;
@@ -31,15 +31,15 @@ export class LaptopComponent extends DrawComponent {
     // current mode of the laptop (drives screen content)
     private mode: ScreenMode = 'spectrograph';
 
-    override getName() {
+    public override getName() {
         return LaptopComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.stargazing;
     }
 
-    cycleScreenMode() {
+    public cycleScreenMode() {
         const idx = MODES.indexOf(this.mode);
         this.mode = MODES[(idx + 1) % MODES.length]!;
     }
@@ -48,7 +48,7 @@ export class LaptopComponent extends DrawComponent {
      * return true if the given canvas coordinates are inside the laptop body.
      * tests against the combined bounding trapezoid of keyboard + screen.
      */
-    containsPoint(cx: number, cy: number) {
+    public containsPoint(cx: number, cy: number) {
         const {fox} = this.scene;
         // translate into laptop-local space
         const lx = (cx - (fox.x + this.offsetX)) / this.scale;
@@ -81,7 +81,7 @@ export class LaptopComponent extends DrawComponent {
         return lx >= -lw + taper && lx <= lw - taper;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox} = this.scene;
         const x = fox.x + this.offsetX;

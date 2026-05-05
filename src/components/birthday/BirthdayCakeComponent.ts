@@ -17,7 +17,7 @@ const SPRINKLE_COLS = ['#ff88cc', '#88ccff', '#ffcc44', '#88ffcc', '#cc88ff', '#
  * draws a tiered birthday cake with digit candles
  */
 export class BirthdayCakeComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BirthdayCakeComponent';
+    public static COMPONENT_NAME = 'BirthdayCakeComponent';
 
     // offset from fox
     private readonly offsetX = 55;
@@ -31,11 +31,11 @@ export class BirthdayCakeComponent extends DrawComponent {
         {wm: 0.55, w: 0, h: 14, col: '#f5f0ea', dec: '#ffcc44', trim: '#ffaa00'},
     ];
 
-    override getName() {
+    public override getName() {
         return BirthdayCakeComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         const digits = String(this.age).split('');
         const spacing = 18;
         const digitW = 14;
@@ -46,11 +46,11 @@ export class BirthdayCakeComponent extends DrawComponent {
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'birthday';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox, frame} = this.scene;
         const x = fox.x + this.offsetX;

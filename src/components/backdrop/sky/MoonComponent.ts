@@ -6,17 +6,17 @@ import {clamp, eio} from '@/utils';
  * depending on season etc, it may move, or be a pumpkin moon.
  */
 export class MoonComponent extends DrawComponent {
-    static COMPONENT_NAME = 'MoonComponent';
+    public static COMPONENT_NAME = 'MoonComponent';
 
-    override getName() {
+    public override getName() {
         return MoonComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.timeOfDay === 'night' || this.scene.timeOfDay === 'twilight';
     }
 
-    override draw() {
+    public override draw() {
         const {weather, specialEvent, moonPhase, todBlend} = this.scene;
 
         if (specialEvent === 'halloween') {

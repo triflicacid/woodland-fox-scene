@@ -8,18 +8,18 @@ import type {SceneState} from './SceneState';
  * it is more so that this class _aids_ in drawing by providing a constructor, rather than is necessary.
  */
 export class DrawComponent extends Component {
-    readonly ctx: CanvasRenderingContext2D;
-    readonly W: number;
-    readonly H: number;
+    public readonly ctx: CanvasRenderingContext2D;
+    public readonly W: number;
+    public readonly H: number;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number) {
         super(eventBus, scene);
         this.ctx = ctx;
         this.W = W;
         this.H = H;
     }
 
-    override getName(): string {
+    public override getName(): string {
         throw new Error('DrawComponent subclass does not implement getName()');
     }
 }

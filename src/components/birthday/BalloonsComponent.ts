@@ -19,20 +19,20 @@ interface Balloon {
  * balloonCount per tree is defined in TREE_DEFS.
  */
 export class BalloonsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BalloonsComponent';
+    public static COMPONENT_NAME = 'BalloonsComponent';
 
     private balloons: Balloon[] = [];
 
-    override getName() {
+    public override getName() {
         return BalloonsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {specialEvent} = this.scene;
         return specialEvent === 'birthday' || specialEvent === 'easter';
     }
 
-    override initialise() {
+    public override initialise() {
         this.balloons = this.scene.trees.flatMap((tr, i) => {
             const count = tr.balloonCount ?? 0;
             return Array.from({length: count}, (_, j) => ({
@@ -47,7 +47,7 @@ export class BalloonsComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather, frame, trees, season, specialEvent} = this.scene;
 

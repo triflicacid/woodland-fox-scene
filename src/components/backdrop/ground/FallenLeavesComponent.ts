@@ -15,15 +15,15 @@ const HUE_BANDS = [18, 28, 38, 12, 45];
  * render fallen/littered leaves during autumn
  */
 export class FallenLeavesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FallenLeavesComponent';
+    public static COMPONENT_NAME = 'FallenLeavesComponent';
 
     private leaves: FallenLeaf[] = [];
 
-    override getName() {
+    public override getName() {
         return FallenLeavesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         const {W, H} = this;
         this.leaves = Array.from({length: 80}, () => ({
             x: rnd(W),
@@ -34,11 +34,11 @@ export class FallenLeavesComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.season === 'autumn';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {frame, weather} = this.scene;
 

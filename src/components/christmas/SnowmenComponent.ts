@@ -11,7 +11,7 @@ const SCARF_COLOURS = ['#cc2020', '#2060cc', '#20aa40'];
  * render snowmen during Christmas
  */
 export class SnowmenComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SnowmenComponent';
+    public static COMPONENT_NAME = 'SnowmenComponent';
 
     private snowmen: Snowman[] = [
         {x: 180, y: 0},
@@ -19,21 +19,21 @@ export class SnowmenComponent extends DrawComponent {
         {x: 560, y: 0},
     ];
 
-    override getName() {
+    public override getName() {
         return SnowmenComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.snowmen.forEach(sm => {
             sm.y = this.scene.groundY;
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'christmas';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.snowmen.forEach(({x, y}, i) => {
             ctx.save();

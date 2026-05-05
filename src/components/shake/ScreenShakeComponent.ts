@@ -8,7 +8,7 @@ import {Subscriptions} from '@/core/Subscriptions';
  * call restore() equivalent via a paired component registered last.
  */
 export class ScreenShakeComponent extends DrawComponent {
-    static COMPONENT_NAME = 'ScreenShakeComponent';
+    public static COMPONENT_NAME = 'ScreenShakeComponent';
 
     private shakeT = 0;
     private shakeAmt = 0;
@@ -16,11 +16,11 @@ export class ScreenShakeComponent extends DrawComponent {
     // prevents double-save if active=true then tick sets active=false
     private didSave = false;
 
-    override getName() {
+    public override getName() {
         return ScreenShakeComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         // shake on loud firework bangs
         this.eventBus.subscribe(Subscriptions.onFireworkBang(this.getName(), ({loud}) => {
             if (loud) this.trigger(loud ? 4 : 2, 8);
@@ -44,16 +44,16 @@ export class ScreenShakeComponent extends DrawComponent {
         this.active = true;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.active;
     }
 
-    override tick() {
+    public override tick() {
         this.shakeT--;
         if (this.shakeT <= 0) this.active = false;
     }
 
-    override draw() {
+    public override draw() {
         if (this.didSave) { // don't double-save... but this shouldn't happen, so panic
             console.error('draw() called twice without restore');
             return;

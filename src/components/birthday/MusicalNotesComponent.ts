@@ -18,15 +18,15 @@ const NOTES = ['♪', '♫', '♩'];
  * draws floating musical note particles (fox singing)
  */
 export class MusicalNotesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'MusicalNotesComponent';
+    public static COMPONENT_NAME = 'MusicalNotesComponent';
 
     private notes: Note[] = [];
 
-    override getName() {
+    public override getName() {
         return MusicalNotesComponent.COMPONENT_NAME;
     }
 
-    override tick() {
+    public override tick() {
         this.notes = this.notes.filter(n => {
             n.x += n.vx;
             n.y += n.vy;
@@ -36,7 +36,7 @@ export class MusicalNotesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.notes.forEach(n => {
             ctx.save();
@@ -54,7 +54,7 @@ export class MusicalNotesComponent extends DrawComponent {
     /**
      * spawn a single note at the given position.
      */
-    spawnNote(x: number, y: number) {
+    public spawnNote(x: number, y: number) {
         this.notes.push({
             x: x + rndf(10),
             y: y + rndf(10),

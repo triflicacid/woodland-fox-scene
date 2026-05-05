@@ -14,16 +14,16 @@ interface Puddle {
  * render assorted puddles when raining
  */
 export class PuddlesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'PuddlesComponent';
+    public static COMPONENT_NAME = 'PuddlesComponent';
 
     private puddleLevel = 0;
     private puddles: Puddle[] = [];
 
-    override getName() {
+    public override getName() {
         return PuddlesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         const baseY = this.scene.groundY + (this.H * 0.06);
         this.puddles = Array.from({length: 5}, (_, i) => ({
             x: 120 + i * 110,
@@ -33,7 +33,7 @@ export class PuddlesComponent extends DrawComponent {
         }));
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather, todBlend} = this.scene;
         const growing = weather === 'rain' || weather === 'storm';
@@ -68,14 +68,14 @@ export class PuddlesComponent extends DrawComponent {
     /**
      * return a random puddle
      */
-    getRandomPuddle(): Puddle {
+    public getRandomPuddle(): Puddle {
         return rndchoice(this.puddles)!;
     }
 
     /**
      * get the current puddle level
      */
-    getPuddleLevel() {
+    public getPuddleLevel() {
         return this.puddleLevel;
     }
 }

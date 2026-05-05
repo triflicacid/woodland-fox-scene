@@ -14,16 +14,16 @@ interface Bat {
  * render bats flying in autumn nights
  */
 export class BatsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BatsComponent';
+    public static COMPONENT_NAME = 'BatsComponent';
 
     private bats: Bat[] = [];
     private forced = false;
 
-    override getName() {
+    public override getName() {
         return BatsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.bats = Array.from({length: 6}, () => ({
             x: rnd(this.W),
             y: 40 + rnd(this.H * 0.3),
@@ -34,12 +34,12 @@ export class BatsComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         // night-time and no special event (only events in autumn are loud)
         return this.forced || (this.scene.season === 'autumn' && this.scene.todBlend < 0.4 && this.scene.specialEvent === null);
     }
 
-    override tick() {
+    public override tick() {
         this.bats.forEach(b => {
             b.x += b.vx;
             b.flapT += b.flapSpeed;
@@ -49,7 +49,7 @@ export class BatsComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         this.bats.forEach(b => this.drawBat(b));
     }
 
@@ -94,11 +94,11 @@ export class BatsComponent extends DrawComponent {
         ctx.restore();
     }
 
-    isForced() {
+    public isForced() {
         return this.forced;
     }
 
-    setForced(forced: boolean) {
+    public setForced(forced: boolean) {
         this.forced = forced;
     }
 }

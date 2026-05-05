@@ -12,25 +12,25 @@ export interface FoxState {
  * most state is kept to individual components unless it is needed by multiple.
  */
 export class SceneState {
-    season!: Season;
-    timeOfDay!: TimeOfDay;
-    prevTimeOfDay!: TimeOfDay;
-    todBlend!: number;
-    todTarget!: number;
-    weather!: Weather;
-    specialEvent: SpecialEvent = null;
-    stargazing!: boolean;
-    moonPhase!: number;
+    public season!: Season;
+    public timeOfDay!: TimeOfDay;
+    public prevTimeOfDay!: TimeOfDay;
+    public todBlend!: number;
+    public todTarget!: number;
+    public weather!: Weather;
+    public specialEvent: SpecialEvent = null;
+    public stargazing!: boolean;
+    public moonPhase!: number;
 
-    readonly W: number;
-    readonly H: number;
-    frame = 0;
-    readonly groundY: number;
+    public readonly W: number;
+    public readonly H: number;
+    public frame = 0;
+    public readonly groundY: number;
 
-    fox: FoxState;
-    trees: TreeDef[];
+    public fox: FoxState;
+    public trees: TreeDef[];
 
-    constructor(W: number, H: number) {
+    public constructor(W: number, H: number) {
         this.W = W;
         this.H = H;
         this.groundY = H * 0.62;
@@ -45,14 +45,14 @@ export class SceneState {
         this.clearInvalidStates();
     }
 
-    pal() {
+    public pal() {
         return PALETTES[this.season];
     }
 
     /**
      * change the time of day and start blend animation.
      */
-    setTOD(v: TimeOfDay) {
+    public setTOD(v: TimeOfDay) {
         if (!this.timeOfDay) {
             this.prevTimeOfDay = this.timeOfDay = v;
             this.todBlend = this.todTarget = TOD_BLEND[v];
@@ -66,7 +66,7 @@ export class SceneState {
     /**
      * change the current season, triggering leaf transition if relevant.
      */
-    changeSeason(s: Season) {
+    public changeSeason(s: Season) {
         if (s === this.season) return;
         this.season = s;
         if (this.weather === 'snow' && s !== 'winter') this.weather = 'clear';
@@ -75,7 +75,7 @@ export class SceneState {
     /**
      * correct any invalid states
      */
-    clearInvalidStates() {
+    public clearInvalidStates() {
         if (this.specialEvent === 'halloween' && !(this.season === 'autumn' && this.timeOfDay === 'night')) {
             this.specialEvent = null;
         } else if (this.specialEvent === 'christmas' && this.season !== 'winter') {

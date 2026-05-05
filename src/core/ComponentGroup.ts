@@ -8,26 +8,26 @@ import type {SceneState} from './SceneState';
 export class ComponentGroup extends Component {
     private readonly components: Component[];
 
-    constructor(eventBus: EventBus, scene: SceneState, components: Component[] = []) {
+    public constructor(eventBus: EventBus, scene: SceneState, components: Component[] = []) {
         super(eventBus, scene);
         this.components = components.slice();
     }
 
-    override getName() {
+    public override getName() {
         return 'ComponentGroup';
     }
 
     /**
      * add a component to this group.
      */
-    add(component: Component) {
+    public add(component: Component) {
         this.components.push(component);
     }
 
     /**
      * return the component with the given name
      */
-    getComponent(name: string): Component | null {
+    public getComponent(name: string): Component | null {
         for (const component of this.components) {
             if (component instanceof ComponentGroup) {
                 const found = component.getComponent(name);
@@ -39,21 +39,21 @@ export class ComponentGroup extends Component {
         return null;
     }
 
-    override initialise() {
+    public override initialise() {
         this.components.forEach(c => c.initialise());
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.components.some(c => c.isEnabled());
     }
 
-    override tick() {
+    public override tick() {
         this.components.forEach(c => {
             if (c.isEnabled()) c.tick();
         });
     }
 
-    override draw() {
+    public override draw() {
         this.components.forEach(c => {
             if (c.isEnabled()) c.draw();
         });

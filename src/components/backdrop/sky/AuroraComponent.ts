@@ -16,16 +16,16 @@ interface AuroraBand {
  * draw the Aurora Borealis if enabled
  */
 export class AuroraComponent extends DrawComponent {
-    static COMPONENT_NAME = 'AuroraComponent';
+    public static COMPONENT_NAME = 'AuroraComponent';
 
     private auroraBands: AuroraBand[] = [];
     private on = false;
 
-    override getName() {
+    public override getName() {
         return AuroraComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         const {H} = this;
         this.auroraBands = Array.from({length: 6}, (_, i) => ({
             phase: i * Math.PI * 0.35,
@@ -42,12 +42,12 @@ export class AuroraComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         // winter night only
         return this.on && this.scene.season === 'winter' && this.scene.todBlend < 0.35;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, W, H} = this;
         const {frame} = this.scene;
 
@@ -77,14 +77,14 @@ export class AuroraComponent extends DrawComponent {
     /**
      * is this component currently on?
      */
-    isOn() {
+    public isOn() {
         return this.on;
     }
 
     /**
      * set whether the aurora is on or not
      */
-    setOn(on: boolean) {
+    public setOn(on: boolean) {
         this.on = on;
     }
 }

@@ -49,7 +49,7 @@ interface Hop {
  * handles spawning heart particles during Visitor scene.
  */
 export class BunnyComponent extends DrawComponent {
-    static COMPONENT_NAME = 'BunnyComponent';
+    public static COMPONENT_NAME = 'BunnyComponent';
 
     private x = -OFFSCREEN_BOUNDARY;
     private meetX = 0;
@@ -60,28 +60,28 @@ export class BunnyComponent extends DrawComponent {
     private readonly notes: MusicalNotesComponent;
     private readonly hearts: HeartsComponent;
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent, hearts: HeartsComponent) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, W: number, H: number, notes: MusicalNotesComponent, hearts: HeartsComponent) {
         super(eventBus, scene, ctx, W, H);
         this.notes = notes;
         this.hearts = hearts;
     }
 
-    override getName() {
+    public override getName() {
         return BunnyComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {specialEvent} = this.scene;
         if (specialEvent === 'birthday' || specialEvent === 'easter') return true;
         return this.phase !== 'off';
     }
 
-    override initialise() {
+    public override initialise() {
         this.meetX = this.scene.fox.x + MEET_FOX_OFFSET;
         this.y = this.scene.fox.y;
     }
 
-    override tick() {
+    public override tick() {
         const {fox, specialEvent} = this.scene;
         this.phaseT++;
         const cfg = this.phase !== 'off' ? BUNNY_PHASES[this.phase] : null;
@@ -172,7 +172,7 @@ export class BunnyComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox, frame} = this.scene;
 
@@ -409,7 +409,7 @@ export class BunnyComponent extends DrawComponent {
     /**
      * start the visitor scene, making the bunny enter into the scene
      */
-    startVisitorScene() {
+    public startVisitorScene() {
         if (this.phase !== 'off') return;
         this.phase = 'hopping_in';
         this.phaseT = 0;

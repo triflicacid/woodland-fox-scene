@@ -4,22 +4,22 @@ import {DrawComponent} from '@/core/DrawComponent';
  * a lightweight folding camping table, part of the stargazing setup.
  */
 export class CampingTableComponent extends DrawComponent {
-    static COMPONENT_NAME = 'CampingTableComponent';
+    public static COMPONENT_NAME = 'CampingTableComponent';
 
     // offset from fox
     private readonly offsetX = 210;
     private readonly offsetY = 35;
     private readonly scale = 0.97;
 
-    override getName() {
+    public override getName() {
         return CampingTableComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.stargazing;
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox} = this.scene;
         const x = fox.x + this.offsetX;

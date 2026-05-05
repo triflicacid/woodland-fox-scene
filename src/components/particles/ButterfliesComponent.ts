@@ -16,15 +16,15 @@ const BUTTERFLY_COLOURS = [280, 320, 40, 200, 160];
  * render butterflies in spring and summer
  */
 export class ButterfliesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'ButterfliesComponent';
+    public static COMPONENT_NAME = 'ButterfliesComponent';
 
     private butterflies: Butterfly[] = [];
 
-    override getName() {
+    public override getName() {
         return ButterfliesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.generateButterflies();
 
         this.eventBus.subscribe(Subscriptions.onWeatherChange(this.getName(), update => {
@@ -46,14 +46,14 @@ export class ButterfliesComponent extends DrawComponent {
         }));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {todBlend, season, weather, specialEvent} = this.scene;
         return todBlend > 0.4 && specialEvent !== 'eclipse'
             && !(season === 'winter' || season === 'autumn')
             && !(weather === 'rain' || weather === 'storm');
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.butterflies.forEach(bf => {
             bf.x += bf.vx + (this.scene.weather === 'wind' ? 0.8 : 0);
@@ -63,7 +63,7 @@ export class ButterfliesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.butterflies.forEach(bf => {
             const flap = Math.abs(Math.sin(bf.flapT));

@@ -6,17 +6,17 @@ type CloudSeed = [number, number, number];
  * render clouds (differ on weather)
  */
 export class CloudsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'CloudsComponent';
+    public static COMPONENT_NAME = 'CloudsComponent';
 
-    override getName() {
+    public override getName() {
         return CloudsComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return !this.scene.stargazing && this.scene.specialEvent !== 'eclipse';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {weather, season, frame} = this.scene;
         const isRainy = weather === 'rain' || weather === 'storm';

@@ -15,7 +15,7 @@ interface OwlState {
  * render an owl sitting in the tree in autumn
  */
 export class OwlComponent extends DrawComponent {
-    static COMPONENT_NAME = 'OwlComponent';
+    public static COMPONENT_NAME = 'OwlComponent';
 
     private owl: OwlState = {
         headAngle: 0,
@@ -26,16 +26,16 @@ export class OwlComponent extends DrawComponent {
     };
     private forced = false;
 
-    override getName() {
+    public override getName() {
         return OwlComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         const {season, weather} = this.scene;
         return this.forced || (this.scene.todBlend < 0.35 && (season === 'autumn' || season === 'winter') && weather === 'clear');
     }
 
-    override tick() {
+    public override tick() {
         const {owl} = this;
 
         owl.headTimer++;
@@ -51,7 +51,7 @@ export class OwlComponent extends DrawComponent {
         }
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, owl} = this;
         const {season, weather, frame, specialEvent} = this.scene;
 
@@ -162,11 +162,11 @@ export class OwlComponent extends DrawComponent {
         ctx.restore();
     }
 
-    isForced() {
+    public isForced() {
         return this.forced;
     }
 
-    setForced(forced: boolean) {
+    public setForced(forced: boolean) {
         this.forced = forced;
     }
 }

@@ -65,28 +65,28 @@ A typical component looks like this:
 export class SnowflakesComponent extends DrawComponent {
     private flakes = [];
 
-    static COMPONENT_NAME = "SnowflakesComponent";
+    public static COMPONENT_NAME = "SnowflakesComponent";
 
-    override getName() {
+    public override getName() {
         return SnowflakesComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.flakes = Array.from({length: 80}, () => ({x: rnd(this.W), y: rnd(this.H), ...}));
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather === 'snow';
     }
 
-    override tick() {
+    public override tick() {
         this.flakes.forEach(f => {
             f.y += f.speed;
             if (f.y > this.H) f.y = 0;
         });
     }
 
-    override draw() {
+    public override draw() {
         this.flakes.forEach(f => { ... });
     }
 }
@@ -164,8 +164,7 @@ The `isEnabled()` check is also the right place to handle conditional visibility
 flag if you can derive it from scene state. For example:
 
 ```ts
-override
-isEnabled()
+public override isEnabled()
 {
     return this.scene.specialEvent === 'birthday';
 }

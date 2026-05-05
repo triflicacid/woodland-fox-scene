@@ -8,18 +8,18 @@ export class EventBus {
     private readonly subscriptions = new Map<string, Subscription<any>[]>();
     private readonly special: Subscription<any>[] = [];
 
-    registerEvent(eventName: string) {
+    public registerEvent(eventName: string) {
         if (typeof eventName !== 'string') {
             throw new TypeError('eventName must be a string, got ' + typeof eventName);
         }
         this.subscriptions.set(eventName, []);
     }
 
-    deregisterEvent(eventName: string) {
+    public deregisterEvent(eventName: string) {
         this.subscriptions.delete(eventName);
     }
 
-    subscribe(subscription: Subscription<any>) {
+    public subscribe(subscription: Subscription<any>) {
         if (subscription.eventName === Subscription.CAPTURE_ALL) {
             this.special.push(subscription);
             return;
@@ -30,7 +30,7 @@ export class EventBus {
         this.subscriptions.get(subscription.eventName)!.push(subscription);
     }
 
-    unsubscribe(subscription: Subscription<any>) {
+    public unsubscribe(subscription: Subscription<any>) {
         if (subscription.eventName === Subscription.CAPTURE_ALL) {
             const i = this.special.indexOf(subscription);
             if (i !== -1) this.special.splice(i, 1);
@@ -47,7 +47,7 @@ export class EventBus {
         }
     }
 
-    dispatch<T>(event: Event<T>) {
+    public dispatch<T>(event: Event<T>) {
         if (!this.subscriptions.has(event.eventName)) {
             throw new Error(`unknown event: ${event.eventName}`);
         }

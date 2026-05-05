@@ -18,19 +18,19 @@ interface Silhouette {
  * drifting background monster silhouettes during solar eclipse
  */
 export class EclipseSilhouettesComponent extends DrawComponent {
-    static COMPONENT_NAME = 'EclipseSilhouettesComponent';
+    public static COMPONENT_NAME = 'EclipseSilhouettesComponent';
 
     private silhouettes: Silhouette[] = [];
 
-    override getName() {
+    public override getName() {
         return EclipseSilhouettesComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'eclipse';
     }
 
-    override initialise() {
+    public override initialise() {
         // regenerate silhouettes when entering the eclipse
         this.eventBus.subscribe(Subscriptions.onSpecialEventChange(this.getName(), update => {
             if (update.previous === null && update.updated === 'eclipse') {
@@ -57,7 +57,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
         });
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.silhouettes.forEach(s => {
             s.x += s.vx;
@@ -66,7 +66,7 @@ export class EclipseSilhouettesComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {frame} = this.scene;
         this.silhouettes.forEach(s => {

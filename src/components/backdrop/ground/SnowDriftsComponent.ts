@@ -10,7 +10,7 @@ interface Drift {
  * render snow drifts during winter
  */
 export class SnowDriftsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'SnowDriftsComponent';
+    public static COMPONENT_NAME = 'SnowDriftsComponent';
 
     private drifts: Drift[] = [
         {x: 130, y: 0, dm: 0},
@@ -19,21 +19,21 @@ export class SnowDriftsComponent extends DrawComponent {
         {x: 545, y: 0, dm: 0},
     ];
 
-    override getName() {
+    public override getName() {
         return SnowDriftsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.drifts.forEach(d => {
             d.y = this.scene.groundY + (this.H * d.dm);
         });
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.season === 'winter';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.drifts.forEach(({x, y}) => {
             ctx.fillStyle = 'rgba(230,242,252,0.95)';

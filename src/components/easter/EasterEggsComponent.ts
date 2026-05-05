@@ -50,15 +50,15 @@ const CLUSTERS: [number, number, number][] = [
  * eggs are pastel-coloured ellipses with optional dot or line decoration.
  */
 export class EasterEggsComponent extends DrawComponent {
-    static COMPONENT_NAME = 'EasterEggsComponent';
+    public static COMPONENT_NAME = 'EasterEggsComponent';
 
     private eggs: Egg[] = [];
 
-    override getName() {
+    public override getName() {
         return EasterEggsComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.eggs = CLUSTERS.flatMap(([cx, cyF, count]) =>
             Array.from({length: count}, () => {
                 const pattern = prob(0.33) ? 'dots' : prob(0.5) ? 'lines' : 'plain';
@@ -83,11 +83,11 @@ export class EasterEggsComponent extends DrawComponent {
         );
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.specialEvent === 'easter';
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, H} = this;
         this.eggs.forEach(e => {
             const y = H * e.yFrac;

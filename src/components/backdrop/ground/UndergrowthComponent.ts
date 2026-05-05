@@ -16,7 +16,7 @@ interface Rock {
  * render undergrowth
  */
 export class UndergrowthComponent extends DrawComponent {
-    static COMPONENT_NAME = 'UndergrowthComponent';
+    public static COMPONENT_NAME = 'UndergrowthComponent';
 
     private readonly bushes: Bush[] = [
         {x: 130, r: 28, dark: true}, {x: 175, r: 20, dark: false},
@@ -31,17 +31,17 @@ export class UndergrowthComponent extends DrawComponent {
         {x: 660, y: 0, dm: 0.04},
     ];
 
-    override getName() {
+    public override getName() {
         return UndergrowthComponent.COMPONENT_NAME;
     }
 
-    override initialise() {
+    public override initialise() {
         this.rocks.forEach(r => {
             r.y = this.scene.groundY + (this.H * r.dm);
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         const {fox, season, weather, frame, groundY: y} = this.scene;
         const p = this.scene.pal();

@@ -32,22 +32,22 @@ interface BurstParticle {
  * fires an event on loud bangs so the fox can react.
  */
 export class FireworksComponent extends DrawComponent {
-    static COMPONENT_NAME = 'FireworksComponent';
+    public static COMPONENT_NAME = 'FireworksComponent';
 
     private rockets: Rocket[] = [];
     private bursts: BurstParticle[] = [];
 
-    override getName() {
+    public override getName() {
         return FireworksComponent.COMPONENT_NAME;
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather !== 'storm'
             && this.scene.timeOfDay === 'night'
             && (this.scene.specialEvent === 'bonfire' || this.scene.specialEvent === 'birthday');
     }
 
-    override tick() {
+    public override tick() {
         const {W, H} = this;
         const {weather, groundY} = this.scene;
 
@@ -94,7 +94,7 @@ export class FireworksComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
 
         // draw rocket trails

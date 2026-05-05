@@ -15,11 +15,11 @@ interface WindDebris {
  * (other components handle their own wind calculations, if required)
  */
 export class WindComponent extends DrawComponent {
-    static COMPONENT_NAME = 'WindComponent';
+    public static COMPONENT_NAME = 'WindComponent';
 
     private windDebris: WindDebris[] = [];
 
-    override getName() {
+    public override getName() {
         return WindComponent.COMPONENT_NAME;
     }
 
@@ -34,15 +34,15 @@ export class WindComponent extends DrawComponent {
         };
     }
 
-    override initialise() {
+    public override initialise() {
         this.windDebris = Array.from({length: 50}, () => this.makeDebris());
     }
 
-    override isEnabled() {
+    public override isEnabled() {
         return this.scene.weather === 'wind';
     }
 
-    override tick() {
+    public override tick() {
         const {W} = this;
         this.windDebris.forEach(wd => {
             wd.x += wd.vx;
@@ -51,7 +51,7 @@ export class WindComponent extends DrawComponent {
         });
     }
 
-    override draw() {
+    public override draw() {
         const {ctx} = this;
         this.windDebris.forEach(wd => {
             ctx.save();

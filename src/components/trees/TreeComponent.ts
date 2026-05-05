@@ -273,21 +273,21 @@ class TreesComponent extends Component {
     private readonly background: boolean;
     private trees: TreeDef[] = [];
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, background: boolean) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D, background: boolean) {
         super(eventBus, scene);
         this.ctx = ctx;
         this.background = background;
     }
 
-    override getName() {
+    public override getName() {
         return 'TreesComponent';
     }
 
-    override initialise() {
+    public override initialise() {
         this.trees = this.scene.trees.filter(t => t.background === this.background);
     }
 
-    override draw() {
+    public override draw() {
         const {ctx, trees} = this;
         const {season, weather, specialEvent, frame} = this.scene;
         const pal = this.scene.pal();
@@ -299,13 +299,13 @@ class TreesComponent extends Component {
  * renders trees that appear behind animals.
  */
 export class BackgroundTreesComponent extends TreesComponent {
-    static COMPONENT_NAME = 'BackgroundTreesComponent';
+    public static COMPONENT_NAME = 'BackgroundTreesComponent';
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D) {
         super(eventBus, scene, ctx, false);
     }
 
-    override getName() {
+    public override getName() {
         return BackgroundTreesComponent.COMPONENT_NAME;
     }
 }
@@ -314,13 +314,13 @@ export class BackgroundTreesComponent extends TreesComponent {
  * renders trees that appear in front of animals.
  */
 export class ForegroundTreesComponent extends TreesComponent {
-    static COMPONENT_NAME = 'ForegroundTreesComponent';
+    public static COMPONENT_NAME = 'ForegroundTreesComponent';
 
-    constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D) {
+    public constructor(eventBus: EventBus, scene: SceneState, ctx: CanvasRenderingContext2D) {
         super(eventBus, scene, ctx, true);
     }
 
-    override getName() {
+    public override getName() {
         return ForegroundTreesComponent.COMPONENT_NAME;
     }
 }
