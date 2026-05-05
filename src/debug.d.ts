@@ -11,11 +11,11 @@ export interface Debug {
     /**
      * Global yes/no, or filter to show.
      *
-     * - false/undefined: disabled
+     * - false: disabled, print no events
      * - true: print all events
      * - string[]: print only matching event names
      */
-    printEvents?: boolean | string[] | undefined;
+    printEvents?: boolean | string[];
 
 }
 
