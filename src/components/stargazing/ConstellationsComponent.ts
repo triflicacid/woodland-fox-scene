@@ -1,6 +1,6 @@
 import {DrawComponent} from '@/core/DrawComponent';
 import {clamp} from '@/utils';
-import {CONSTELLATIONS} from "@/components/stargazing/constellationDefinitions.ts";
+import {CONSTELLATIONS} from '@/components/stargazing/constellationDefinitions.ts';
 
 /**
  * draws fixed constellations in the night sky with connecting lines.

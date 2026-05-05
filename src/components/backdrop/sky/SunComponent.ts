@@ -2,7 +2,7 @@ import {DrawComponent} from '@/core/DrawComponent';
 import type {Season, TimeOfDay} from '@/config';
 import {TOD_BLEND} from '@/config';
 import {clamp, rgb, sampleCol} from '@/utils';
-import {SUN_COLS} from "@/components/backdrop/sky/skyDefinitions.ts";
+import {SUN_COLS} from '@/components/backdrop/sky/skyDefinitions.ts';
 
 // arc position per state
 const ARC_POS: Partial<Record<TimeOfDay, number>> = {dawn: 0.0, day: 0.5, twilight: 1.0};

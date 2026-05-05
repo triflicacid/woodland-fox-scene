@@ -8,7 +8,7 @@ import {
     SKY_BOT,
     SKY_MID,
     SKY_TOP
-} from "@/components/backdrop/sky/skyDefinitions.ts";
+} from '@/components/backdrop/sky/skyDefinitions.ts';
 
 export class SkyBackdropComponent extends DrawComponent {
     public static COMPONENT_NAME = 'SkyBackdropComponent';

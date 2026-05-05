@@ -1,4 +1,4 @@
-import {rnd, rndchoice} from "@/utils";
+import {rnd, rndchoice} from '@/utils';
 
 export type MonsterType =
     | 'frankenstein' | 'swampthing' | 'reaper' | 'butcher'

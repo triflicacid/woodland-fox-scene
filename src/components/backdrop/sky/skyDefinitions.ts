@@ -1,5 +1,5 @@
-import {ColourStop, KeyframeStop} from "@/utils.ts";
-import {Season} from "@/config.ts";
+import {ColourStop, KeyframeStop} from '@/utils.ts';
+import {Season} from '@/config.ts';
 
 // t=0 night, t=0.25 twilight, t=0.75 dawn, t=1 day
 export const SKY_TOP: ColourStop[] = [
