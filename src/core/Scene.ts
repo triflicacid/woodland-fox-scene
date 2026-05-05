@@ -57,6 +57,7 @@ import {EclipseSilhouettesComponent} from '@/components/eclipse/EclipseSilhoutte
 import {BirthdayCakeComponent} from '@/components/birthday/BirthdayCakeComponent';
 import {CupcakesComponent} from '@/components/birthday/CupcakesComponent';
 import {SaveState} from '@/core/SaveState';
+import {FrameRateMonitor} from '@/frames/FrameRateMonitor.ts';
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -73,6 +74,7 @@ export class Scene {
     private readonly saveState: SaveState;
     private readonly eventBus: EventBus;
     private readonly components: ComponentGroup;
+    private readonly frameRateMonitor = new FrameRateMonitor(1_000);
     private handle: number | undefined = undefined;
     private active = false;
     private activeTab: Tab | null = null;
@@ -215,6 +217,7 @@ export class Scene {
         if (this.active) {
             throw new Error('scene is already active');
         }
+        this.frameRateMonitor.reset();
         this.handle = requestAnimationFrame(this.loop);
         this.active = true;
     }
@@ -233,6 +236,7 @@ export class Scene {
 
     /**
      * run one frame: clear, tick, draw all components.
+     * (Note, this does not record as a frame)
      */
     public tick() {
         const {ctx, state} = this;
@@ -245,6 +249,7 @@ export class Scene {
 
     /**
      * ticks for the given number of frames at max speed.
+     * this will not adjust the frame rate monitor.
      */
     public tickMany(frames: number) {
         for (let i = 0; i < frames; i++) {
@@ -255,11 +260,19 @@ export class Scene {
     /**
      * run one frame: clear, tick, draw all components, then request next frame.
      */
-    private loop() {
+    private loop(timestamp: DOMHighResTimeStamp) {
         if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
 
         this.tick();
+        this.frameRateMonitor.recordFrame(+timestamp);
         this.handle = requestAnimationFrame(this.loop);
+    }
+
+    /**
+     * gets the calculated actual FPS this Scene is rendering at.
+     */
+    public getActualFps() {
+        return this.active ? this.frameRateMonitor.getFps() : 0;
     }
 
     /**
