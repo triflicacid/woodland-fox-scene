@@ -26,10 +26,6 @@ export class LightningComponent extends DrawComponent {
         return LightningComponent.COMPONENT_NAME;
     }
 
-    public override isEnabled() {
-        return this.scene.weather === 'storm';
-    }
-
     public override draw() {
         const {ctx, W, H} = this;
         if (!this.bolts.length) return;
@@ -66,23 +62,34 @@ export class LightningComponent extends DrawComponent {
 
     public override tick() {
         // chance to spawn a new bolt each frame
-        if (prob(PROBABILITY.LIGHTNING)) {
-            const superBolt = prob(PROBABILITY.SUPER_BOLT);
-            const spread = superBolt ? BOLT_SPREAD_SUPER : BOLT_SPREAD_NORMAL;
-            const path: [number, number][] = [];
-            let lx = 200 + rnd(300), ly = 0;
-            const endY = this.scene.groundY + (this.H * LIGHTNING_ENDPOINT_Y_MARGIN);
-            while (ly < endY) {
-                path.push([lx, ly]);
-                lx += rndf(spread);
-                ly += 20 + rnd(20);
-            }
-            this.bolts.push({path, t: 0, superBolt});
-            this.eventBus.dispatch(Events.lightningStrike(this.getName(), superBolt));
+        if (this.scene.weather === 'storm' && prob(PROBABILITY.LIGHTNING)) {
+            this.summonBolt();
         }
 
         // advance all bolts, remove expired ones
         this.bolts.forEach(b => b.t++);
         this.bolts = this.bolts.filter(b => b.t < BOLT_LIFETIME);
+    }
+
+    /**
+     * summon a lightning bolt.
+     * @param superBolt is this bolt a super bolt (if `undefined`, this is probabilistic)
+     * @param silent if true (default), do not fire an event
+     */
+    public summonBolt(superBolt?: boolean, silent = false) {
+        if (superBolt === undefined) superBolt = prob(PROBABILITY.SUPER_BOLT);
+
+        const spread = superBolt ? BOLT_SPREAD_SUPER : BOLT_SPREAD_NORMAL;
+        const path: [number, number][] = [];
+        let lx = 200 + rnd(300), ly = 0;
+        const endY = this.scene.groundY + (this.H * LIGHTNING_ENDPOINT_Y_MARGIN);
+        while (ly < endY) {
+            path.push([lx, ly]);
+            lx += rndf(spread);
+            ly += 20 + rnd(20);
+        }
+        this.bolts.push({path, t: 0, superBolt});
+
+        if (!silent) this.eventBus.dispatch(Events.lightningStrike(this.getName(), superBolt));
     }
 }
