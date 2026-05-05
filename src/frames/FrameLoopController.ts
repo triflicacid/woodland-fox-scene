@@ -35,9 +35,6 @@ export class FrameLoopController {
 
     /**
      * Start the requestAnimationFrame loop.
-     *
-     * Throws if the loop is already active, as running multiple loops for the
-     * same frame callback would cause duplicate ticks.
      */
     public start() {
         if (this.active) {
@@ -53,10 +50,6 @@ export class FrameLoopController {
 
     /**
      * Stop the requestAnimationFrame loop.
-     *
-     * The active flag is cleared before cancelling the frame. This protects
-     * against the case where a queued animation frame still runs after stop()
-     * has been called.
      */
     public stop() {
         this.active = false;
@@ -79,7 +72,7 @@ export class FrameLoopController {
     /**
      * Set the desired FPS.
      *
-     * Pass undefined to remove the FPS cap and run on every available
+     * Pass `undefined` to remove the FPS cap and run on every available
      * requestAnimationFrame callback.
      */
     public setTargetFps(fps: number | undefined) {
@@ -107,13 +100,6 @@ export class FrameLoopController {
         return this.active ? this.monitor.getFps() : 0;
     }
 
-    /**
-     * The internal requestAnimationFrame callback.
-     *
-     * The browser may call this at the display refresh rate, for example
-     * 60Hz, 120Hz, or higher. The limiter decides whether this callback should
-     * produce a real frame.
-     */
     private loop(timestamp: DOMHighResTimeStamp) {
         if (!this.active) {
             return;
