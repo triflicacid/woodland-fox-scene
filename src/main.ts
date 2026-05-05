@@ -1,10 +1,13 @@
 import {Scene} from './core/Scene';
-import {PROBABILITY} from '@/config';
+import {CANVAS, PROBABILITY} from '@/config';
 
 const canvas = document.getElementById('c') as HTMLCanvasElement;
 const statusEl = document.getElementById('status')!;
 
-const scene = new Scene(canvas, statusEl);
+canvas.width = CANVAS.width;
+canvas.height = CANVAS.height;
+
+const scene = new Scene(canvas, CANVAS, statusEl);
 globalThis.debug = {
     scene,
     probs: PROBABILITY,

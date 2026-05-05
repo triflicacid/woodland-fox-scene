@@ -1,6 +1,6 @@
 export const CANVAS = {
-    WIDTH: 720,
-    HEIGHT: 500,
+    width: 720,
+    height: 500,
 } as const;
 
 /**
