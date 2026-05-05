@@ -58,6 +58,7 @@ import {BirthdayCakeComponent} from '@/components/birthday/BirthdayCakeComponent
 import {CupcakesComponent} from '@/components/birthday/CupcakesComponent';
 import {SaveState} from '@/core/SaveState';
 import {FrameRateMonitor} from '@/frames/FrameRateMonitor.ts';
+import {FrameRateLimiter} from '@/frames/FrameRateLimiter.ts';
 
 /**
  * Scene is the main entry point, containing all components, objects,
@@ -75,6 +76,7 @@ export class Scene {
     private readonly eventBus: EventBus;
     private readonly components: ComponentGroup;
     private readonly frameRateMonitor = new FrameRateMonitor(1_000);
+    private readonly frameRateLimiter = new FrameRateLimiter(60);
     private handle: number | undefined = undefined;
     private active = false;
     private activeTab: Tab | null = null;
@@ -218,6 +220,7 @@ export class Scene {
             throw new Error('scene is already active');
         }
         this.frameRateMonitor.reset();
+        this.frameRateLimiter.reset();
         this.handle = requestAnimationFrame(this.loop);
         this.active = true;
     }
@@ -263,8 +266,11 @@ export class Scene {
     private loop(timestamp: DOMHighResTimeStamp) {
         if (!this.active) return; // return as cancelAnimationFrame doesn't always work if stop() is called and new frame overwritten
 
-        this.tick();
-        this.frameRateMonitor.recordFrame(+timestamp);
+        // only run if under the frame limit
+        if (this.frameRateLimiter.shouldRunFrame(timestamp)) {
+            this.tick();
+            this.frameRateMonitor.recordFrame(+timestamp);
+        }
         this.handle = requestAnimationFrame(this.loop);
     }
 
@@ -273,6 +279,22 @@ export class Scene {
      */
     public getActualFps() {
         return this.active ? this.frameRateMonitor.getFps() : 0;
+    }
+
+    /**
+     * gets the desired/target FPS we wish to render at.
+     * ideally, this would be equal to `this::getActualFPS`.
+     */
+    public getTargetFps() {
+        return this.frameRateLimiter.getTargetFps();
+    }
+
+    /**
+     * sets the target FPS to render at.
+     * pass in `undefined` for unlimited.
+     */
+    public setTargetFps(fps: number | undefined) {
+        this.frameRateLimiter.setTargetFps(fps);
     }
 
     /**
