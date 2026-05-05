@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [viteSingleFile()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'js'),
+      '@': resolve(__dirname, 'src'),
     },
   },
 });
