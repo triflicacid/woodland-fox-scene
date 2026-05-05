@@ -281,8 +281,8 @@ export class Scene {
      */
     private setButtonsDisabled(disabled: boolean) {
         ['btn', 'btn-bunny', 'btn-wander'].forEach(id => {
-            const el = document.getElementById(id) as HTMLButtonElement | null;
-            if (el) el.disabled = disabled;
+            const el = document.getElementById(id) as HTMLButtonElement;
+            el.disabled = disabled;
         });
     }
 

@@ -22,7 +22,7 @@ export class EventListenerComponent extends Component {
      * are we logging the given event?
      */
     public logEvent(event: string) {
-        const f = (globalThis as any).printEvents as string[] | boolean;
+        const f = globalThis.debug.printEvents;
         if (typeof f === 'object') return f.indexOf(event) !== -1;
         return f;
     }

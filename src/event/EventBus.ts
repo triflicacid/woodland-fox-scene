@@ -57,6 +57,6 @@ export class EventBus {
         ];
         targets
             .filter(s => event.alertOriginator || s.subscriber !== event.originator)
-            .forEach(s => s.trigger(event as Event<unknown>));
+            .forEach(s => s.trigger(event));
     }
 }

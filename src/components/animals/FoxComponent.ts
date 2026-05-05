@@ -209,7 +209,7 @@ export class FoxComponent extends DrawComponent {
         if (this.phase === 'idle' || this.phase === 'singing' || this.phase === 'eclipse_watch') return;
 
         this.phaseT++;
-        const cfg = FOX_PHASES[this.phase as keyof typeof FOX_PHASES];
+        const cfg = FOX_PHASES[this.phase];
         if (!cfg) return;
         const t = clamp(this.phaseT / cfg.f, 0, 1);
 

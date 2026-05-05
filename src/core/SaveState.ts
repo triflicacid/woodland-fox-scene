@@ -10,7 +10,7 @@ interface Provider<T> {
  * components and scene state register providers which define how to save and restore their values.
  */
 export class SaveState {
-    private readonly providers = new Map<string, Provider<unknown>>();
+    private readonly providers = new Map<string, Provider<any>>();
 
     /**
      * registers a value provider.
@@ -20,7 +20,7 @@ export class SaveState {
         if (this.providers.has(provider.key)) {
             console.error(`provider ${provider.key} is already registered`);
         } else {
-            this.providers.set(provider.key, provider as Provider<unknown>);
+            this.providers.set(provider.key, provider);
         }
         return this;
     }

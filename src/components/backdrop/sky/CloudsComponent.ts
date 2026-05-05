@@ -24,7 +24,7 @@ export class CloudsComponent extends DrawComponent {
         const seeds: CloudSeed[] = [[100, 80, 0.7], [280, 60, 0.5], [450, 90, 0.6], [600, 70, 0.45]];
         const extra: CloudSeed[] = isRainy ? [[160, 50, 0.8], [380, 40, 0.9], [520, 65, 0.85]] : [];
 
-        ([...seeds, ...extra] as CloudSeed[]).forEach(([cx, cy, a], i) => {
+        [...seeds, ...extra].forEach(([cx, cy, a], i) => {
             const dx = Math.sin(frame * 0.002 + i * 0.8) * 20 * windM;
             ctx.save();
             ctx.globalAlpha = a * (isRainy ? 0.92 : season === 'winter' ? 0.82 : 0.58);
