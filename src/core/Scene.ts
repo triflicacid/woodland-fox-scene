@@ -290,6 +290,13 @@ export class Scene {
     }
 
     /**
+     * lift any frame rate limits.
+     */
+    public unrestrictFrameRate() {
+        this.frameRateLimiter.setUnlimited();
+    }
+
+    /**
      * sets the target FPS to render at.
      * pass in `undefined` for unlimited.
      */

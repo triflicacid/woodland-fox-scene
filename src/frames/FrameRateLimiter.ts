@@ -31,6 +31,15 @@ export class FrameRateLimiter {
     }
 
     /**
+     * lift the limit, i.e., make it unlimited.
+     */
+    public setUnlimited() {
+        this.targetFps = undefined;
+        this.frameIntervalMs = 0;
+        this.reset();
+    }
+
+    /**
      * get the currently configured target frame rate,
      * where `undefined` means unlimited.
      */
