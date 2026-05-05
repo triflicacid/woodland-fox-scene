@@ -1,4 +1,4 @@
-import {CANVAS, MOON_PHASES, Season, type Tab, TABS, TimeOfDay, Weather} from '@/config';
+import {MOON_PHASES, Season, type Tab, TABS, TimeOfDay, Weather} from '@/config';
 import {SceneState} from './SceneState';
 import {EventBus} from '@/event/EventBus';
 import {BackgroundTreesComponent, ForegroundTreesComponent} from '@/components/trees/TreeComponent';
@@ -95,13 +95,13 @@ export class Scene {
     private readonly laptop: LaptopComponent;
     private readonly chicks: ChicksComponent;
 
-    public constructor(canvas: HTMLCanvasElement, statusEl: HTMLElement) {
+    public constructor(canvas: HTMLCanvasElement, dimensions: { width: number, height: number }, statusEl: HTMLElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
         this.statusEl = statusEl;
 
-        this.W = CANVAS.WIDTH;
-        this.H = CANVAS.HEIGHT;
+        this.W = dimensions.width;
+        this.H = dimensions.height;
 
         // central mutable state
         this.state = new SceneState(this.W, this.H);
@@ -454,9 +454,7 @@ export class Scene {
      * wire up all canvas click and button events.
      */
     private setupCanvasEvents() {
-        const {canvas, state} = this;
-        const W = CANVAS.WIDTH;
-        const H = CANVAS.HEIGHT;
+        const {canvas, W, H, state} = this;
 
         // click on fox: grumble; click on tree: scare birds
         canvas.addEventListener('click', e => {
