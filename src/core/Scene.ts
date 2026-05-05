@@ -656,11 +656,10 @@ export class Scene {
             snow: '🌨',
             storm: '⛈'
         };
-        const moonEmoji = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
 
         const todSummary = [
             todEmoji[state.timeOfDay],
-            state.timeOfDay === 'night' ? moonEmoji[state.moonPhase] : '',
+            state.timeOfDay === 'night' ? MOON_PHASES[state.moonPhase] : '',
         ].filter(Boolean).join(' ');
 
         const weatherSummary = [
