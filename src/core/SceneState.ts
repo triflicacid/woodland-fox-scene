@@ -40,7 +40,7 @@ export class SceneState {
             y: this.groundY + 0.02 * H,
         };
 
-        this.trees = (TREE_DEFS as TreeDef[]).map(t => ({...t, y: this.groundY}));
+        this.trees = TREE_DEFS.map(t => ({...t, y: this.groundY}));
 
         this.clearInvalidStates();
     }
