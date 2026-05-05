@@ -63,29 +63,32 @@ A typical component looks like this:
 
 ```ts
 export class SnowflakesComponent extends DrawComponent {
-  private flakes = [];
-  
-  static COMPONENT_NAME = "SnowflakesComponent";
-  
-  override getName() {
-    return SnowflakesComponent.COMPONENT_NAME;
-  }
+    private flakes = [];
 
-  override initialise() {
-    this.flakes = Array.from({length: 80}, () => ({ x: rnd(this.W), y: rnd(this.H), ... }));
-  }
+    static COMPONENT_NAME = "SnowflakesComponent";
 
-  override isEnabled() {
-    return this.scene.weather === 'snow';
-  }
+    override getName() {
+        return SnowflakesComponent.COMPONENT_NAME;
+    }
 
-  override tick() {
-    this.flakes.forEach(f => { f.y += f.speed; if (f.y > this.H) f.y = 0; });
-  }
+    override initialise() {
+        this.flakes = Array.from({length: 80}, () => ({x: rnd(this.W), y: rnd(this.H), ...}));
+    }
 
-  override draw() {
-    this.flakes.forEach(f => { ... });
-  }
+    override isEnabled() {
+        return this.scene.weather === 'snow';
+    }
+
+    override tick() {
+        this.flakes.forEach(f => {
+            f.y += f.speed;
+            if (f.y > this.H) f.y = 0;
+        });
+    }
+
+    override draw() {
+        this.flakes.forEach(f => { ... });
+    }
 }
 ```
 
@@ -126,7 +129,7 @@ this.eventBus.dispatch(Events.lightningStrike('LightningComponent', superBolt));
 
 ```ts
 this.eventBus.subscribe(Subscriptions.onLightningStrike('MyComponent', ({superBolt}) => {
-  this._startReaction(superBolt);
+    this._startReaction(superBolt);
 }));
 ```
 
@@ -161,8 +164,10 @@ The `isEnabled()` check is also the right place to handle conditional visibility
 flag if you can derive it from scene state. For example:
 
 ```ts
-override isEnabled() {
-  return this.scene.specialEvent === 'birthday';
+override
+isEnabled()
+{
+    return this.scene.specialEvent === 'birthday';
 }
 ```
 
