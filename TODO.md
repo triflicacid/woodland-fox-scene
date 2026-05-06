@@ -10,6 +10,10 @@ Things desired to work on/that should be done.
 
 ## Tweaks
 
+## Bug Fixes
+
+- Currently, shows sun rays in clear+summer mode all the time - should only do this when `todBlend` is 1.
+
 ## Tech Debt
 
 - Aim: move most things out of `SceneState`.

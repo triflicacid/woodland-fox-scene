@@ -4,7 +4,7 @@ A canvas-based animated scene of a fox resting in a woodland clearing. The scene
 season, weather, time of day, trigger special events, and bring in visiting animals. The fox has idle animations and can
 be woken up, made to wander, or receive a visitor.
 
-Built with vanilla JS and [Vite](https://vitejs.dev/).
+Built with TypeScript and [Vite](https://vitejs.dev/).
 
 This was made as a Birthday gift to my boyfriend, Theo.
 
@@ -63,13 +63,18 @@ These buttons are always visible above the tabs.
 
 ## Tabs
 
-### World
+### Season
 
-Controls the environment.
+Controls the season.
 
 - **Season** - spring, summer, autumn, winter. Changes the colour palette, foliage, and ground cover. Some special
   events are locked to specific seasons.
-- **Day / Night** - transitions the lighting between daytime and a dark night sky.
+
+### Time
+
+Controls the current time of day.
+
+- **Time Period** - transitions the lighting between daytime, nighttime, dusk, and dawn.
 - **Moon Phase** - eight phases from new moon to waning crescent. Only visible at night.
 
 ### Weather
